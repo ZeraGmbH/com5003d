@@ -53,8 +53,6 @@ enum hw_cmdcode {	hwGetSerialNr = 0x0001,	hwGetDevName = 0x0002,
 			hwSetFrequency = 0x1006,	hwGetFrequency = 0x1007,
 			hwSetSRate = 0x1008,	hwGetSRate = 0x1009,
 			hwGetPCBTemp = 0x100A,	hwGetFlashWriteAccess=0x100B,
-			hwSetPPSSync = 0x100C,	hwGetPPSSync = 0x100D,
-			hwSetSenseProt = 0x100E,  hwGetSenseProt = 0x100F,
 			
 			hwSetRange = 0x1100,	hwGetRange = 0x1101,
 			hwGetOVRRange = 0x1102, hwGetStatus = 0x1103};
@@ -112,7 +110,7 @@ struct sRange {
 typedef QMap<QString,sRange*> tChannelRangeArrayMap; // zeigt für jeden kanal auf ein array v. sRange
 typedef QMap<QString,QStringList*> tChannelListMap; // zeigt für jeden kanal auf eine stringliste 
 typedef Q3ValueList<int> tSockList;
-typedef QMap<QString,tSockList*> tChannelSockListMap;
+
 
 class cCom5003Server: public cZHServer , public cbIFace {
 public:
@@ -144,13 +142,8 @@ private:
 
     // die routinen für das system modell
     
-    const char* mSetPPSSync(); // indirekt fürs system modell 
-    const char* mGetText(hw_cmdcode); // dito
+    const char* mGetText(hw_cmdcode); // indirekt fürs system modell
     
-    const char* mSetSyncPeriod(char*);
-    const char* mGetSyncPeriod();
-    const char* mSetSyncSource(char*);
-    const char* mGetSyncSource();
     const char* mSetPSamples(char*);	
     const char* mGetPSamples();	
     const char* mSetSampleMode(char*);		
@@ -204,17 +197,13 @@ private:
     const char* mOutRangeCatalog();
     const char* mGetRange();
     const char* mSetRange( char*);
-    const char* mChannelClose( char*);
-    const char* mChannelOpen( char*);
     const char* mOutChannelCatalog();
-    const char* mSetProtection( char*);
-    const char* mGetProtection();
     
     bool Test4HWPresent();
     bool EEPromAccessEnable();
-    void AddChannelClient(QString&); // fügt hinzu/löscht einen client der open/close
-    void DelChannelClient(QString&); //  auf einem kanal durchgeführt hat ( parameter ist der kanal) 
-    
+    bool isAtmelRunning();
+    void wait4AtmelRunning();
+
     sRange* SearchRange(QString&,QString&); // holt einen zeiger auf sRange abhängig v. kanal,range
     bool GetAdjInfo(QDomNode);
 
@@ -242,8 +231,6 @@ private:
     tChannelListMap ChannelCValueListMap; // pro kanal eine liste mit korrekturwert "beschreibern"
     tChannelListMap ChannelCCoeffientListMap; // pro kanal eine liste mit korrekturkoeffizienten namen
     tChannelListMap ChannelCNodeListMap; // pro kanal eine liste mit stützstellen namen
-    tChannelSockListMap ChannelSockListMap; // pro kanal eine liste der clients (sockets)  die ein open ausgeführt haben
-
     
     QString sI2CDevNode; 
     ushort I2CSlaveAdr;
@@ -256,6 +243,8 @@ private:
     QString sSerialNumber;
     QString sDeviceVersion; // version der hardware
     QDateTime DateTime; // datum,uhrzeit
+
+    QString m_sFPGADeviceNode; // für den zugriff zur hardware (fpga register)
     
     QString Answer;
     int m_nJDataStat;

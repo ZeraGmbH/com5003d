@@ -72,8 +72,6 @@ enum SCPICmdType  {	nixCmd, // 0 is nix
 			OutRangeCatalog,
 			GetRange,
 			SetRange,
-			ChannelClose,
-			ChannelOpen,
 			OutChannelCatalog,
 			SetProtection,
 			GetProtection

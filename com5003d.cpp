@@ -139,9 +139,9 @@ cCom5003Server::cCom5003Server()
     ChannelRangeArrayMap["UL1"] = &RangeUL1[0]; // alle sRange* / kanal
     ChannelRangeArrayMap["UL2"] = &RangeUL2[0];
     ChannelRangeArrayMap["UL3"] = &RangeUL1[0];
-    ChannelRangeArrayMap["IL1"] = &RangeUL2[0];
-    ChannelRangeArrayMap["IL2"] = &RangeUL1[0];
-    ChannelRangeArrayMap["IL3"] = &RangeUL2[0];
+    ChannelRangeArrayMap["IL1"] = &RangeIL2[0];
+    ChannelRangeArrayMap["IL2"] = &RangeIL1[0];
+    ChannelRangeArrayMap["IL3"] = &RangeIL2[0];
 
     sRange* sr=&RangeUL1[0];
     for (unsigned int i = 0; i<(sizeof(RangeUL1)/sizeof(sRange)); i++,sr++)
@@ -215,9 +215,6 @@ cCom5003Server::cCom5003Server()
     ChannelCNodeListMap["IL2"] = &CNodeList;
     ChannelCNodeListMap["IL3"] = &CNodeList;
     
-    ChannelSockListMap["ch0"] = &SockList0;
-    ChannelSockListMap["ch1"] = &SockList1;
-    
     DebugLevel = 0; // MaxDebugLevel; // default
     PSamples = 80; // default
     SMode = 0; // default
@@ -228,6 +225,10 @@ cCom5003Server::cCom5003Server()
     I2CMasterAdr = I2CMasterAdress; //default 0x20
     I2CSlaveAdr = I2CSlaveAdress; // default  0x21
     DateTime = QDateTime(QDate(8000,12,24));
+
+    m_sFPGADeviceNode = FPGADeviceNode;
+    wait4AtmelRunning();
+
     sSerialNumber = mGetSerialNumber();
     sDeviceVersion = mGetDeviceVersion();
 
@@ -637,49 +638,6 @@ bool cCom5003Server::GetAdjInfo(QDomNode n)
 }
 
 
-const char* cCom5003Server::mSetPPSSync() {
-    ulong PPSPar; 
-    PPSPar = (ulong) (SyncSource << 31) | (ulong) (SyncPeriod * 1e5); 
- 
-    char FPAR[4];
-    for (int i = 0; i < 4; i++)
-	FPAR[i] = (PPSPar >> ((3-i)*8)) & 0xff;
-    hw_cmd CMD1 = { cmdcode: hwSetPPSSync, device: 0, par: FPAR, plen: 4,cmdlen: 0,cmddata: 0, RM:0 };
-    if ( (I2CWriteCommand(&CMD1) == 0) &&  (CMD1.RM == 0) ) 
-	return ACKString; // acknowledge
-    else
-	return ERREXECString;    
-}
-
-
-const char* cCom5003Server::mSetSyncPeriod(char* s) {
-    bool ok;
-    QString par = pCmdInterpreter->m_pParser->GetKeyword(&s); // holt den parameter aus dem kommando
-    int t = par.toInt(&ok);
-    
-    if ( (ok) && (t>=100) && (t<=10000) ) {
-	SyncPeriod = t;
-	Answer = mSetPPSSync(); 
-    }
-    else Answer = ERRVALString;
-    return Answer.latin1();        
-}
- 
-
-const char* cCom5003Server::mSetSyncSource(char* s) {
-    bool ok;
-    QString par = pCmdInterpreter->m_pParser->GetKeyword(&s); // holt den parameter aus dem kommando
-    int so = par.toInt(&ok);
-    
-    if ( (ok) && ((so == 0) || (so ==1)) ) {
-	SyncSource = so;
-	Answer = mSetPPSSync(); 
-    }
-    else Answer = ERRVALString;
-    return Answer.latin1();            
-}
-
-
 const char* cCom5003Server::mSetPSamples(char* s) {
     bool ok;
     QString par = pCmdInterpreter->m_pParser->GetKeyword(&s); // holt den parameter aus dem kommando
@@ -705,7 +663,7 @@ const char* cCom5003Server::mSetSampleMode(char* s) {
     QString par = pCmdInterpreter->m_pParser->GetKeyword(&s); // holt den parameter aus dem kommando
     int sm = par.toInt(&ok);
     
-    if ( (ok) && (sm > -1) && (sm< 4) ) {
+    if ( (ok) && (sm > -1) && (sm < 4) ) {
 	char PAR[1];
 	PAR[0] = sm;
 	hw_cmd CMD = { cmdcode: hwSetMode, device: 0, par: PAR, plen: 1,cmdlen: 0,cmddata: 0, RM:0 };
@@ -1082,43 +1040,6 @@ const char* cCom5003Server::mGetPSamples() {
 }	
 
 
-const char* cCom5003Server::mGetSyncPeriod() {
-    char PAR[1];
-    struct hw_cmd CMD = { cmdcode: hwGetPPSSync, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
-    Answer = ERREXECString;
-    if ( ( I2CWriteCommand(&CMD) == 5) && (CMD.RM == 0)) {
-        quint8 answ[5];
-	if (I2CReadOutput(answ,5) == 5) {
-	    ulong PPSPar = 0;
-	    for (int i = 0; i < 4; i++)
-		PPSPar = (PPSPar << 8) + answ[i];
-	    float p = (PPSPar & 0xFFFFFFF) / 1.0e5;  // 28 bit 10ns -> 1ms
-	    PPSPar = (ulong) p; 
-	    Answer = QString::number(PPSPar);
-	    return Answer.latin1();
-	}
-    }
-    return Answer.latin1();    
-}
-
-
-const char* cCom5003Server::mGetSyncSource() {
-    char PAR[1];
-    struct hw_cmd CMD = { cmdcode: hwGetPPSSync, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
-    Answer = ERREXECString;
-    if ( ( I2CWriteCommand(&CMD) == 5) && (CMD.RM == 0)) {
-        quint8 answ[5];
-	if (I2CReadOutput(answ,5) == 5) {
-	    ulong PPSPar = answ[0];
-	    PPSPar = (PPSPar >> 7) & 1;
-	    Answer = QString::number(PPSPar);
-	    return Answer.latin1();
-	}
-    }
-    return Answer.latin1();    
-}
-
-
 const char* cCom5003Server::mGetSampleMode() {
     char PAR[1];
     struct hw_cmd CMD = { cmdcode: hwGetMode, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
@@ -1437,6 +1358,7 @@ const char* cCom5003Server::mGetAdjustmentStatus() {
     return Answer.latin1();
 }
 
+
 const char* cCom5003Server::mGetDeviceStatus() {
     if (Test4HWPresent()) Answer = "avail";
     else Answer = "not avail";
@@ -1549,23 +1471,57 @@ bool cCom5003Server::EEPromAccessEnable() {
 }
 
 
-void cCom5003Server::AddChannelClient(QString& s) { // fügt einen client hinzu nach  open
-    tChannelSockListMap::iterator it=ChannelSockListMap.find(s);
-    tSockList *sl=it.data(); //  socketliste
-    tSockList::iterator is=sl->find(ActSock); // hat der client schon geöffnet
-    if ( is == sl->end() ) {
-	if DEBUG3 syslog(LOG_INFO,"client %d opened channel %s",ActSock,s.latin1());
-	sl->append(ActSock); // nein -> tut er es jetzt
+bool cCom5003Server::isAtmelRunning()
+{
+    int fd;
+    if ( (fd = open(m_sFPGADeviceNode.latin1(),O_RDWR)) < 0 )
+    {
+        if (DEBUG1)  syslog(LOG_ERR,"error opening fpga device: %s\n",m_sFPGADeviceNode.latin1());
+            return false;
     }
-    return;
+
+    else
+    {
+        ulong pcbTestReg;
+        int r;
+        if ( (r = lseek(fd,0xffc,0)) < 0 )
+        {
+            if  (DEBUG1)  syslog(LOG_ERR,"error positioning fpga device: %s\n",m_sFPGADeviceNode.latin1());
+                close(fd);
+            return false;
+        }
+        else
+        {
+            r = read(fd,(char*) &pcbTestReg,4);
+            close(fd);
+            if (DEBUG1)  syslog(LOG_ERR,"reading fpga adr 0xffc =  %ld\n", pcbTestReg);
+            if (r < 0 )
+            {
+                if (DEBUG1)  syslog(LOG_ERR,"error reading fpga device: %s\n",m_sFPGADeviceNode.latin1());
+                    return false;
+            }
+            else
+                return ((pcbTestReg & 1) > 0);
+        }
+    }
 }
 
 
-void cCom5003Server::DelChannelClient(QString& s) { //  entfernt einen client nach close
-    tChannelSockListMap::iterator it=ChannelSockListMap.find(s);
-    if DEBUG3 syslog(LOG_INFO,"client %d closed channel %s",ActSock,s.latin1());
-    it.data()->remove(ActSock);
-    return;
+void cCom5003Server::wait4AtmelRunning()
+{
+    int i;
+
+    for (i=0; i<100; i++)
+    {
+        if (isAtmelRunning())
+            break;
+        usleep(100000);
+    }
+
+    if (DEBUG1)
+        if (i==100)
+            syslog(LOG_ERR,"atmel not running\n");
+
 }
 
 
@@ -1577,7 +1533,6 @@ void cCom5003Server::DelClient(int s) { // entfernt einen client
 	}
     }
     ActSock=s; // damit DelChannelClient weiß um welchen socket es geht
-    for (QStringList::iterator it=MeasChannelList.begin(); it !=MeasChannelList.end(); it++) DelChannelClient(*it);
     if DEBUG3 syslog(LOG_INFO,"client %d deleted\n",s);
 }
 
@@ -1879,7 +1834,9 @@ const char* cCom5003Server::mOutRangeCatalog() {
 
 const char* cCom5003Server::mGetRange() {
     QString dedicatedChannel = pCmdInterpreter->dedicatedList.first();
-    char dnr = (dedicatedChannel == "ch0") ? 1 : 2;
+
+    char dnr = MeasChannelList.indexOf(dedicatedChannel);
+
     char PAR[1];
     int rlen;
     struct hw_cmd CMD = { cmdcode: hwGetRange, device: dnr, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
@@ -1912,13 +1869,7 @@ const char* cCom5003Server::mSetRange(char* s) {
     char dnr;
     
     QString dedicatedChannel = pCmdInterpreter->dedicatedList.first();
-    tChannelSockListMap::iterator it=ChannelSockListMap.find(dedicatedChannel);
-    tSockList *sl=it.data(); //  socketliste
-    int so=sl->first();
-    if ( so != ActSock ) {
-	Answer = ERRAUTString;
-	return Answer.latin1();;
-    }
+
     QString rng = pCmdInterpreter->m_pParser->GetKeyword(&s); // holt den parameter aus dem kommando
     
     tChannelListMap::Iterator it2=ChannelRangeListMap.find(dedicatedChannel);
@@ -1938,8 +1889,9 @@ const char* cCom5003Server::mSetRange(char* s) {
 	Answer = NACKString; // bereich gibt es nicht, bzw. ist kein phys. bzw. log. bereich
 	return Answer.latin1();
     }
-    dnr = (dedicatedChannel == "ch0") ? 1 : 2;
-    
+
+    dnr = MeasChannelList.indexOf(dedicatedChannel);
+
     char PAR[1];
     PAR[0] = sr->RSelCode;
     struct hw_cmd CMD = { cmdcode: hwSetRange, device: dnr, par: PAR, plen: 1,cmdlen: 0,cmddata: 0, RM:0 };
@@ -1950,73 +1902,6 @@ const char* cCom5003Server::mSetRange(char* s) {
   
     return Answer.latin1();
 }    
-
-
-const char* cCom5003Server::mGetProtection() {
-    char PAR[1];
-    int rlen;
-    struct hw_cmd CMD = { cmdcode: hwGetSenseProt, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
-    quint8 answ[2];
- 
-    if ( !( ( (rlen = I2CWriteCommand(&CMD)) == 2) && (CMD.RM == 0) && (I2CReadOutput(answ,rlen) == rlen)) ) {
-	Answer = ERREXECString; // error execution
-	return Answer.latin1();
-    }   
-    else
-    {	
-	uchar prot;
-	prot = answ[0];
-	Answer = QString("%1").arg(prot & 1);
-    }
-    return Answer.latin1();
-}
-
-
-const char* cCom5003Server::mSetProtection(char* s) {
-    bool ok;
-    QString par = pCmdInterpreter->m_pParser->GetKeyword(&s); // holt den parameter aus dem kommando
-    int prot = par.toInt(&ok);
-    
-    if ( (ok) && (prot > -1) && (prot < 2) ) {
-	char PAR[1];
-	PAR[0] = prot;
-	hw_cmd CMD = { cmdcode: hwSetSenseProt, device: 0, par: PAR, plen: 1,cmdlen: 0,cmddata: 0, RM:0 };
-	if ((I2CWriteCommand(&CMD) == 0) &&  (CMD.RM == 0)) 
-	    Answer = ACKString; // acknowledge
-	else
-	    Answer = ERREXECString;
-    }
-    else Answer = ERRVALString;
-    return Answer.latin1();        
-}
-
-
-const char* cCom5003Server::mChannelClose(char* s) {
-    if (pCmdInterpreter->m_pParser->GetChar(&s) ) { // schau mal nach ob noch was kommt
-	Answer = NACKString; // not acknowledge 	    
-    }
-    else
-    {
-	QString dedicatedChannel = pCmdInterpreter->dedicatedList.first();
-	DelChannelClient(dedicatedChannel);
-	Answer = ACKString; // acknowledge 	    
-    }
-    return Answer.latin1();
-}
-
-
-const char* cCom5003Server::mChannelOpen(char* s) {
-    if (pCmdInterpreter->m_pParser->GetChar(&s) ) { // schau mal nach ob noch was kommt
-	Answer = NACKString; // not acknowledge 	    
-    }
-    else
-    {
-	QString dedicatedChannel = pCmdInterpreter->dedicatedList.first();
-	AddChannelClient(dedicatedChannel);
-	Answer = ACKString; // acknowledge 	    
-    }
-    return Answer.latin1();
-}
 
 
 extern cNodeZHServer* CalculateCNameRName;
@@ -2195,11 +2080,6 @@ const char* cCom5003Server::SCPICmd( SCPICmdType cmd, char* s) {
     case	CmpCCoefficient:		return mCmpCCoefficient(s);
     case   SetStatus:		return mSetStatus(s);	
     case   SetRange:		return mSetRange(s);
-    case	SetProtection:		return mSetProtection(s);
-    case   ChannelClose:		return mChannelClose(s);
-    case 	ChannelOpen:		return mChannelOpen(s);
-    case   SetSyncSource:		return mSetSyncSource(s);
-    case	SetSyncPeriod:		return mSetSyncPeriod(s);	
     case   SetPCBVersion:		return mSetPCBVersion(s);
     }
     Answer = "ProgrammierFehler"; // hier sollten wir nie hinkommen
@@ -2235,10 +2115,7 @@ const char* cCom5003Server::SCPIQuery( SCPICmdType cmd, char* s) {
     case 		GetRValue:		return mGetRValue();
     case 		OutRangeCatalog:		return mOutRangeCatalog();
     case 		GetRange:		return mGetRange();
-    case 		GetProtection:		return mGetProtection();
     case 		OutChannelCatalog:	return mOutChannelCatalog();
-    case 		GetSyncSource:		return mGetSyncSource();
-    case		GetSyncPeriod:		return mGetSyncPeriod();	
     case 		GetPCBVersion:		return mGetPCBVersion();
     case 		GetCTRLVersion:		return mGetCTRLVersion();
     case 		GetLCAVersion:		return mGetLCAVersion();	

@@ -19,13 +19,10 @@ cNodeSCPI* Sense;
     cNodeSCPI* SenseChannel;
         cNodeSCPI* SenseChannelCatalog;
     cNodeZHServer* SenseCName;
-        cNodeSCPI* SenseCNameOpen;
-        cNodeSCPI* SenseCNameClose;
         cNodeSCPI* SenseCNameRange;
             cNodeSCPI* SenseCNameRangeCatalog;
-    cNodeSCPI* SenseProtect;
-	     
-			 
+
+
 cNodeSCPI* Calculate;
     cNodeZHServer* CalculateCName;
         cNodeSCPI* CalculateCNameCValue;
@@ -33,7 +30,8 @@ cNodeSCPI* Calculate;
         cNodeZHServer* CalculateCNameCValue2;
             cNodeSCPI* CalculateCNameCValue2CCoefficient;
             cNodeSCPI* CalculateCNameCValue2CNode;
-            cNodeZHServer* CalculateCNameRName;							          cNodeSCPI* CalculateCNameRNameRValue;
+            cNodeZHServer* CalculateCNameRName;
+                cNodeSCPI* CalculateCNameRNameRValue;
                 cNodeSCPI* CalculateCNameRNameRejection;
                 cNodeZHServer* CalculateCNameRNameCValue;
                 cNodeSCPI* CalculateCNameRNameStatus;
@@ -90,7 +88,7 @@ cNodeSCPI* MMemory;
 // cNodeScpi (QString,tNodeSpec,cNode*,cNode*,SCPICmdType,SCPICmdType); 
 // konstruktor, sNodeName, nNodedef, pNextNode, pNewLevelNode, Cmd, Query				
 // konstruktor, psNodeNames,psNode2Set, nNodedef, pNextNode, pNewLevelNode, Cmd, Query
-//cNodeZHServer::cNodeZHServer(QStringList* sl,QString* s,tNodeSpec ns,cNode* n1,cNode* n2,SCPICmdType,SCPICmdType)
+// cNodeZHServer::cNodeZHServer(QStringList* sl,QString* s,tNodeSpec ns,cNode* n1,cNode* n2,SCPICmdType,SCPICmdType)
 	       
 cNode* InitCmdTree() {
     
@@ -169,10 +167,9 @@ cNode* InitCmdTree() {
    
     // implementiertes sense model    
 
-    SenseProtect=new cNodeSCPI("PROTECTION",isCommand | isQuery,NULL,NULL,SetProtection,GetProtection);
     SenseCNameRangeCatalog=new cNodeSCPI("CATALOG",isQuery,NULL,NULL,nixCmd,OutRangeCatalog);
     SenseCNameRange=new cNodeSCPI("RANGE",isNode | isCommand | isQuery,NULL,SenseCNameRangeCatalog,SetRange,GetRange);
-    SenseCName=new cNodeZHServer(&cCom5003Server::MeasChannelList,isNode,SenseProtect,SenseCNameRange,nixCmd,nixCmd);
+    SenseCName=new cNodeZHServer(&cCom5003Server::MeasChannelList,isNode,NULL,SenseCNameRange,nixCmd,nixCmd);
     SenseChannelCatalog=new cNodeSCPI("CATALOG",isQuery,NULL,NULL,nixCmd,OutChannelCatalog);
     SenseChannel=new cNodeSCPI("CHANNEL",isNode,SenseCName,SenseChannelCatalog,nixCmd,nixCmd);
     Sense=new cNodeSCPI("SENSE",isNode,Calculate,SenseChannel,nixCmd,nixCmd);
