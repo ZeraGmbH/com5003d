@@ -17,7 +17,9 @@ HEADERS	+= scpi.h \
 	gaussmatrix.h \
     com5003justdata.h \
     com5003global.h \
-    com5003scpi.h
+    com5003scpi.h \
+    pcbserver.h \
+    debug.h
 
 SOURCES	+= scpi.cpp \
 	parse.cpp \
@@ -32,7 +34,8 @@ SOURCES	+= scpi.cpp \
 	intelhexfileio.cpp \
 	justdata.cpp \
 	gaussmatrix.cpp \
-    com5003justdata.cpp
+    com5003justdata.cpp \
+    pcbserver.cpp
 
 unix {
   UI_DIR = .ui
@@ -42,10 +45,6 @@ unix {
 
 target.path = /usr/bin
 INSTALLS += target
-
-
-
-
 
 #The following line was inserted by qt3to4
 QT += xml  qt3support 

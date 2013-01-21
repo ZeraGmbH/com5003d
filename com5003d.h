@@ -250,4 +250,12 @@ private:
     int m_nJDataStat;
     double SampleFrequency;
 };
+
+
+class cCom5003Server: public cPCBServer
+{
+
+};
+
+
 #endif
