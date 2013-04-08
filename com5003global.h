@@ -9,9 +9,10 @@
 #define I2CMasterAdress 0x20
 #define I2CSlaveAdress 0x21
 #define LeiterkartenName "com5003"
-#define ServerName "com5003d0"
-#define ServerVersion "V1.00"
+#define ServerName "com5003d"
 #define InpBufSize 4096
+#define ServerVersion "V1.00"
+
 
 // wenn COM5003DEBUG -> kein fork()
 //#define COM5003DEBUG 1

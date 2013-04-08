@@ -5,6 +5,7 @@
  * @author Peter Lohmer p.lohmer@zera.de
 ******************************************************************************/
 
+#include <QTcpServer>
 
 #ifndef PCBSERVER_H
 #define PCBSERVER_H
@@ -27,7 +28,7 @@
   */
 
 
-class cPCBServer
+class cPCBServer: public QTcpServer
 {
 public:
     cPCBServer();

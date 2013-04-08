@@ -47,4 +47,4 @@ target.path = /usr/bin
 INSTALLS += target
 
 #The following line was inserted by qt3to4
-QT += xml  qt3support 
+QT += xml network qt3support
