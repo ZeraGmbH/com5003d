@@ -1,0 +1,73 @@
+#ifndef SYSTEMINTERFACE_H
+#define SYSTEMINTERFACE_H
+
+#include <QObject>
+#include <QList>
+#include <scpi.h>
+
+#include "scpiconnection.h"
+
+namespace SystemSystem
+{
+
+enum SystemCommands
+{
+    cmdVersionServer,
+    cmdVersionDevice,
+    cmdVersionPCB,
+    cmdVersionCTRL,
+    cmdVersionFPGA,
+    cmdSerialNumber,
+    cmdUpdateControlerBootloader,
+    cmdUpdateControlerProgram,
+    cmdUpdateControlerFlash,
+    cmdUpdateControlerEEprom,
+    cmdAdjFlashWrite,
+    cmdAdjFlashRead,
+    cmdAdjXMLWrite,
+    cmdAdjXMLRead,
+    cmdAdjFlashChksum
+};
+}
+
+class cSystemInfo;
+class cCOM5003dServer;
+class cAdjustment;
+
+class cSystemInterface: public cSCPIConnection
+{
+    Q_OBJECT
+
+public:
+    cSystemInterface(cCOM5003dServer* server, cAdjustment* adjHandler, cSystemInfo* sInfo);
+    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+
+protected slots:
+    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+
+private:
+    cCOM5003dServer* m_pMyServer;
+    cAdjustment* m_pAdjHandler;
+    cSystemInfo* m_pSystemInfo;
+    QString m_ReadServerVersion(QString& sInput);
+    QString m_ReadDeviceVersion(QString& sInput);
+    QString m_ReadDeviceName(QString& sInput);
+    QString m_ReadWritePCBVersion(QString& sInput);
+    QString m_ReadCTRLVersion(QString& sInput);
+    QString m_ReadFPGAVersion(QString& sInput);
+    QString m_ReadWriteSerialNumber(QString& sInput);
+    QString m_StartControlerBootloader(QString& sInput);
+    QString m_StartControlerProgram(QString& sInput);
+    QString m_LoadFlash(QString& sInput);
+    QString m_LoadEEProm(QString& sInput);
+    QString m_AdjFlashWrite(QString& sInput);
+    QString m_AdjFlashRead(QString& sInput);
+    QString m_AdjXMLWrite(QString& sInput);
+    QString m_AdjXMLRead(QString& sInput);
+    QString m_AdjFlashStatus(QString& sInput);
+
+    void m_genAnswer(int select, QString& answer);
+};
+
+
+#endif // SYSTEMINTERFACE_H

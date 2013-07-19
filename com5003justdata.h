@@ -3,37 +3,54 @@
 #ifndef COM5003JUSTDATA_H
 #define COM5003JUSTDATA_H
 
-#include <qdatastream.h>
-#include <q3textstream.h>
-#include "justdata.h"
+#include <QObject>
+#include "scpiconnection.h"
+
+enum com5003JustCommands
+{
+    com5003JustGain,
+    com5003JustPhase,
+    com5003JustOffset,
+    com5003JustStatus,
+    com5003JustCompute
+};
 
 
-enum jDataStatus { wrongVERS = 2, wrongSNR = 4};
+const int GainCorrOrder = 4;
+const int PhaseCorrOrder  = 4;
+const int OffsetCorrOrder = 4;
 
-const int GainCorrOrder = 1;
-const int PhaseCorrOrder  = 3;
-const int OffsetCorrOrder = 0;
-	
 
-class cCOM5003JustData { // alle korrekturdaten für einen bereich + status
+class QDataStream;
+class cJustData;
+
+
+class cCOM5003JustData: public cSCPIConnection  // alle korrekturdaten für einen bereich + status
+{
+    Q_OBJECT
+
 public:
     cCOM5003JustData();
     ~cCOM5003JustData();
-    
+    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+
     cJustData* m_pGainCorrection;
     cJustData* m_pPhaseCorrection; 
     cJustData* m_pOffsetCorrection;
     
     void Serialize(QDataStream&); // zum schreiben aller justagedaten in flashspeicher
     void Deserialize(QDataStream&); // zum lesen aller justagedaten aus flashspeicher
-    
-    QString SerializeStatus(); // fürs xml file
-    void DeserializeStatus(const QString&);
-    void setStatus(int stat);
-    int getStatus();
-    
+    quint8 getAdjustmentStatus();
+
+protected slots:
+    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+
 private:    
-    int m_nStatus;
+    QString mReadGainCorrection(QString&sInput);
+    QString mReadPhaseCorrection(QString&sInput);
+    QString mReadOffsetCorrection(QString&sInput);
+    QString m_ReadStatus(QString& sInput);
+    QString m_ComputeJustData(QString& sInput);
 };
 
 

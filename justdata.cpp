@@ -1,62 +1,27 @@
-// implementierung justdata.cpp
-// rund ums justieren
-
+#include <QDataStream>
+#include <QString>
 #include <math.h>
+#include <scpi.h>
+#include <gaussmatrix.h>
+#include <gaussnode.h>
+
+#include "atmel.h"
+#include "scpiconnection.h"
+#include "scpidelegate.h"
 #include "justdata.h"
-#include "gaussmatrix.h"
+#include "justnode.h"
 
 
-cJustNode::cJustNode(double corr, double arg)
-    :m_fCorrection(corr),m_fArgument(arg)
-{
-}
+extern cATMEL* pAtmel;
 
-
-void cJustNode::Serialize(QDataStream& qds)
-{
-    qds << m_fCorrection << m_fArgument;
-}
-
-
-void cJustNode::Deserialize(QDataStream& qds)
-{
-    qds >> m_fCorrection >> m_fArgument;
-}
-
-
-QString cJustNode::Serialize()
-{
-    QString s;
-    s = QString("%1,%2;").arg(m_fCorrection,0,'f',6)
-	                       .arg(m_fArgument,0,'f',6);
-    return s;
-}
-
- 
-void cJustNode::Deserialize(const QString& s)
-{
-    m_fCorrection = s.section( ',',0,0).toDouble();
-    m_fArgument = s.section( ',',1,1).toDouble();
-}
-    
-
-cJustNode& cJustNode::operator = (const cJustNode& jn)
-{
-    this->m_fCorrection = jn.m_fCorrection;
-    this->m_fArgument = jn.m_fArgument;
-    return (*this);
-}
-
-
-// ab hier justdata klasse ...hält die koeffizienten und stützstellen
-
-cJustData::cJustData(int order,double init)
+cJustData::cJustData(int order, double init)
     :m_nOrder(order)
 {
     m_pCoefficient = new double[order+1];  
     m_pJustNode = new cJustNode[order+1]; 
-    setNode(0 , cJustNode(init,0.0)); // setzt den 1. node und die folgenden 
+    setNode(0 , cJustNode(init,0.0)); // setting the 1st node and all following
     cmpCoefficients();
+    m_nStatus = 0;
 }
 
 
@@ -67,32 +32,236 @@ cJustData::~cJustData()
 }
 
 
-void cJustData::Serialize(QDataStream& qds) // zum schreiben der justagedaten in flashspeicher
+void cJustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
 {
-    int i;
-    for (i = 0; i < m_nOrder+1; i++)
-	qds << m_pCoefficient[i];
-    for (i = 0; i < m_nOrder+1; i++)
-	m_pJustNode[i].Serialize(qds);
+    cSCPIDelegate* delegate;
+
+    delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes), "STATUS", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustStatus);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+
+    if (leadingNodes != "")
+        leadingNodes += ":";
+
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient0);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient1);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient2);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient3);
+    m_DelegateList.append(delegate);
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode0);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode1);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode2);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode3);
+    m_DelegateList.append(delegate);
 }
 
 
-void cJustData::Deserialize(QDataStream& qds) // lesen der justagedaten aus flashspeicher
+void cJustData::executeCommand(int cmdCode, QString& sInput, QString& sOutput)
+{
+    switch (cmdCode)
+    {
+    case JustStatus:
+        sOutput = m_ReadWriteStatus(sInput);
+        break;
+    case JustCoefficient0:
+        sOutput = m_ReadWriteJustCoeeficient(sInput, 0);
+        break;
+    case JustCoefficient1:
+        sOutput = m_ReadWriteJustCoeeficient(sInput, 1);
+        break;
+    case JustCoefficient2:
+        sOutput = m_ReadWriteJustCoeeficient(sInput, 2);
+        break;
+    case JustCoefficient3:
+        sOutput = m_ReadWriteJustCoeeficient(sInput, 3);
+        break;
+    case JustNode0:
+        sOutput = m_ReadWriteJustNode(sInput, 0);
+        break;
+    case JustNode1:
+        sOutput = m_ReadWriteJustNode(sInput, 1);
+        break;
+    case JustNode2:
+        sOutput = m_ReadWriteJustNode(sInput, 2);
+        break;
+    case JustNode3:
+        sOutput = m_ReadWriteJustNode(sInput, 3);
+        break;
+    }
+}
+
+
+QString cJustData::m_ReadWriteStatus(QString &sInput)
+{
+    bool ok;
+    bool enable;
+
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        return QString("%1").arg(m_nStatus);
+    }
+    else
+    {
+        if (cmd.isCommand(1))
+        {
+            if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+            {
+                if (enable)
+                {
+                    QString spar = cmd.getParam(1);
+                    quint8 par = spar.toInt(&ok);
+                    if (ok)
+                    {
+                        m_nStatus = par;
+                        return SCPI::scpiAnswer[SCPI::ack];
+                    }
+                    else
+                        return SCPI::scpiAnswer[SCPI::errval];
+                }
+                else
+                    return SCPI::scpiAnswer[SCPI::erraut];
+            }
+            else return SCPI::scpiAnswer[SCPI::errexec];
+        }
+    }
+
+    return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cJustData::m_ReadWriteJustCoeeficient(QString &sInput, quint8 index)
+{
+    bool ok;
+
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        return QString("%1").arg(getCoefficient(index));
+    }
+    else
+    {
+        if (cmd.isCommand(1))
+        {
+            bool enable;
+            if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+            {
+                if (enable)
+                {
+                    QString spar = cmd.getParam(1);
+                    double par = spar.toDouble(&ok);
+                    if (ok)
+                    {
+                        setCoefficient(index, par);
+                        return SCPI::scpiAnswer[SCPI::ack];
+                    }
+                    else
+                        return SCPI::scpiAnswer[SCPI::errval];
+                }
+                else
+                    return SCPI::scpiAnswer[SCPI::erraut];
+            }
+            else
+                return SCPI::scpiAnswer[SCPI::errexec];
+        }
+    }
+
+    return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cJustData::m_ReadWriteJustNode(QString &sInput, quint8 index)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        return QString("%1").arg(getNode(index)->Serialize());
+    }
+    else
+    {
+        if (cmd.isCommand(2))
+        {
+            bool enable;
+            bool ok1, ok2;
+            if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+            {
+                if (enable)
+                {
+                    QString spar = cmd.getParam(1);
+                    double par1 = spar.toDouble(&ok1);
+                    spar = cmd.getParam(2);
+                    double par2 = spar.toDouble(&ok2);
+                    if (ok1 && ok2)
+                    {
+                        cJustNode jn = cJustNode(par1,par2);
+                        setNode(index, jn);
+                        return SCPI::scpiAnswer[SCPI::ack];
+                    }
+                    else
+                        return SCPI::scpiAnswer[SCPI::errval];
+                }
+                else
+                    return SCPI::scpiAnswer[SCPI::erraut];
+            }
+            else
+                return SCPI::scpiAnswer[SCPI::errexec];
+        }
+    }
+
+    return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+void cJustData::Serialize(QDataStream& qds) // writes adjustment data to a qdatastream
 {
     int i;
+    qds << m_nStatus;
     for (i = 0; i < m_nOrder+1; i++)
-	qds >> m_pCoefficient[i];
+        qds << m_pCoefficient[i];
     for (i = 0; i < m_nOrder+1; i++)
-	m_pJustNode[i].Deserialize(qds);
+        m_pJustNode[i].Serialize(qds);
+}
+
+
+void cJustData::Deserialize(QDataStream& qds) // reads adjustment data from a qdatastream
+{
+    int i;
+    qds >> m_nStatus;
+    for (i = 0; i < m_nOrder+1; i++)
+        qds >> m_pCoefficient[i];
+    for (i = 0; i < m_nOrder+1; i++)
+        m_pJustNode[i].Deserialize(qds);
+}
+
+
+QString cJustData::SerializeStatus()
+{
+    QString s = QString("%1").arg(m_nStatus);
+    return s;
 }
 	
 	
-QString cJustData::SerializeCoefficients() // fürs xml file halten wir das getrennt
+QString cJustData::SerializeCoefficients() // writes adjustment data to qstring
 {
     int i;
     QString s = "";
     for (i = 0; i < m_nOrder+1; i++)
-	s += QString("%1;").arg(m_pCoefficient[i],0,'f',12);
+        s += QString("%1;").arg(m_pCoefficient[i],0,'f',12);
     return s;
 }
 
@@ -102,16 +271,23 @@ QString cJustData::SerializeNodes()
     int i;
     QString s = "";
     for (i = 0; i < m_nOrder+1; i++)
-	s += m_pJustNode[i].Serialize();
+        s += m_pJustNode[i].Serialize();
     return s;
-}    
+}
+
+
+void cJustData::DeserializeStatus(const QString &s)
+{
+    bool ok;
+    m_nStatus = s.toInt(&ok);
+}
 
 
 void cJustData::DeserializeCoefficients(const QString& s) 
 {	
     int i;
     for (i = 0; i < m_nOrder+1; i++)
-	m_pCoefficient[i] = s.section(';',i,i).toDouble();
+        m_pCoefficient[i] = s.section(';',i,i).toDouble();
 }
 
 
@@ -120,11 +296,11 @@ void cJustData::DeserializeNodes(const QString& s)
     int i;
     QString t;
     for (i = 0; i < m_nOrder+1; i++)
-	m_pJustNode[i].Deserialize(s.section(';',i,i));
+        m_pJustNode[i].Deserialize(s.section(';',i,i));
 }
 
 
-bool cJustData::setNode(int index, cJustNode jn) // !!! setzen der stützstellen ist reihenfolge abhängig !!!
+bool cJustData::setNode(int index, cJustNode jn) // // !!! setting node sequence is relevant !!!
 {
     if (index <= m_nOrder)
     {
@@ -137,7 +313,7 @@ bool cJustData::setNode(int index, cJustNode jn) // !!! setzen der stützstellen
 }
 
 
-cJustNode* cJustData::getNode(int index) // lassen sich auch rücklesen
+cJustNode* cJustData::getNode(int index) // can be read back
 {
     return &m_pJustNode[index];
 }
@@ -164,39 +340,40 @@ double cJustData::getCoefficient(int index)
 }
 
 
-bool cJustData::cmpCoefficients() // berechnet aus den stützstellen die koeffizienten
+bool cJustData::cmpCoefficients() // calculates coefficients from nodes
 {
     const double epsilon = 1e-7;
-    int realOrd, i; // reale ordnung feststellen
+    int realOrd, i; // find out real
     
     realOrd = 0;
-    if (m_nOrder > 0) // nur wenn wir höhere ordnung zulassen untersuchen welche ordnung es ist
+    if (m_nOrder > 0) // only done if noticed order > 0
     {
-	for (i = 0;i < m_nOrder; i++) {
-	    if (fabs(m_pJustNode[i].m_fArgument - m_pJustNode[i+1].m_fArgument) < epsilon)
-		break;
-	    realOrd++;
-	}
+        for (i = 0;i < m_nOrder; i++)
+        {
+            if (fabs(m_pJustNode[i].getArgument() - m_pJustNode[i+1].getArgument()) < epsilon)
+                break;
+            realOrd++;
+        }
     }
     
-    // matrix befüllen
+    // fill the matrix
     cGaussMatrix *Matrix;
     Matrix = new cGaussMatrix(realOrd+1);
     cGaussNode gn;
     for (i = 0; i < realOrd+1; i++)
     {
-	gn.m_fNode = m_pJustNode[i].m_fCorrection;
-	gn.m_fArg = m_pJustNode[i].m_fArgument;
-	Matrix->setMatrix(i, gn);
+        gn.m_fNode = m_pJustNode[i].getCorrection();
+        gn.m_fArg = m_pJustNode[i].getArgument();
+        Matrix->setMatrix(i, gn);
     }
         
-    // matrix berechnen
+    // matrix computation
     Matrix->cmpKoeff();
     
-    // und auslesen
+    // read out coefficients
     for (i = 0; i < realOrd+1; i++)
-	setCoefficient(i, Matrix->getKoeff(realOrd-i));
-    // bzw. 0 setzen der nicht berechneten koeffizienten
+        setCoefficient(i, Matrix->getKoeff(realOrd-i));
+    // not calculated coefficient are set to 0
     for (i = i; i < m_nOrder+1; i++)
 	setCoefficient(i, 0.0);
     delete Matrix;
@@ -204,14 +381,21 @@ bool cJustData::cmpCoefficients() // berechnet aus den stützstellen die koeffiz
     return true;
 }
 
+
+quint8 cJustData::getStatus()
+{
+    return m_nStatus;
+}
+
     
-double cJustData::getCorrection(double arg) // berechnet den korrekturwert
+double cJustData::getCorrection(double arg) // calculates correction value
 {
     double Arg = 1.0;
     double Corr = 0.0;
-    for (int i = 0; i < m_nOrder+1; i++) { // korrektur funktion ist  n. ordnung
-	Corr += m_pCoefficient[i] * Arg;
-	Arg *= arg;
+    for (int i = 0; i < m_nOrder+1; i++) // correction function has nth order
+    {
+        Corr += m_pCoefficient[i] * Arg;
+        Arg *= arg;
     }
     
     return Corr;

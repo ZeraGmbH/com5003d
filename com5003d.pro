@@ -1,41 +1,78 @@
 TEMPLATE	= app
 LANGUAGE	= C++
 
+include(com5003d.user.pri)
+
 CONFIG	+= qt warn_on debug
 
-HEADERS	+= scpi.h \
-	parse.h \
-	cmdinterpret.h \
-	zhserver.h \
+
+HEADERS	+= \
 	zeraglobal.h \
-	i2ceeprom.h \
 	com5003d.h \
-	i2cutils.h \
-	crcutils.h \
-	intelhexfileio.h \
 	justdata.h \
-	gaussmatrix.h \
     com5003justdata.h \
-    com5003global.h \
     com5003scpi.h \
     pcbserver.h \
-    debug.h
+    i2csettings.h \
+    com5003dglobal.h \
+    ethsettings.h \
+    fpgasettings.h \
+    justnode.h \
+    scpidelegate.h \
+    statusinterface.h \
+    scpiconnection.h \
+    systeminterface.h \
+    atmel.h \
+    xmlsettings.h \
+    debugsettings.h \
+    senseinterface.h \
+    sensesettings.h \
+    application.h \
+    atmelwatcher.h \
+    resource.h \
+    samplerange.h \
+    samplinginterface.h \
+    samplingsettings.h \
+    senserange.h \
+    sensechannel.h \
+    sourcesettings.h \
+    sourceinterface.h \
+    fpzchannel.h \
+    adjflash.h \
+    adjxml.h \
+    adjustment.h \
+    systeminfo.h
 
-SOURCES	+= scpi.cpp \
-	parse.cpp \
+SOURCES	+= \
 	main.cpp \
-	cmds.cpp \
-	cmdinterpret.cpp \
-	zhserver.cpp \
-	i2ceeprom.cpp \
 	com5003d.cpp \
-	i2cutils.cpp \
-	crcutils.cpp \
-	intelhexfileio.cpp \
 	justdata.cpp \
-	gaussmatrix.cpp \
     com5003justdata.cpp \
-    pcbserver.cpp
+    pcbserver.cpp \
+    i2csettings.cpp \
+    ethsettings.cpp \
+    fpgasettings.cpp \
+    justnode.cpp \
+    scpidelegate.cpp \
+    statusinterface.cpp \
+    scpiconnection.cpp \
+    systeminterface.cpp \
+    atmel.cpp \
+    debugsettings.cpp \
+    senseinterface.cpp \
+    sensesettings.cpp \
+    atmelwatcher.cpp \
+    samplerange.cpp \
+    samplinginterface.cpp \
+    samplingsettings.cpp \
+    senserange.cpp \
+    sensechannel.cpp \
+    sourcesettings.cpp \
+    fpzchannel.cpp \
+    sourceinterface.cpp \
+    adjustment.cpp \
+    systeminfo.cpp \
+    resource.cpp
 
 unix {
   UI_DIR = .ui
@@ -46,5 +83,6 @@ unix {
 target.path = /usr/bin
 INSTALLS += target
 
-#The following line was inserted by qt3to4
-QT += xml network qt3support
+QT += xml network
+
+OTHER_FILES +=

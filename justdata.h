@@ -1,54 +1,69 @@
-// header datei justdata.h
-// klassen deklaration rund ums justieren
-
 #ifndef JUSTDATA_H
 #define JUSTDATA_H
 
-#include <qdatastream.h>
-#include <q3textstream.h>
+#include "scpiconnection.h"
+
+class QDataStream; // forward
+class QString;
+
+// a cJustData object has a max. possible order
+// the order must not necessarily be used
+// setting only the first node results in a effectively 0 order
+// a new generated object is also initialized like that
 
 
-class cJustNode { // stützspunkt kann sich serialisieren und besteht aus stützwert (correction) und argument
-public:
-    cJustNode(double corr, double arg);
-    cJustNode(){};
-    ~cJustNode(){};
-    void Serialize(QDataStream&);
-    void Deserialize(QDataStream&);
-    QString Serialize();
-    void Deserialize(const QString&);
-    cJustNode& operator = (const cJustNode&);
-    
-    double m_fCorrection;
-    double m_fArgument;
+enum JustCommands
+{
+    JustStatus,
+    JustCoefficient0,
+    JustCoefficient1,
+    JustCoefficient2,
+    JustCoefficient3,
+    JustNode0,
+    JustNode1,
+    JustNode2,
+    JustNode3
 };
 
+class cJustNode;
 
-// ein justagedaten objekt hat eine max. mögliche ordnung.
-// diese muss nicht zwangsläufig ausgenutzt werden.
-// wird z.B. nur die 1. stützstelle eingetragen ist die tatsächliche ordnung 0
-// so wird ein justagedaten objekt auch default initialisiert
-
-class cJustData { // basisklasse für justage koeffizienten und stützstellen
-public: 
-    cJustData(int order,double init); 
+class cJustData: public cSCPIConnection // base class for adjustment coefficients and nodes
+{
+public:
+    cJustData(int order,double init);
     ~cJustData();
-    void Serialize(QDataStream&); // zum schreiben der justagedaten in flashspeicher
-    void Deserialize(QDataStream&); // reicht eine routine für koeffizienten und nodes 
-    QString SerializeCoefficients(); // fürs xml file halten wir das getrennt
-    QString SerializeNodes();
-    void DeserializeCoefficients(const QString&);
-    void DeserializeNodes(const QString&);
-    bool setNode(int index, cJustNode jn); // !!! setzen der stützstellen ist reihenfolge abhängig !!!
-    cJustNode* getNode(int index); // lassen sich auch rücklesen
-    bool setCoefficient(int index, double); // !!! setzen der koeffizienten ist reihenfolge abhängig !!!
-    double getCoefficient(int index);
-    bool cmpCoefficients(); // berechnet aus den stützstellen die koeffizienten
-    double getCorrection(double arg); // berechnet den korrekturwert  c= ax^order +bx^order-1 ...
+    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+
+    void Serialize(QDataStream& qds); // can be used to write adjustment data to flash memory
+    void Deserialize(QDataStream& qds); // coefficients and nodes will be serialitzed both
+    QString SerializeStatus();
+    QString SerializeCoefficients(); // for xml file we serialize to qstring
+    QString SerializeNodes(); // but coefficients and nodes seperately
+    void DeserializeStatus(const QString& s);
+    void DeserializeCoefficients(const QString& s);
+    void DeserializeNodes(const QString& s );
+
+    double getCorrection(double arg); // calculates correction value c= ax^order +bx^order-1 ...
+    bool cmpCoefficients(); // calculates coefficients from nodes
+    quint8 getStatus();
+
+protected slots:
+    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+
 private:
-    double* m_pCoefficient; // es werden dyn. arrays[ordnung+1]  erzeugt
-    cJustNode* m_pJustNode; // dito
-    int m_nOrder; // wir merken uns die ordnung
+    quint8 m_nStatus;
+    double* m_pCoefficient; // size of data depends on order
+    cJustNode* m_pJustNode; // same
+    int m_nOrder; // we notice order
+
+    QString m_ReadWriteStatus(QString& sInput);
+    QString m_ReadWriteJustCoeeficient(QString& sInput, quint8 index);
+    QString m_ReadWriteJustNode(QString& sInput, quint8 index);
+
+    bool setNode(int index, cJustNode jn); // !!! setting node sequence is relevant !!!
+    cJustNode* getNode(int index); // can be read back
+    bool setCoefficient(int index, double); // !!! setting coefficient also is sequence relevant !!!
+    double getCoefficient(int index);
 };
 
 	

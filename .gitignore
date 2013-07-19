@@ -18,6 +18,7 @@
 .DS_Store
 *.debug
 Makefile*
+*.user.pri
 *.prl
 *.app
 moc_*.cpp
