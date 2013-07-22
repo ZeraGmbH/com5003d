@@ -3,6 +3,15 @@ LANGUAGE	= C++
 
 include(com5003d.user.pri)
 
+LIBS +=  -lSCPI
+LIBS +=  -lzeranet
+LIBS +=  -lzerai2c
+LIBS +=  -lzeramisc
+LIBS +=  -lzeraxmlconfig
+LIBS +=  -lzeramath
+LIBS +=  -lzeradev
+
+
 CONFIG	+= qt warn_on debug
 
 
