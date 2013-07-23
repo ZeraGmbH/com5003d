@@ -37,6 +37,6 @@ enum ServerErrors
 };
 
 // wenn COM5003DDEBUG -> kein fork()
-//#define COM5003DDEBUG 1
+#define COM5003DDEBUG 1
 
 #endif

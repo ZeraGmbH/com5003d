@@ -56,7 +56,7 @@ int main( int argc, char *argv[] )
     if (r == atmelError)
         syslog(LOG_EMERG,"Abort, atmel not running\n") ;
 
-    syslog(LOG_INFO,"com5003d server child process terminated\n");
+    syslog(LOG_INFO,"com5003d server child process terminated ret = %d\n", r);
     delete com5003d;
     closelog();
     return (r);
