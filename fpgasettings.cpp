@@ -8,7 +8,7 @@
 cFPGASettings::cFPGASettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
-    m_ConfigXMLMap["connectivity:fpga:device:node"] = FPGASettings::setFPGADevNode;
+    m_ConfigXMLMap["com5003dconfig:connectivity:fpga:device:node"] = FPGASettings::setFPGADevNode;
     m_sDeviceNode = defaultFPGADeviceNode;
 }
 

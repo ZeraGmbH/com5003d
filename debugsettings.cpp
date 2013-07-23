@@ -7,7 +7,7 @@
 cDebugSettings::cDebugSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader=xmlread;
-    m_ConfigXMLMap["connectivity:debuglevel"] = DebugSettings::setdebuglevel;
+    m_ConfigXMLMap["com5003dconfig:connectivity:debuglevel"] = DebugSettings::setdebuglevel;
 }
 
 

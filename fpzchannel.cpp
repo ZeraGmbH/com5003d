@@ -12,7 +12,7 @@ cFPZChannel::cFPZChannel(QString description, SourceSystem::cChannelSettings *cS
     :m_sDescription(description)
 {
     m_sName = cSettings->m_sName;
-    m_sDspServer = cSettings->m_sDspServer;
+    m_nDspServer = cSettings->m_nDspServerPort;
     m_nDspChannel = cSettings->m_nDspChannel;
     m_nType = 0;
     m_fFormFactor = FPZChannel::FormFactor;
@@ -103,7 +103,7 @@ QString cFPZChannel::m_ReadDspServer(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sDspServer;
+        return QString("%1").arg(m_nDspServer);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }

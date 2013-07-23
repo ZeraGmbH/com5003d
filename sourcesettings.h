@@ -32,7 +32,7 @@ enum configstate
 struct cChannelSettings // what we want to get configured
 {
     QString m_sName; // the names channel
-    QString m_sDspServer; // where to control the channel
+    quint16 m_nDspServerPort; // where to control the channel
     quint8 m_nDspChannel; // where to configure the channel
     bool avail; // is this channel available ?
 };

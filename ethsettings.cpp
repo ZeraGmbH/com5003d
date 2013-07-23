@@ -8,8 +8,8 @@
 cETHSettings::cETHSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
-    m_ConfigXMLMap["connectivity:ethernet:port:server"] = setServerPort;
-    m_ConfigXMLMap["connectivity:ethernet:port:resourcemanager"] = setRMPort;
+    m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:server"] = setServerPort;
+    m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:resourcemanager"] = setRMPort;
     m_nServerPort = defaultServerPort;
     m_nRMPort = defaultRMPort;
 }
