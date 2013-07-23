@@ -92,6 +92,12 @@ unix {
 target.path = /usr/bin
 INSTALLS += target
 
+configxml.path = /etc/zera/com5003d
+configxml.files = com5003d.xsd \
+                  com5003d.xml
+
+INSTALLS += configxml
+
 QT += xml network
 
 OTHER_FILES +=
