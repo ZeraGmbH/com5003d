@@ -12,7 +12,7 @@ LIBS +=  -lzeramath
 LIBS +=  -lzeradev
 
 
-CONFIG	+= qt
+CONFIG	+= qt debug
 
 
 HEADERS	+= \
