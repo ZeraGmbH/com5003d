@@ -3,6 +3,9 @@ LANGUAGE	= C++
 
 include(com5003d.user.pri)
 
+QMAKE_CXXFLAGS += -O0
+
+
 LIBS +=  -lSCPI
 LIBS +=  -lzeranet
 LIBS +=  -lzerai2c
