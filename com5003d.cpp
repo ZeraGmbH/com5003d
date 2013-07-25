@@ -75,10 +75,9 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QObject::connect(setupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
     QObject::connect(fstFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
+    QObject::connect(app, SIGNAL(appStarting()),this,SLOT(TestSlot()));
+
     m_pInitializationMachine->start();
-    qDebug() << m_pInitializationMachine->configuration();
-    if (m_pInitializationMachine->configuration().contains(stIDLE) )
-        qDebug("IDLE");
 }
 
 
@@ -184,6 +183,11 @@ void cCOM5003dServer::doSetupServer()
 void cCOM5003dServer::doCloseServer()
 {
     app->exit(m_nerror);
+}
+
+void cCOM5003dServer::TestSlot()
+{
+    qDebug() << "Done";
 }
 
 
