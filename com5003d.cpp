@@ -30,8 +30,8 @@ extern cApplication* app;
 
 cATMEL* pAtmel; // we take a static object for atmel connection
 
-cCOM5003dServer::cCOM5003dServer()
-    :cPCBServer()
+cCOM5003dServer::cCOM5003dServer(QObject *parent)
+    :cPCBServer(parent)
 {
 
     m_pDebugSettings = 0;
@@ -49,18 +49,18 @@ cCOM5003dServer::cCOM5003dServer()
 
     m_pInitializationMachine = new QStateMachine(this);
 
-    QState* IDLE = new QState(m_pInitializationMachine); // we start from here
-    QState* RUN = new QState(m_pInitializationMachine); // here we'll do something
-    QFinalState* FINISH = new QFinalState(m_pInitializationMachine); // and here we finish
+    QState* stIDLE = new QState(m_pInitializationMachine); // we start from here
+    QState* stRUN = new QState(m_pInitializationMachine); // here we'll do something
+    QFinalState* fstFINISH = new QFinalState(m_pInitializationMachine); // and here we finish
 
-    IDLE->addTransition(app, SIGNAL(appStarting()), RUN); //
-    RUN->addTransition(this, SIGNAL(abortInit()), FINISH); // from anywhere we arrive here if some error
+    stIDLE->addTransition(app, SIGNAL(appStarting()), stRUN); //
+    stRUN->addTransition(this, SIGNAL(abortInit()), fstFINISH); // from anywhere we arrive here if some error
 
-    QState* xmlConfiguration = new QState(RUN);
-    QState* wait4Atmel = new QState(RUN);
-    QState* setupServer = new QState(RUN);
+    QState* xmlConfiguration = new QState(stRUN);
+    QState* wait4Atmel = new QState(stRUN);
+    QState* setupServer = new QState(stRUN);
 
-    RUN->setInitialState(xmlConfiguration);
+    stRUN->setInitialState(xmlConfiguration);
     //xmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML()), wait4Atmel);
 
     wait4Atmel->addTransition(this, SIGNAL(atmelRunning()), setupServer);
@@ -68,16 +68,16 @@ cCOM5003dServer::cCOM5003dServer()
 //    m_pInitializationMachine->addState(IDLE);
 //    m_pInitializationMachine->addState(RUN);
 //    m_pInitializationMachine->addState(FINISH);
-    m_pInitializationMachine->setInitialState(IDLE);
+    m_pInitializationMachine->setInitialState(stIDLE);
 
     QObject::connect(xmlConfiguration, SIGNAL(entered()), this, SLOT(doConfiguration()));
     QObject::connect(wait4Atmel, SIGNAL(entered()), this, SLOT(doWait4Atmel()));
     QObject::connect(setupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
-    QObject::connect(FINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
+    QObject::connect(fstFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
     m_pInitializationMachine->start();
     qDebug() << m_pInitializationMachine->configuration();
-    if (m_pInitializationMachine->configuration().contains(IDLE) )
+    if (m_pInitializationMachine->configuration().contains(stIDLE) )
         qDebug("IDLE");
 }
 

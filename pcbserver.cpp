@@ -11,7 +11,8 @@
 #include "pcbserver.h"
 #include "com5003dglobal.h"
 
-cPCBServer::cPCBServer()
+cPCBServer::cPCBServer(QObject *parent)
+    : QObject(parent)
 {
     m_sServerName = ServerName;
     m_sServerVersion = ServerVersion;

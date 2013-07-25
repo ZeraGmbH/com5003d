@@ -29,7 +29,7 @@ class cCOM5003dServer: public cPCBServer
     Q_OBJECT
 
 public:
-    cCOM5003dServer();
+    explicit cCOM5003dServer(QObject* parent=0);
     ~cCOM5003dServer();
 
     cDebugSettings* m_pDebugSettings;
