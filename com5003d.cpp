@@ -76,7 +76,7 @@ cCOM5003dServer::cCOM5003dServer()
 
     m_pInitializationMachine->start();
     if (m_pInitializationMachine->configuration().contains(IDLE) )
-        QDebug("IDLE");
+        qDebug("IDLE");
 }
 
 
