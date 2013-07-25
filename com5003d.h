@@ -51,6 +51,7 @@ public:
 
 signals:
     void abortInit();
+    void confStarting();
     void confFinished();
     void atmelRunning();
 
@@ -64,7 +65,7 @@ private slots:
     void doWait4Atmel();
     void doSetupServer();
     void doCloseServer();
-    void TestSlot();
+    void StartSlot();
 };
 
 

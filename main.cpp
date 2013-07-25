@@ -17,9 +17,8 @@ int main( int argc, char *argv[] )
     pid_t pid;
     openlog(ServerName, LOG_PID, LOG_DAEMON); // open connection to syslogd
 
-
-    cCOM5003dServer* com5003d=new cCOM5003dServer(); // this is our server
     app = new cApplication (argc, argv);
+    cCOM5003dServer* com5003d=new cCOM5003dServer(); // this is our server
 
     int r;
 

@@ -53,7 +53,7 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QState* stRUN = new QState(m_pInitializationMachine); // here we'll do something
     QFinalState* fstFINISH = new QFinalState(m_pInitializationMachine); // and here we finish
 
-    stIDLE->addTransition(app, SIGNAL(appStarting()), stRUN); //
+    stIDLE->addTransition(this, SIGNAL(confStarting()), stRUN); //
     stRUN->addTransition(this, SIGNAL(abortInit()), fstFINISH); // from anywhere we arrive here if some error
 
     QState* xmlConfiguration = new QState(stRUN);
@@ -75,7 +75,7 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QObject::connect(setupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
     QObject::connect(fstFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
-    QObject::connect(app, SIGNAL(appStarting()),this,SLOT(TestSlot()));
+    QObject::connect(app, SIGNAL(appStarting()),this,SLOT(StartSlot()));
 
     m_pInitializationMachine->start();
 }
@@ -185,9 +185,10 @@ void cCOM5003dServer::doCloseServer()
     app->exit(m_nerror);
 }
 
-void cCOM5003dServer::TestSlot()
+void cCOM5003dServer::StartSlot()
 {
-    qDebug() << "Done";
+    while (m_pInitializationMachine->configuration().count() == 0);
+    emit confStarting();
 }
 
 
