@@ -49,9 +49,9 @@ cCOM5003dServer::cCOM5003dServer()
 
     m_pInitializationMachine = new QStateMachine(this);
 
-    QState* IDLE = new QState(); // we start from here
-    QState* RUN = new QState(); // here we'll do something
-    QFinalState* FINISH = new QFinalState(); // and here we finish
+    QState* IDLE = new QState(m_pInitializationMachine); // we start from here
+    QState* RUN = new QState(m_pInitializationMachine); // here we'll do something
+    QFinalState* FINISH = new QFinalState(m_pInitializationMachine); // and here we finish
 
     IDLE->addTransition(app, SIGNAL(appStarting()), RUN); //
     RUN->addTransition(this, SIGNAL(abortInit()), FINISH); // from anywhere we arrive here if some error
@@ -65,9 +65,9 @@ cCOM5003dServer::cCOM5003dServer()
 
     wait4Atmel->addTransition(this, SIGNAL(atmelRunning()), setupServer);
 
-    m_pInitializationMachine->addState(IDLE);
-    m_pInitializationMachine->addState(RUN);
-    m_pInitializationMachine->addState(FINISH);
+//    m_pInitializationMachine->addState(IDLE);
+//    m_pInitializationMachine->addState(RUN);
+//    m_pInitializationMachine->addState(FINISH);
     m_pInitializationMachine->setInitialState(IDLE);
 
     QObject::connect(xmlConfiguration, SIGNAL(entered()), this, SLOT(doConfiguration()));
