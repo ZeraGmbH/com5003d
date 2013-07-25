@@ -18,7 +18,7 @@ signals:
     void appStarting();
 
 private slots:
-    void StartApp(){emit appStarting();};
+    void StartApp(){emit appStarting();}
 };
 
 #endif // APPLICATION_H

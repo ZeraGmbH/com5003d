@@ -75,6 +75,8 @@ cCOM5003dServer::cCOM5003dServer()
     QObject::connect(FINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
     m_pInitializationMachine->start();
+    if (m_pInitializationMachine->configuration().contains(IDLE) )
+        QDebug("IDLE");
 }
 
 
