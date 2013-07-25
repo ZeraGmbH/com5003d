@@ -2,6 +2,7 @@
 #include <QState>
 #include <QFinalState>
 #include <QStringList>
+#include <QDebug>
 #include <xmlconfigreader.h>
 #include <zeraserver.h>
 
@@ -75,6 +76,7 @@ cCOM5003dServer::cCOM5003dServer()
     QObject::connect(FINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
     m_pInitializationMachine->start();
+    qDebug() << m_pInitializationMachine->configuration();
     if (m_pInitializationMachine->configuration().contains(IDLE) )
         qDebug("IDLE");
 }
