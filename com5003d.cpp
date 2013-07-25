@@ -187,7 +187,6 @@ void cCOM5003dServer::doCloseServer()
 
 void cCOM5003dServer::StartSlot()
 {
-    while (m_pInitializationMachine->configuration().count() == 0);
     emit confStarting();
 }
 
