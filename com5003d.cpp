@@ -106,17 +106,17 @@ void cCOM5003dServer::doConfiguration()
         {
             // we want to initialize all settings first
             m_pDebugSettings = new cDebugSettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(QString&)),m_pDebugSettings,SLOT(configXMLInfo(const QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pDebugSettings,SLOT(configXMLInfo(const QString&)));
             m_pETHSettings = new cETHSettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(QString&)),m_pETHSettings,SLOT(configXMLInfo(const QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pETHSettings,SLOT(configXMLInfo(const QString&)));
             m_pI2CSettings = new cI2CSettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(QString&)),m_pI2CSettings,SLOT(configXMLInfo(const QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pI2CSettings,SLOT(configXMLInfo(const QString&)));
             m_pFPGAsettings = new cFPGASettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(QString&)),m_pFPGAsettings,SLOT(configXMLInfo(const QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pFPGAsettings,SLOT(configXMLInfo(const QString&)));
             m_pSenseSettings = new cSenseSettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(QString&)),m_pSenseSettings,SLOT(configXMLInfo(QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSenseSettings,SLOT(configXMLInfo(QString&)));
             m_pSourceSettings = new cSourceSettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(QString&)),m_pSourceSettings,SLOT(configXMLInfo(QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSourceSettings,SLOT(configXMLInfo(QString&)));
 
             QString s = args.at(1);
             if (myXMLConfigReader->loadXML(s)) // the first parameter should be the filename
