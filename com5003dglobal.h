@@ -23,7 +23,7 @@ enum DebugLevel {NoDebug, DebugLevel1, DebugLevel2, DebugLevel3 = 4, MaxDebugLev
 #define defaultI2CMasterAdress 0x20
 #define defaultI2CAtmelAdress 0x21
 #define defaultI2CFlashAdress 0x50
-#define defaultXSDFile "/etc/zera/com5003d/com5000d.xsd"
+#define defaultXSDFile "/etc/zera/com5003d/com5003d.xsd"
 #define defaultTMaxAtmel 10000
 
 enum ServerErrors
