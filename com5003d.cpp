@@ -114,9 +114,9 @@ void cCOM5003dServer::doConfiguration()
             m_pFPGAsettings = new cFPGASettings(myXMLConfigReader);
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pFPGAsettings,SLOT(configXMLInfo(const QString&)));
             m_pSenseSettings = new cSenseSettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSenseSettings,SLOT(configXMLInfo(QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSenseSettings,SLOT(configXMLInfo(const QString&)));
             m_pSourceSettings = new cSourceSettings(myXMLConfigReader);
-            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSourceSettings,SLOT(configXMLInfo(QString&)));
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSourceSettings,SLOT(configXMLInfo(const QString&)));
 
             QString s = args.at(1);
             if (myXMLConfigReader->loadXML(s)) // the first parameter should be the filename
