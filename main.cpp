@@ -6,8 +6,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <QCoreApplication>
-
-#include "application.h"
 #include "com5003dglobal.h"
 #include "com5003d.h"
 

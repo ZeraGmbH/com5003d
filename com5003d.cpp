@@ -4,11 +4,11 @@
 #include <QStringList>
 #include <QDebug>
 #include <xmlconfigreader.h>
+#include <QCoreApplication>
 #include <zeraserver.h>
 
 #include "com5003dglobal.h"
 #include "com5003d.h"
-#include "application.h"
 #include "pcbserver.h"
 #include "debugsettings.h"
 #include "ethsettings.h"
