@@ -119,6 +119,7 @@ void cCOM5003dServer::doConfiguration()
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSourceSettings,SLOT(configXMLInfo(const QString&)));
 
             QString s = args.at(1);
+            qDebug() << s;
             if (myXMLConfigReader->loadXML(s)) // the first parameter should be the filename
             {
                 // xmlfile ok -> nothing to do .. the configreader will emit all configuration
