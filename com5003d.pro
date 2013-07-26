@@ -39,7 +39,6 @@ HEADERS	+= \
     debugsettings.h \
     senseinterface.h \
     sensesettings.h \
-    application.h \
     atmelwatcher.h \
     resource.h \
     samplerange.h \

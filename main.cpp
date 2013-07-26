@@ -5,19 +5,20 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <QCoreApplication>
 
 #include "application.h"
 #include "com5003dglobal.h"
 #include "com5003d.h"
 
-cApplication* app;
+
 
 int main( int argc, char *argv[] )
 {
     pid_t pid;
     openlog(ServerName, LOG_PID, LOG_DAEMON); // open connection to syslogd
 
-    app = new cApplication (argc, argv);
+    QCoreApplication* app = new QCoreApplication (argc, argv);
     cCOM5003dServer* com5003d=new cCOM5003dServer(); // this is our server
 
     int r;

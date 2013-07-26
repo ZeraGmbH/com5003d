@@ -65,7 +65,6 @@ private slots:
     void doWait4Atmel();
     void doSetupServer();
     void doCloseServer();
-    void StartSlot();
 };
 
 

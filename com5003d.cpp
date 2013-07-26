@@ -26,7 +26,6 @@
 #include "atmelwatcher.h"
 #include "adjustment.h"
 
-extern cApplication* app;
 
 cATMEL* pAtmel; // we take a static object for atmel connection
 
@@ -49,33 +48,28 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
 
     m_pInitializationMachine = new QStateMachine(this);
 
-    QState* stIDLE = new QState(m_pInitializationMachine); // we start from here
-    QState* stRUN = new QState(m_pInitializationMachine); // here we'll do something
-    QFinalState* fstFINISH = new QFinalState(m_pInitializationMachine); // and here we finish
+    QState* stateCONF = new QState(); // we start from here
+    QFinalState* stateFINISH = new QFinalState(); // and here we finish
 
-    stIDLE->addTransition(this, SIGNAL(confStarting()), stRUN); //
-    stRUN->addTransition(this, SIGNAL(abortInit()), fstFINISH); // from anywhere we arrive here if some error
+    stateCONF->addTransition(this, SIGNAL(abortInit()),stateFINISH); // from anywhere we arrive here if some error
 
-    QState* xmlConfiguration = new QState(stRUN);
-    QState* wait4Atmel = new QState(stRUN);
-    QState* setupServer = new QState(stRUN);
+    QState* statexmlConfiguration = new QState(stateCONF);
+    QState* statewait4Atmel = new QState(stateCONF);
+    QState* statesetupServer = new QState(stateCONF);
 
-    stRUN->setInitialState(xmlConfiguration);
-    //xmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML()), wait4Atmel);
+    stateCONF->setInitialState(statexmlConfiguration);
+    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML()), statewait4Atmel);
 
-    wait4Atmel->addTransition(this, SIGNAL(atmelRunning()), setupServer);
+    statewait4Atmel->addTransition(this, SIGNAL(atmelRunning()), statesetupServer);
 
-//    m_pInitializationMachine->addState(IDLE);
-//    m_pInitializationMachine->addState(RUN);
-//    m_pInitializationMachine->addState(FINISH);
-    m_pInitializationMachine->setInitialState(stIDLE);
+    m_pInitializationMachine->addState(stateCONF);
+    m_pInitializationMachine->addState(stateFINISH);
+    m_pInitializationMachine->setInitialState(stateCONF);
 
-    QObject::connect(xmlConfiguration, SIGNAL(entered()), this, SLOT(doConfiguration()));
-    QObject::connect(wait4Atmel, SIGNAL(entered()), this, SLOT(doWait4Atmel()));
-    QObject::connect(setupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
-    QObject::connect(fstFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
-
-    QObject::connect(app, SIGNAL(appStarting()),this,SLOT(StartSlot()));
+    QObject::connect(statexmlConfiguration, SIGNAL(entered()), this, SLOT(doConfiguration()));
+    QObject::connect(statewait4Atmel, SIGNAL(entered()), this, SLOT(doWait4Atmel()));
+    QObject::connect(statesetupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
+    QObject::connect(stateFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
     m_pInitializationMachine->start();
 }
@@ -100,7 +94,7 @@ cCOM5003dServer::~cCOM5003dServer()
 void cCOM5003dServer::doConfiguration()
 {
     QStringList args;
-    args = app->arguments();
+    args = QCoreApplication::instance()->arguments();
     if (args.count() != 2) // we want exactly 1 parameter
     {
         m_nerror = parameterError;
@@ -182,13 +176,10 @@ void cCOM5003dServer::doSetupServer()
 
 void cCOM5003dServer::doCloseServer()
 {
-    app->exit(m_nerror);
+    QCoreApplication::instance()->exit(m_nerror);
 }
 
-void cCOM5003dServer::StartSlot()
-{
-    emit confStarting();
-}
+
 
 
 
