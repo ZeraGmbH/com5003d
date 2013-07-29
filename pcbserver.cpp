@@ -36,7 +36,7 @@ void cPCBServer::setupServer()
 {
     m_pSCPInterface = new cSCPI(m_sServerName); // our scpi interface
     myServer = Zera::Net::cServer::getInstance(); // our working (talking) horse
-    connect(myServer,SIGNAL(newCl1ientAvailable(Zera::Net::cClient*)),this,SLOT(establishNewConnection(Zera::Net::cClient*)));
+    connect(myServer,SIGNAL(newClientAvailable(Zera::Net::cClient*)),this,SLOT(establishNewConnection(Zera::Net::cClient*)));
 }
 
 
