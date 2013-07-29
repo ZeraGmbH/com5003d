@@ -15,6 +15,7 @@
 #include "i2csettings.h"
 #include "fpgasettings.h"
 #include "sensesettings.h"
+#include "samplingsettings.h"
 #include "sourcesettings.h"
 #include "statusinterface.h"
 #include "samplinginterface.h"
@@ -117,6 +118,8 @@ void cCOM5003dServer::doConfiguration()
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSenseSettings,SLOT(configXMLInfo(const QString&)));
             m_pSourceSettings = new cSourceSettings(myXMLConfigReader);
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSourceSettings,SLOT(configXMLInfo(const QString&)));
+            m_pSamplingSettings = new cSamplingSettings(myXMLConfigReader);
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSamplingSettings,SLOT(configXMLInfo(const QString&)));
 
             QString s = args.at(1);
             qDebug() << s;
