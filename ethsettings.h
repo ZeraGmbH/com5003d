@@ -37,7 +37,7 @@ public:
     quint16 getPort(ethmember member);
 
 public slots:
-    virtual void configXMLInfo(const QString& key);
+    virtual void configXMLInfo(QString key);
 
 private:
     quint16 m_nServerPort, m_nRMPort;

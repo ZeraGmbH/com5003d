@@ -17,7 +17,7 @@ quint8 cDebugSettings::getDebugLevel()
 }
 
 
-void cDebugSettings::configXMLInfo(const QString& key)
+void cDebugSettings::configXMLInfo(QString key)
 {
     bool ok;
 

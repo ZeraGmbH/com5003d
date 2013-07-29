@@ -89,7 +89,7 @@ public:
     QList<SenseSystem::cChannelSettings*>& getChannelSettings();
 
 public slots:
-    virtual void configXMLInfo(const QString& key);
+    virtual void configXMLInfo(QString key);
 
 private:
     QList<SenseSystem::cChannelSettings*> m_ChannelSettingsList;

@@ -25,7 +25,7 @@ class cXMLSettings: public QObject
     Q_OBJECT
 
 public slots:
-    virtual void configXMLInfo(const QString& key) = 0;
+    virtual void configXMLInfo(QString key) = 0;
 
 protected:
     QMap<QString,quint16> m_ConfigXMLMap;

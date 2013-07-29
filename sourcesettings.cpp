@@ -35,7 +35,7 @@ QList<SourceSystem::cChannelSettings*> &cSourceSettings::getChannelSettings()
 }
 
 
-void cSourceSettings::configXMLInfo(const QString& key)
+void cSourceSettings::configXMLInfo(QString key)
 {
     bool ok;
 

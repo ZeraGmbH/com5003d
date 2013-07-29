@@ -60,7 +60,7 @@ public:
     QList<SourceSystem::cChannelSettings*>& getChannelSettings();
 
 public slots:
-    virtual void configXMLInfo(const QString& key);
+    virtual void configXMLInfo(QString key);
 
 private:
     QList<SourceSystem::cChannelSettings*> m_ChannelSettingsList;

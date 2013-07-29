@@ -19,7 +19,7 @@ QString& cFPGASettings::getDeviceNode()
 }
 
 
-void cFPGASettings::configXMLInfo(const QString& key)
+void cFPGASettings::configXMLInfo(QString key)
 {
     if (m_ConfigXMLMap.contains(key))
     {

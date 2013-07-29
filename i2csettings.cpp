@@ -46,7 +46,7 @@ QString& cI2CSettings::getDeviceNode()
 }
 
 
-void cI2CSettings::configXMLInfo(const QString& key)
+void cI2CSettings::configXMLInfo(QString key)
 {
     bool ok;
 

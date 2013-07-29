@@ -27,7 +27,7 @@ QList<SamplingSystem::cChannelSettings *> &cSamplingSettings::getChannelSettings
 }
 
 
-void cSamplingSettings::configXMLInfo(const QString& key)
+void cSamplingSettings::configXMLInfo(QString key)
 {
     if (m_ConfigXMLMap.contains(key))
     {

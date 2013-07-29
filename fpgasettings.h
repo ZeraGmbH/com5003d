@@ -32,7 +32,7 @@ public:
     QString& getDeviceNode();
 
 public slots:
-    virtual void configXMLInfo(const QString& key);
+    virtual void configXMLInfo(QString key);
 
 private:
     QString m_sDeviceNode;

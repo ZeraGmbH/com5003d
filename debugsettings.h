@@ -29,7 +29,7 @@ public:
     quint8 getDebugLevel();
 
 public slots:
-    virtual void configXMLInfo(const QString& key);
+    virtual void configXMLInfo(QString key);
 
 private:
     quint8 m_nDebugLevel;

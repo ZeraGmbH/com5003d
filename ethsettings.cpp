@@ -33,7 +33,7 @@ quint16 cETHSettings::getPort(ethmember member)
 }
 
 
-void cETHSettings::configXMLInfo(const QString& key)
+void cETHSettings::configXMLInfo(QString key)
 {
     bool ok;
 

@@ -34,7 +34,7 @@ QList<SenseSystem::cChannelSettings*> &cSenseSettings::getChannelSettings()
 }
 
 
-void cSenseSettings::configXMLInfo(const QString& key)
+void cSenseSettings::configXMLInfo(QString key)
 {
     bool ok;
 

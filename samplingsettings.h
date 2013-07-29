@@ -32,7 +32,7 @@ public:
     QList<SamplingSystem::cChannelSettings*>& getChannelSettings();
 
 public slots:
-    virtual void configXMLInfo(const QString& key);
+    virtual void configXMLInfo(QString key);
 
 private:
     QList<SamplingSystem::cChannelSettings*> m_ChannelSettingsList;
