@@ -77,7 +77,8 @@ void cPCBServer::executeCommand(const QByteArray cmd)
         m_sOutput = SCPI::scpiAnswer[SCPI::nak];
 
     QByteArray block;
-    block.append(m_sOutput);
+    QDataStream out2(&block, QIODevice::WriteOnly);
+    out2 << block;
 
     emit sendAnswer(block);
 }
