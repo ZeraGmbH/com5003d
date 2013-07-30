@@ -56,7 +56,8 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     QString dummy;
 
     qDebug() << cmd.toBase64();
-    m_sInput.fromUtf8(cmd.data(),cmd.size());
+
+    m_sInput = QString::fromUtf8(cmd.data(),cmd.size());
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
