@@ -53,6 +53,11 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
+    QByteArray Test;
+    QDataStream out(&Test, QIODevice::WriteOnly);
+    dummy = "sense:channel:cat?";
+    out << dummy;
+
     QDataStream in((QByteArray*) &cmd, QIODevice::ReadOnly);
     in.setVersion(QDataStream::Qt_4_0);
     in >> m_sInput;
