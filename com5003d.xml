@@ -106,7 +106,7 @@
 			
 		<sample>
 			<s0>
-				<name>S0</name>
+				<ident>S0</ident>
 				<avail>true</avail>
 			</s0>
 		</sample>
@@ -114,25 +114,25 @@
 		<source>	
 			<fpzout>
 				<fo0>
-					<name>FPZ1</name>
+					<ident>FPZ1</ident>
 					<dspserver>6310</dspserver>
 					<dspchannel>0</dspchannel>
 					<avail>true</avail>
 				</fo0>
 				<fo1>
-					<name>FPZ2</name>
+					<ident>FPZ2</ident>
 					<dspserver>6310</dspserver>
 					<dspchannel>1</dspchannel>
 					<avail>true</avail>
 				</fo1>
 				<fo2>
-					<name>FPZ3</name>
+					<ident>FPZ3</ident>
 					<dspserver>6310</dspserver>
 					<dspchannel>2</dspchannel>
 					<avail>true</avail>
 				</fo2>
 				<fo3>
-					<name>FPZ4</name>
+					<ident>FPZ4</ident>
 					<dspserver>6310</dspserver> 
 					<dspchannel>3</dspchannel>
 					<avail>true</avail>

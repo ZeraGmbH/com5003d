@@ -115,7 +115,7 @@
 
 	<xs:complexType name="sensechanneltype">
 		<xs:sequence>
-			<xs:element name="value" type="xs:string"/>
+			<xs:element name="ident" type="xs:string"/>
 			<xs:element name="atmelchannel" type="atmelchanneltype"/>
 			<xs:element name="dspchannel" type="dspinputchanneltype"/>
 			<xs:element name="avail" type="xs:boolean"/>
@@ -125,7 +125,7 @@
 
 	<xs:complexType name="samplechannelltype">
 		<xs:sequence>
-			<xs:element name="name" type="xs:string"/>
+			<xs:element name="ident" type="xs:string"/>
 			<xs:element name="avail" type="xs:boolean"/>
 		</xs:sequence>	
 	</xs:complexType>
@@ -133,7 +133,7 @@
 
 	<xs:complexType name="fpzchannelltype">
 		<xs:sequence>
-			<xs:element name="name" type="xs:string"/>
+			<xs:element name="ident" type="xs:string"/>
 			<xs:element name="dspserver" type="porttype"/>
 			<xs:element name="dspchannel" type="dspfpzchanneltype"/>
 			<xs:element name="avail" type="xs:boolean"/>

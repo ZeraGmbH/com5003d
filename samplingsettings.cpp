@@ -9,7 +9,7 @@ cSamplingSettings::cSamplingSettings(Zera::XMLConfig::cReader *xmlread)
     SamplingSystem::cChannelSettings* settings = new SamplingSystem::cChannelSettings;
     m_ChannelSettingsList.append(settings);
 
-    m_ConfigXMLMap["com5003dconfig:resource:sample:s0:name"] = SamplingSystem::cfgName;
+    m_ConfigXMLMap["com5003dconfig:resource:sample:s0:ident"] = SamplingSystem::cfgName;
     m_ConfigXMLMap["com5003dconfigresource:sample:s0:avail"] = SamplingSystem::cfgAvail;
 }
 
