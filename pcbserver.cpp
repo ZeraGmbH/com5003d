@@ -58,8 +58,8 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     QDataStream out(&Test, QIODevice::WriteOnly);
     dummy = "sense:channel:cat?";
     out << dummy;
-    QDebug() << Test;
-    QDebug() << cmd;
+    qDebug() << Test;
+    qDebug() << cmd;
 
     m_sInput = QTextCodec::codecForMib(1015)->toUnicode(cmd);
     qDebug() << m_sInput;
