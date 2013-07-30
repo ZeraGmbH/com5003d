@@ -67,7 +67,7 @@ void cPCBServer::executeCommand(const QByteArray cmd)
 
     QByteArray block;
     QDataStream out2(&block, QIODevice::WriteOnly);
-    out2 << block;
+    out2 << m_sOutput;
 
     emit sendAnswer(block);
 }
