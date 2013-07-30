@@ -1,5 +1,6 @@
 #include <QFile>
 #include <QByteArray>
+#include <QDataStream>
 #include <QTextCodec>
 #include <QList>
 #include <QString>
@@ -52,6 +53,16 @@ void cPCBServer::executeCommand(const QByteArray cmd)
 {
     cSCPIObject* scpiObject;
     QString dummy;
+
+    QByteArray Test;
+    QDataStream out(&Test, QIODevice::WriteOnly);
+    dummy = "sense:channel:cat?";
+    out << dummy;
+
+    QString TString;
+    QDataStream in(Test);
+    in >> TString;
+    qDebug() << TString;
 
     m_sInput = QTextCodec::codecForMib(1015)->toUnicode(cmd);
     qDebug() << m_sInput;
