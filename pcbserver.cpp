@@ -54,6 +54,7 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     QString dummy;
 
     QDataStream in((QByteArray*) &cmd, QIODevice::ReadOnly);
+    in.setVersion(QDataStream::Qt_4_0);
     in >> m_sInput;
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
