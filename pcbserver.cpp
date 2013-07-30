@@ -1,6 +1,6 @@
 #include <QFile>
 #include <QByteArray>
-#include <QDataStream>
+#include <QTextCodec>
 #include <QList>
 #include <QString>
 #include <zeraserver.h>
@@ -53,14 +53,7 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
-    QByteArray Test;
-    QDataStream out(&Test, QIODevice::WriteOnly);
-    dummy = "sense:channel:cat?";
-    out << dummy;
-
-    QDataStream in((QByteArray*) &cmd, QIODevice::ReadOnly);
-    in.setVersion(QDataStream::Qt_4_0);
-    in >> m_sInput;
+    m_sInput = QTextCodec::codecForMib(1015)->toUnicode(cmd);
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
