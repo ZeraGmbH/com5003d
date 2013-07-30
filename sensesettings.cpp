@@ -1,7 +1,7 @@
 #include <QList>
 #include <QVariant>
 #include <xmlconfigreader.h>
-
+#include <QDebug>
 #include "xmlsettings.h"
 #include "sensesettings.h"
 
@@ -44,6 +44,7 @@ void cSenseSettings::configXMLInfo(QString key)
         {
         case SenseSystem::cfg0Name:
             m_ChannelSettingsList.at(0)->m_sName = m_pXMLReader->getValue(key).toString();
+            qDebug() << m_ChannelSettingsList.at(0)->m_sName;
             break;
         case SenseSystem::cfg1Name:
             m_ChannelSettingsList.at(1)->m_sName = m_pXMLReader->getValue(key).toString();

@@ -1,5 +1,6 @@
 #include <QFile>
 #include <QByteArray>
+#include <QTextCodec>
 #include <QList>
 #include <zeraserver.h>
 #include <xmlconfigreader.h>
@@ -51,7 +52,8 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
-    m_sInput = cmd;
+    QTextCodec* codec = QTextCodec::codecForName(cmd);
+    m_sInput = codec->toUnicode(cmd);
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
@@ -61,11 +63,10 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     else
         m_sOutput = SCPI::scpiAnswer[SCPI::nak];
 
-    QByteArray ba;
-    ba.append(m_sOutput);
-    QObject* client = this->sender();
-    connect(this, SIGNAL(sendAnswer(QByteArray)),client, SLOT(writeClient(QByteArray)));
-    emit sendAnswer(ba);
+    QByteArray block;
+    block.append(m_sOutput);
+
+    emit sendAnswer(block);
 }
 
 
