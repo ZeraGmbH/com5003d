@@ -13,7 +13,7 @@ cSenseSettings::cSenseSettings(Zera::XMLConfig::cReader *xmlread)
     for (int i = 0; i < 12; i++)
     {
         m_ChannelSettingsList.append(settings = new SenseSystem::cChannelSettings);
-        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:name").arg(i)] = SenseSystem::cfg0Name + i;
+        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ident").arg(i)] = SenseSystem::cfg0Name + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ctrlchannel").arg(i)] = SenseSystem::cfg0ctrlchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:dspchannel").arg(i)] = SenseSystem::cfg0dspchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:avail").arg(i)] = SenseSystem::cfg0avail + i;
@@ -44,7 +44,6 @@ void cSenseSettings::configXMLInfo(QString key)
         {
         case SenseSystem::cfg0Name:
             m_ChannelSettingsList.at(0)->m_sName = m_pXMLReader->getValue(key).toString();
-            qDebug() << m_ChannelSettingsList.at(0)->m_sName;
             break;
         case SenseSystem::cfg1Name:
             m_ChannelSettingsList.at(1)->m_sName = m_pXMLReader->getValue(key).toString();

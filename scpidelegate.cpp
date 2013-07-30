@@ -9,7 +9,6 @@
 cSCPIDelegate::cSCPIDelegate(QString cmdParent, QString cmd, quint8 type, cSCPI *scpiInterface, quint16 cmdCode)
     :cSCPIObject(cmd, type), m_nCmdCode(cmdCode)
 {
-    qDebug() << cmdParent;
     scpiInterface->genSCPICmd(cmdParent.split(":"), this);
 }
 

@@ -31,73 +31,73 @@
 	<resource>
 		<sense>
 			<m0>
-				<value>UL1</value>
+				<ident>UL1</ident>
 				<atmelchannel>1</atmelchannel>
 				<dspchannel>0</dspchannel>
 				<avail>true</avail>  
 			</m0>
 			<m1>
-				<value>UL2</value>
+				<ident>UL2</ident>
 				<atmelchannel>2</atmelchannel>
 				<dspchannel>1</dspchannel>
 				<avail>true</avail>  
 			</m1>
 			<m2>
-				<value>UL3</value>
+				<ident>UL3</ident>
 				<atmelchannel>3</atmelchannel>
 				<dspchannel>2</dspchannel>
 				<avail>true</avail>  
 			</m2>
 			<m3>
-				<value>IL1</value>
+				<ident>IL1</ident>
 				<atmelchannel>4</atmelchannel>
 				<dspchannel>3</dspchannel>
 				<avail>true</avail>  
 			</m3>
 			<m4>
-				<value>IL2</value>
+				<ident>IL2</ident>
 				<atmelchannel>5</atmelchannel>
 				<dspchannel>4</dspchannel>
 				<avail>true</avail>  
 			</m4>
 			<m5>
-				<value>IL3</value>
+				<ident>IL3</ident>
 				<atmelchannel>6</atmelchannel>
 				<dspchannel>5</dspchannel>
 				<avail>true</avail>  
 			</m5>
 			<m6>
-				<value>REF1</value>
+				<ident>REF1</ident>
 				<atmelchannel>1</atmelchannel>
 				<dspchannel>0</dspchannel>
 				<avail>true</avail>  
 			</m6>
 			<m7>
-				<value>REF2</value>
+				<ident>REF2</ident>
 				<atmelchannel>2</atmelchannel>
 				<dspchannel>1</dspchannel>
 				<avail>true</avail>  
 			</m7>
 			<m8>
-				<value>REF3</value>
+				<ident>REF3</ident>
 				<atmelchannel>3</atmelchannel>
 				<dspchannel>2</dspchannel>
 				<avail>true</avail>  
 			</m8>
 			<m9>
-				<value>REF4</value>
+				<ident>REF4</ident>
 				<atmelchannel>4</atmelchannel>
 				<dspchannel>3</dspchannel>
 				<avail>true</avail>  
 			</m9>
 			<m10>
-				<value>REF5</value>
+				<ident>REF5</ident>
 				<atmelchannel>5</atmelchannel>
 				<dspchannel>4</dspchannel>
 				<avail>true</avail>  
 			</m10>
 			<m11>
-				<value>REF6</value>
+				<ident>REF6</ident>
 				<atmelchannel>6</atmelchannel>
 				<dspchannel>5</dspchannel>
 				<avail>true</avail>  
