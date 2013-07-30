@@ -26,31 +26,31 @@ cSenseInterface::cSenseInterface(cSenseSettings *senseSettings)
 
     // our sense has 3 voltage and 3 current measuring channels
     cSenseChannel* pChannel;
-    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(0) );
+    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(0), 0);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(1) );
+    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(1), 1);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(2) );
+    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(2), 2);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(3) );
+    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(3), 3);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(4) );
+    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(4), 4);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(5) );
+    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(5), 5);
     m_ChannelList.append(pChannel);
 
     // and 6 reference channels
-    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(6) );
+    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(6), 6);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(7) );
+    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(7), 7);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(8) );
+    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(8), 8);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(9) );
+    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(9), 9);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(10) );
+    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(10), 10);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(11) );
+    pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(11), 11);
     m_ChannelList.append(pChannel);
 
     QList<cSenseRange*> rngList;
@@ -392,7 +392,7 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
     {
         QString s;
         for (int i = 0; i < m_ChannelList.count(); i++ )
-            s += (m_ChannelList.at(i)->getName() + ";");
+            s += (QString("m%1").arg(i) + ";");
         return s;
     }
     else

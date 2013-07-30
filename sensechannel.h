@@ -11,6 +11,8 @@ namespace SenseChannel
 {
 enum Commands
 {
+    cmdIdent,
+    cmdType,
     cmdUnit,
     cmdDspChannel,
     cmdStatus,
@@ -28,7 +30,7 @@ class cSenseChannel : public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSenseChannel(QString description, QString unit, SenseSystem::cChannelSettings* cSettings);
+    cSenseChannel(QString description, QString unit, SenseSystem::cChannelSettings* cSettings, quint8 nr);
     ~cSenseChannel();
     virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
 
@@ -46,7 +48,8 @@ protected slots:
     virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
 
 private:
-    QString m_sName; // the channel's name
+    QString m_sName; // the channels name m0...
+    QString m_sIdent; // the channel's identification for example UL1
     QString m_sDescription; // the channel's brief description
     QString m_sUnit; // the channel's measured unit
     quint8 m_nCtrlChannel; // where to control the channel
@@ -54,6 +57,8 @@ private:
     bool m_bAvail; // is this channel available ?
     QList<cSenseRange*> m_RangeList;
 
+    QString m_ReadIdent(QString& sInput);
+    QString m_ReadType(QString& sInput);
     QString m_ReadUnit(QString& sInput);
     QString m_ReadDspChannel(QString& sInput);
     QString m_ReadChannelStatus(QString& sInput);

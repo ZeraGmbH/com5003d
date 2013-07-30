@@ -12,10 +12,11 @@
 extern cATMEL* pAtmel;
 
 
-cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cChannelSettings *cSettings)
+cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cChannelSettings *cSettings, quint8 nr)
     :m_sDescription(description), m_sUnit(unit)
 {
-    m_sName = cSettings->m_sName;
+    m_sName = QString("m%1").arg(nr);
+    m_sIdent = cSettings->m_sName;
     m_nCtrlChannel = cSettings->m_nCtrlChannel;
     m_nDspChannel = cSettings->m_nDspChannel;
     m_bAvail = cSettings->avail;
@@ -37,6 +38,12 @@ void cSenseChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterfac
     if (leadingNodes != "")
         leadingNodes += ":";
 
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, SenseChannel::cmdIdent);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"Type", SCPI::isQuery, scpiInterface, SenseChannel::cmdType);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"UNIT", SCPI::isQuery, scpiInterface, SenseChannel::cmdUnit);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -62,6 +69,12 @@ void cSenseChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutpu
 {
     switch (cmdCode)
     {
+    case SenseChannel::cmdIdent:
+        sOutput = m_ReadIdent(sInput);
+        break;
+    case SenseChannel::cmdType:
+        sOutput = m_ReadType(sInput);
+        break;
     case SenseChannel::cmdUnit:
         sOutput = m_ReadUnit(sInput);
         break;
@@ -132,6 +145,28 @@ QString &cSenseChannel::getDescription()
 bool cSenseChannel::isAvail()
 {
     return m_bAvail;
+}
+
+
+QString cSenseChannel::m_ReadIdent(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+        return m_sIdent;
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSenseChannel::m_ReadType(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+        return QString("0");
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
