@@ -2,6 +2,7 @@
 #include <QByteArray>
 #include <QTextCodec>
 #include <QList>
+#include <QString>
 #include <zeraserver.h>
 #include <xmlconfigreader.h>
 #include <zeraclient.h>
@@ -52,8 +53,7 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
-    QTextCodec* codec = QTextCodec::codecForUtfText(cmd);
-    m_sInput = codec->toUnicode(cmd);
+    m_sInput = QString::fromUtf8(cmd, cmd.size());
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
