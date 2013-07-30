@@ -1,6 +1,6 @@
 #include <QFile>
 #include <QByteArray>
-#include <QTextCodec>
+#include <QDataStream>
 #include <QList>
 #include <QString>
 #include <zeraserver.h>
@@ -53,7 +53,8 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
-    m_sInput = QString::fromUtf8(cmd, cmd.size());
+    QDataStream in((QByteArray*) &cmd, QIODevice::ReadOnly);
+    in >> m_sInput;
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
