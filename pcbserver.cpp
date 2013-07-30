@@ -52,7 +52,7 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
-    QTextCodec* codec = QTextCodec::codecForName(cmd);
+    QTextCodec* codec = QTextCodec::codecForName("UTF-8");
     m_sInput = codec->toUnicode(cmd);
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
