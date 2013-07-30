@@ -46,6 +46,7 @@ void cPCBServer::setupServer()
 void cPCBServer::establishNewConnection(Zera::Net::cClient *newClient)
 {
     connect(newClient,SIGNAL(messageReceived(QByteArray)),this,SLOT(executeCommand(QByteArray)));
+    connect(this, SIGNAL(sendAnswer(QByteArray)),newClient,SLOT(writeClient(QByteArray)));
 }
 
 
@@ -54,19 +55,7 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
-    QByteArray Test;
-    QDataStream out(&Test, QIODevice::WriteOnly);
-    dummy = "sense:channel:cat?";
-    out << dummy;
-    qDebug() << Test.size();
-    for (int i = 0; i < Test.size(); i++)
-        qDebug() << Test.at(i) << ";";
-
-    qDebug() << cmd.size();
-    for (int i = 0; i < cmd.size(); i++)
-        qDebug() << cmd.at(i) << ";";
-
-    m_sInput = QTextCodec::codecForMib(1015)->toUnicode(cmd);
+    m_sInput.fromUtf8(cmd.data(),cmd.size());
     qDebug() << m_sInput;
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
