@@ -39,6 +39,9 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     delegate = new cSCPIDelegate(QString("%1SAMPLE:CHANNEL").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelIdent);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelType);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -56,7 +59,11 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
 
     for (int i = 0; i < m_SampleRangeList.count(); i++)
-        m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName), scpiInterface);
+        m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2:%3")
+                                                    .arg(leadingNodes)
+                                                    .arg(m_sName)
+                                                    .arg(m_SampleRangeList.at(i)->getName()),
+                                                    scpiInterface);
 
 }
 
@@ -70,6 +77,9 @@ void cSamplingInterface::executeCommand(int cmdCode, QString &sInput, QString &s
         break;
     case SamplingSystem::cmdChannelCat:
         sOutput = m_ReadSamplingChannelCatalog(sInput);
+        break;
+    case SamplingSystem::cmdChannelIdent:
+        sOutput = m_ReadIdent(sInput);
         break;
     case SamplingSystem::cmdChannelType:
         sOutput = m_ReadType(sInput);
@@ -95,7 +105,7 @@ QString cSamplingInterface::m_ReadVersion(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sVersion;
+        return m_sVersion+";";
     else
         return SCPI::scpiAnswer[SCPI::nak]+";";
 }
@@ -106,7 +116,18 @@ QString cSamplingInterface::m_ReadSamplingChannelCatalog(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sName; // we only have 1 channel
+        return m_sName+";"; // we only have 1 channel
+    else
+        return SCPI::scpiAnswer[SCPI::nak]+";";
+}
+
+
+QString cSamplingInterface::m_ReadIdent(QString &sInput)
+{
+     cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+        return QString("%1;").arg(m_sIdent);
     else
         return SCPI::scpiAnswer[SCPI::nak]+";";
 }

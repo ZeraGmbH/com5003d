@@ -15,6 +15,7 @@ enum Commands
 {
     cmdVersion,
     cmdChannelCat,
+    cmdChannelIdent,
     cmdChannelType,
     cmdChannelMode,
     cmdChannelStatus,
@@ -51,6 +52,7 @@ private:
 
     QString m_ReadVersion(QString& sInput);
     QString m_ReadSamplingChannelCatalog(QString& sInput);
+    QString m_ReadIdent(QString&sInput);
     QString m_ReadType(QString&sInput);
     QString m_ReadWriteMode(QString& sInput);
     QString m_ReadStatus(QString& sInput);
