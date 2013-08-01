@@ -112,7 +112,7 @@ QString cJustData::m_ReadWriteStatus(QString &sInput)
 
     if (cmd.isQuery())
     {
-        return QString("%1").arg(m_nStatus);
+        return QString("%1;").arg(m_nStatus);
     }
     else
     {
@@ -151,7 +151,7 @@ QString cJustData::m_ReadWriteJustCoeeficient(QString &sInput, quint8 index)
 
     if (cmd.isQuery())
     {
-        return QString("%1").arg(getCoefficient(index));
+        return QString("%1;").arg(getCoefficient(index));
     }
     else
     {
@@ -190,7 +190,7 @@ QString cJustData::m_ReadWriteJustNode(QString &sInput, quint8 index)
 
     if (cmd.isQuery())
     {
-        return QString("%1").arg(getNode(index)->Serialize());
+        return QString("%1;").arg(getNode(index)->Serialize());
     }
     else
     {

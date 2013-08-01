@@ -153,7 +153,7 @@ QString cSenseChannel::m_ReadIdent(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sIdent;
+        return m_sIdent+";";
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -164,7 +164,7 @@ QString cSenseChannel::m_ReadType(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("0");
+        return QString("0;");
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -175,7 +175,7 @@ QString cSenseChannel::m_ReadUnit(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sUnit;
+        return m_sUnit+";";
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -186,7 +186,7 @@ QString cSenseChannel::m_ReadDspChannel(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_nDspChannel);
+        return QString("%1;").arg(m_nDspChannel);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -203,7 +203,7 @@ QString cSenseChannel::m_ReadChannelStatus(QString &sInput)
         {
             quint32 r;
             r = ((m_bAvail) ? 0 : 2 << 31) || status;
-            return QString("%1").arg(r);
+            return QString("%1;").arg(r);
         }
         else
             return SCPI::scpiAnswer[SCPI::errexec];
@@ -226,7 +226,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
             for (i = 0; i < m_RangeList.count(); i++)
                 if (m_RangeList.at(i)->getSelCode() == range)
                     break;
-            return m_RangeList.at(i)->getName();
+            return m_RangeList.at(i)->getName()+";";
         }
         else
             return SCPI::scpiAnswer[SCPI::errexec];

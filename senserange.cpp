@@ -83,7 +83,7 @@ QString cSenseRange::m_ReadRangeType(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_nRSpec); // phs. or virt.
+        return QString("%1;").arg(m_nRSpec); // phs. or virt.
     else
         return SCPI::scpiAnswer[SCPI::nak];
 
@@ -95,7 +95,7 @@ QString cSenseRange::m_ReadRangeValue(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fRValue);
+        return QString("%1;").arg(m_fRValue);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -106,7 +106,7 @@ QString cSenseRange::m_ReadRangeRejection(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fRejection);
+        return QString("%1;").arg(m_fRejection);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }

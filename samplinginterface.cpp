@@ -131,7 +131,7 @@ QString cSamplingInterface::m_ReadWriteMode(QString &sInput)
     {
         if (pAtmel->readSamplingMode(sMode) == cmddone)
         {
-            return QString("%1").arg(sMode);
+            return QString("%1;").arg(sMode);
         }
         else
             return SCPI::scpiAnswer[SCPI::errexec];
@@ -141,7 +141,7 @@ QString cSamplingInterface::m_ReadWriteMode(QString &sInput)
         if (cmd.isCommand(1))
         {
             bool ok;
-            QString smode = cmd.getParam(1);
+            QString smode = cmd.getParam(0);
             quint8 mode = smode.toInt(&ok);
 
             if (ok && ((mode==0) || (mode==1)) )
@@ -189,7 +189,7 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
             for (i = 0; i < m_SampleRangeList.count(); i++)
                 if (m_SampleRangeList.at(i)->getSelCode() == sRange)
                     break;
-            return m_SampleRangeList.at(i)->getName();
+            return m_SampleRangeList.at(i)->getName()+";";
         }
         else
             return SCPI::scpiAnswer[SCPI::errexec];
@@ -198,7 +198,7 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
     {
         if (cmd.isCommand(1))
         {
-            QString srng = cmd.getParam(1);
+            QString srng = cmd.getParam(0);
             for  (i = 0; i < m_SampleRangeList.count(); i++)
                 if (m_SampleRangeList.at(i)->getName() == srng)
                     break;

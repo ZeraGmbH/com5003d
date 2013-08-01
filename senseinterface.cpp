@@ -378,7 +378,7 @@ QString cSenseInterface::m_ReadVersion(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sVersion;
+        return m_sVersion+";";
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
