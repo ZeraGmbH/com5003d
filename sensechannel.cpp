@@ -53,7 +53,7 @@ void cSenseChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterfac
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SenseChannel::cmdStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"RANGE", SCPI::isQuery, scpiInterface, SenseChannel::cmdRange);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"RANGE", SCPI::isQuery | SCPI::isCmdwP, scpiInterface, SenseChannel::cmdRange);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2:RANGE").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SenseChannel::cmdRangeCat);
@@ -234,14 +234,20 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
     else
         if (cmd.isCommand(1))
         {
-            QString rng = cmd.getParam(1);
-            for  (i = 0; i < m_RangeList.count(); i++)
+            QString rng = cmd.getParam(0);
+            int anz = m_RangeList.count();
+            for  (i = 0; i < anz; i++)
                 if (m_RangeList.at(i)->getName() == rng)
                     break;
-            if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
-                return SCPI::scpiAnswer[SCPI::ack];
+            if (i << anz)
+            {
+                if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
+                    return SCPI::scpiAnswer[SCPI::ack];
+                else
+                    return SCPI::scpiAnswer[SCPI::errexec];
+            }
             else
-                return SCPI::scpiAnswer[SCPI::errexec];
+                return SCPI::scpiAnswer[SCPI::nak];
 
         }
 
