@@ -43,6 +43,7 @@ protected slots:
 private:
     quint16 m_nType;
     QString m_sVersion;
+    QString m_sIdent;
     QString m_sName; // the samplingsystem's name
     QString m_sDescription; // the samplingsystem's brief description
     bool m_bAvail; // is this sampling system available ?

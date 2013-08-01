@@ -52,8 +52,8 @@ QString cSampleRange::m_ReadSRate(QString &sInput)
 
     if (cmd.isQuery())
     {
-        return QString("%1").arg(m_nSRate);
+        return QString("%1;").arg(m_nSRate);
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }

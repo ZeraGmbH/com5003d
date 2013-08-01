@@ -155,7 +155,7 @@ QString cSenseChannel::m_ReadIdent(QString &sInput)
     if (cmd.isQuery())
         return m_sIdent+";";
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -166,7 +166,7 @@ QString cSenseChannel::m_ReadType(QString &sInput)
     if (cmd.isQuery())
         return QString("0;");
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -177,7 +177,7 @@ QString cSenseChannel::m_ReadUnit(QString &sInput)
     if (cmd.isQuery())
         return m_sUnit+";";
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -188,7 +188,7 @@ QString cSenseChannel::m_ReadDspChannel(QString &sInput)
     if (cmd.isQuery())
         return QString("%1;").arg(m_nDspChannel);
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -206,10 +206,10 @@ QString cSenseChannel::m_ReadChannelStatus(QString &sInput)
             return QString("%1;").arg(r);
         }
         else
-            return SCPI::scpiAnswer[SCPI::errexec];
+            return SCPI::scpiAnswer[SCPI::errexec]+";";
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -229,7 +229,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
             return m_RangeList.at(i)->getName()+";";
         }
         else
-            return SCPI::scpiAnswer[SCPI::errexec];
+            return SCPI::scpiAnswer[SCPI::errexec]+";";
     }
     else
         if (cmd.isCommand(1))
@@ -242,16 +242,16 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
             if (i < anz)
             {
                 if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
-                    return SCPI::scpiAnswer[SCPI::ack];
+                    return SCPI::scpiAnswer[SCPI::ack]+";";
                 else
-                    return SCPI::scpiAnswer[SCPI::errexec];
+                    return SCPI::scpiAnswer[SCPI::errexec]+";";
             }
             else
-                return SCPI::scpiAnswer[SCPI::nak];
+                return SCPI::scpiAnswer[SCPI::nak]+";";
 
         }
 
-    return SCPI::scpiAnswer[SCPI::nak];
+    return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -268,5 +268,5 @@ QString cSenseChannel::m_ReadRangeCatalog(QString &sInput)
         return s; // phs. or virt.
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }

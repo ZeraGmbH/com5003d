@@ -9,14 +9,14 @@ namespace SamplingSystem
 
 enum configstate
 {
-    cfgName,
+    cfgIdent,
     cfgAvail
 };
 
 
 struct cChannelSettings // what we want to get configured
 {
-    QString m_sName; // the names channel
+    QString m_sIdent; // the names channel
     bool m_bAvail; // is this channel available ?
 };
 

@@ -380,7 +380,7 @@ QString cSenseInterface::m_ReadVersion(QString &sInput)
     if (cmd.isQuery())
         return m_sVersion+";";
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -392,11 +392,11 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
     {
         QString s;
         for (int i = 0; i < m_ChannelList.count(); i++ )
-            s += (QString("m%1").arg(i) + ";");
+            s += QString("m%1;").arg(i);
         return s;
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 

@@ -97,10 +97,10 @@ QString cCOM5003JustData::mReadGainCorrection(QString& sInput)
         if (ok)
             return QString("%1;").arg(m_pGainCorrection->getCorrection(par));
         else
-            return SCPI::scpiAnswer[SCPI::errval];
+            return SCPI::scpiAnswer[SCPI::errval]+";";
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -116,10 +116,10 @@ QString cCOM5003JustData::mReadPhaseCorrection(QString& sInput)
         if (ok)
             return QString("%1;").arg(m_pPhaseCorrection->getCorrection(par));
         else
-            return SCPI::scpiAnswer[SCPI::errval];
+            return SCPI::scpiAnswer[SCPI::errval]+";";
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 
 }
 
@@ -136,10 +136,10 @@ QString cCOM5003JustData::mReadOffsetCorrection(QString& sInput)
         if (ok)
             return QString("%1;").arg(m_pOffsetCorrection->getCorrection(par));
         else
-            return SCPI::scpiAnswer[SCPI::errval];
+            return SCPI::scpiAnswer[SCPI::errval]+";";
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 
 }
 
@@ -153,7 +153,7 @@ QString cCOM5003JustData::m_ReadStatus(QString& sInput)
         return QString("%1;").arg(getAdjustmentStatus());
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
@@ -171,16 +171,16 @@ QString cCOM5003JustData::m_ComputeJustData(QString& sInput)
                 m_pGainCorrection->cmpCoefficients();
                 m_pPhaseCorrection->cmpCoefficients();
                 m_pOffsetCorrection->cmpCoefficients();
-                return SCPI::scpiAnswer[SCPI::ack];
+                return SCPI::scpiAnswer[SCPI::ack]+";";
             }
             else
-                return SCPI::scpiAnswer[SCPI::erraut];
+                return SCPI::scpiAnswer[SCPI::erraut]+";";
         }
         else
-            return SCPI::scpiAnswer[SCPI::errexec];
+            return SCPI::scpiAnswer[SCPI::errexec]+";";
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak];
+        return SCPI::scpiAnswer[SCPI::nak]+";";
 }
 
 
