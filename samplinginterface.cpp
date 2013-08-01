@@ -59,11 +59,7 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
 
     for (int i = 0; i < m_SampleRangeList.count(); i++)
-        m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2:%3")
-                                                    .arg(leadingNodes)
-                                                    .arg(m_sName)
-                                                    .arg(m_SampleRangeList.at(i)->getName()),
-                                                    scpiInterface);
+        m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName), scpiInterface);
 
 }
 
