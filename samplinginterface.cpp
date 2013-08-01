@@ -226,7 +226,7 @@ QString cSamplingInterface::m_ReadSamplingRangeCatalog(QString &sInput)
     {
         QString s;
         for (int i = 0; i < m_SampleRangeList.count(); i++)
-            s += QString("s%1;").arg(i);
+            s += m_SampleRangeList.at(i)->getName() + ";";
 
         return s;
     }
