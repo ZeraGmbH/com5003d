@@ -122,7 +122,7 @@ QString cJustData::m_ReadWriteStatus(QString &sInput)
             {
                 if (enable)
                 {
-                    QString spar = cmd.getParam(1);
+                    QString spar = cmd.getParam(0);
                     quint8 par = spar.toInt(&ok);
                     if (ok)
                     {
@@ -162,7 +162,7 @@ QString cJustData::m_ReadWriteJustCoeeficient(QString &sInput, quint8 index)
             {
                 if (enable)
                 {
-                    QString spar = cmd.getParam(1);
+                    QString spar = cmd.getParam(0);
                     double par = spar.toDouble(&ok);
                     if (ok)
                     {
@@ -197,18 +197,18 @@ QString cJustData::m_ReadWriteJustNode(QString &sInput, quint8 index)
         if (cmd.isCommand(2))
         {
             bool enable;
-            bool ok1, ok2;
+            bool ok0, ok1;
             if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
             {
                 if (enable)
                 {
-                    QString spar = cmd.getParam(1);
+                    QString spar = cmd.getParam(0);
+                    double par0 = spar.toDouble(&ok0);
+                    spar = cmd.getParam(1);
                     double par1 = spar.toDouble(&ok1);
-                    spar = cmd.getParam(2);
-                    double par2 = spar.toDouble(&ok2);
-                    if (ok1 && ok2)
+                    if (ok0 && ok1)
                     {
-                        cJustNode jn = cJustNode(par1,par2);
+                        cJustNode jn = cJustNode(par0,par1);
                         setNode(index, jn);
                         return SCPI::scpiAnswer[SCPI::ack];
                     }
@@ -304,10 +304,10 @@ bool cJustData::setNode(int index, cJustNode jn) // // !!! setting node sequence
 {
     if (index <= m_nOrder)
     {
-	int i;
-	for (i = index; i < m_nOrder+1; i++)
-	    m_pJustNode[i] = jn;
-	return true;
+        int i;
+        for (i = index; i < m_nOrder+1; i++)
+            m_pJustNode[i] = jn;
+        return true;
     }
     return false;
 }

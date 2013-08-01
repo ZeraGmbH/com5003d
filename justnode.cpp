@@ -25,7 +25,7 @@ void cJustNode::Deserialize(QDataStream& qds)
 QString cJustNode::Serialize()
 {
     QString s;
-    s = QString("%1,%2;").arg(m_fCorrection,0,'f',6)
+    s = QString("%1;%2;").arg(m_fCorrection,0,'f',6)
                            .arg(m_fArgument,0,'f',6);
     return s;
 }
@@ -33,8 +33,8 @@ QString cJustNode::Serialize()
 
 void cJustNode::Deserialize(const QString& s)
 {
-    m_fCorrection = s.section( ',',0,0).toDouble();
-    m_fArgument = s.section( ',',1,1).toDouble();
+    m_fCorrection = s.section( ';',0,0).toDouble();
+    m_fArgument = s.section( ';',1,1).toDouble();
 }
 
 
