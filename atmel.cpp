@@ -193,6 +193,7 @@ atmelRM cATMEL::getEEPROMAccessEnable(bool &enable)
         quint8 answ[2];
         if (readOutput(answ,2) == 2)
             enable = (answ[0] != 0);
+        return cmddone;
     }
 
     return cmdexecfault;
