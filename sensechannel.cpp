@@ -239,7 +239,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
             for  (i = 0; i < anz; i++)
                 if (m_RangeList.at(i)->getName() == rng)
                     break;
-            if (i << anz)
+            if (i < anz)
             {
                 if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
                     return SCPI::scpiAnswer[SCPI::ack];
