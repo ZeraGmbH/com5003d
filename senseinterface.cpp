@@ -392,7 +392,7 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
     {
         QString s;
         for (int i = 0; i < m_ChannelList.count(); i++ )
-            s += QString("m%1;").arg(i);
+            s += m_ChannelList.at(i)->getName() + ";";
         return s;
     }
     else

@@ -31,7 +31,7 @@ void cFPZChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, FPZChannel::cmdIdent);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"Type", SCPI::isQuery, scpiInterface, FPZChannel::cmdType);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, FPZChannel::cmdType);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"DSPSERVER", SCPI::isQuery, scpiInterface, FPZChannel::cmdDspServer);

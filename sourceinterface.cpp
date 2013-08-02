@@ -98,7 +98,7 @@ QString cSourceInterface::m_ReadSourceChannelCatalog(QString &sInput)
     if (cmd.isQuery())
     {   QString s;
         for (int i = 0; i < m_ChannelList.count(); i++ )
-            s += QString("fo%1;").arg(i);
+            s += m_ChannelList.at(i)->getIdent() + ";";
 
         return s;
     }
