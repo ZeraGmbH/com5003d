@@ -12,8 +12,8 @@ extern cATMEL* pAtmel;
 
 cCOM5003JustData::cCOM5003JustData()
 {
-    m_pPhaseCorrection = new cJustData(PhaseCorrOrder, 1.0);
-    m_pGainCorrection = new cJustData(GainCorrOrder, 1.0); 
+    m_pGainCorrection = new cJustData(GainCorrOrder, 1.0);
+    m_pPhaseCorrection = new cJustData(PhaseCorrOrder, 0.0);
     m_pOffsetCorrection =  new cJustData(OffsetCorrOrder, 0.0);
 }
 
@@ -129,7 +129,7 @@ QString cCOM5003JustData::mReadOffsetCorrection(QString& sInput)
     bool ok;
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(1))
+    if (cmd.isQuery(1))
     {
         QString spar = cmd.getParam(1);
         double par = spar.toDouble(&ok);
