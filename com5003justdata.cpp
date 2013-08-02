@@ -131,7 +131,7 @@ QString cCOM5003JustData::mReadOffsetCorrection(QString& sInput)
 
     if (cmd.isQuery(1))
     {
-        QString spar = cmd.getParam(1);
+        QString spar = cmd.getParam(0);
         double par = spar.toDouble(&ok);
         if (ok)
             return QString("%1;").arg(m_pOffsetCorrection->getCorrection(par));
