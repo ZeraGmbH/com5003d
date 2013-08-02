@@ -16,7 +16,7 @@ cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cCh
     :m_sDescription(description), m_sUnit(unit)
 {
     m_sName = QString("m%1").arg(nr);
-    m_sIdent = cSettings->m_sName;
+    m_sIdent = cSettings->m_sIdent;
     m_nCtrlChannel = cSettings->m_nCtrlChannel;
     m_nDspChannel = cSettings->m_nDspChannel;
     m_bAvail = cSettings->avail;

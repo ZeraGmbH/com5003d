@@ -30,7 +30,7 @@
 	</xs:simpleType>
 
 
-	<xs:simpleType name="atmelchanneltype">
+	<xs:simpleType name="ctrlchanneltype">
 		<xs:restriction base="xs:integer">
 			<xs:maxInclusive value='12'/>
 			<xs:minInclusive value='1'/>
@@ -116,7 +116,7 @@
 	<xs:complexType name="sensechanneltype">
 		<xs:sequence>
 			<xs:element name="ident" type="xs:string"/>
-			<xs:element name="atmelchannel" type="atmelchanneltype"/>
+			<xs:element name="ctrlchannel" type="ctrlchanneltype"/>
 			<xs:element name="dspchannel" type="dspinputchanneltype"/>
 			<xs:element name="avail" type="xs:boolean"/>
 		</xs:sequence>	

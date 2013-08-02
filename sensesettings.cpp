@@ -13,7 +13,7 @@ cSenseSettings::cSenseSettings(Zera::XMLConfig::cReader *xmlread)
     for (int i = 0; i < 12; i++)
     {
         m_ChannelSettingsList.append(settings = new SenseSystem::cChannelSettings);
-        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ident").arg(i)] = SenseSystem::cfg0Name + i;
+        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ident").arg(i)] = SenseSystem::cfg0Ident + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ctrlchannel").arg(i)] = SenseSystem::cfg0ctrlchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:dspchannel").arg(i)] = SenseSystem::cfg0dspchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:avail").arg(i)] = SenseSystem::cfg0avail + i;
@@ -42,41 +42,41 @@ void cSenseSettings::configXMLInfo(QString key)
     {
         switch (m_ConfigXMLMap[key])
         {
-        case SenseSystem::cfg0Name:
-            m_ChannelSettingsList.at(0)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg0Ident:
+            m_ChannelSettingsList.at(0)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg1Name:
-            m_ChannelSettingsList.at(1)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg1Ident:
+            m_ChannelSettingsList.at(1)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg2Name:
-            m_ChannelSettingsList.at(2)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg2Ident:
+            m_ChannelSettingsList.at(2)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg3Name:
-            m_ChannelSettingsList.at(3)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg3Ident:
+            m_ChannelSettingsList.at(3)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg4Name:
-            m_ChannelSettingsList.at(4)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg4Ident:
+            m_ChannelSettingsList.at(4)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg5Name:
-            m_ChannelSettingsList.at(5)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg5Ident:
+            m_ChannelSettingsList.at(5)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg6Name:
-            m_ChannelSettingsList.at(6)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg6Ident:
+            m_ChannelSettingsList.at(6)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg7Name:
-            m_ChannelSettingsList.at(7)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg7Ident:
+            m_ChannelSettingsList.at(7)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg8Name:
-            m_ChannelSettingsList.at(8)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg8Ident:
+            m_ChannelSettingsList.at(8)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg9Name:
-            m_ChannelSettingsList.at(9)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg9Ident:
+            m_ChannelSettingsList.at(9)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg10Name:
-            m_ChannelSettingsList.at(10)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg10Ident:
+            m_ChannelSettingsList.at(10)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SenseSystem::cfg11Name:
-            m_ChannelSettingsList.at(11)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg11Ident:
+            m_ChannelSettingsList.at(11)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
         case SenseSystem::cfg0ctrlchannel:
             m_ChannelSettingsList.at(0)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);

@@ -11,18 +11,18 @@ namespace SenseSystem
 
 enum configstate
 {
-    cfg0Name,
-    cfg1Name,
-    cfg2Name,
-    cfg3Name,
-    cfg4Name,
-    cfg5Name,
-    cfg6Name,
-    cfg7Name,
-    cfg8Name,
-    cfg9Name,
-    cfg10Name,
-    cfg11Name,
+    cfg0Ident,
+    cfg1Ident,
+    cfg2Ident,
+    cfg3Ident,
+    cfg4Ident,
+    cfg5Ident,
+    cfg6Ident,
+    cfg7Ident,
+    cfg8Ident,
+    cfg9Ident,
+    cfg10Ident,
+    cfg11Ident,
     cfg0ctrlchannel,
     cfg1ctrlchannel,
     cfg2ctrlchannel,
@@ -63,7 +63,7 @@ enum configstate
 
 struct cChannelSettings // what we want to get configured
 {
-    QString m_sName; // the names channel
+    QString m_sIdent; // the names identification
     quint8 m_nCtrlChannel; // where to control the channel
     quint8 m_nDspChannel; // where to find the channel's sampled data
     bool avail; // is this channel available ?

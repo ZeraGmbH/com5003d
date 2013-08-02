@@ -38,67 +38,67 @@
 			</m0>
 			<m1>
 				<ident>UL2</ident>
-				<atmelchannel>2</atmelchannel>
+				<ctrlchannel>2</ctrlchannel>
 				<dspchannel>1</dspchannel>
 				<avail>true</avail>  
 			</m1>
 			<m2>
 				<ident>UL3</ident>
-				<atmelchannel>3</atmelchannel>
+				<ctrlchannel>3</ctrlchannel>
 				<dspchannel>2</dspchannel>
 				<avail>true</avail>  
 			</m2>
 			<m3>
 				<ident>IL1</ident>
-				<atmelchannel>4</atmelchannel>
+				<ctrlchannel>4</ctrlchannel>
 				<dspchannel>3</dspchannel>
 				<avail>true</avail>  
 			</m3>
 			<m4>
 				<ident>IL2</ident>
-				<atmelchannel>5</atmelchannel>
+				<ctrlchannel>5</ctrlchannel>
 				<dspchannel>4</dspchannel>
 				<avail>true</avail>  
 			</m4>
 			<m5>
 				<ident>IL3</ident>
-				<atmelchannel>6</atmelchannel>
+				<ctrlchannel>6</ctrlchannel>
 				<dspchannel>5</dspchannel>
 				<avail>true</avail>  
 			</m5>
 			<m6>
 				<ident>REF1</ident>
-				<atmelchannel>1</atmelchannel>
+				<ctrlchannel>1</ctrlchannel>
 				<dspchannel>0</dspchannel>
 				<avail>true</avail>  
 			</m6>
 			<m7>
 				<ident>REF2</ident>
-				<atmelchannel>2</atmelchannel>
+				<ctrlchannel>2</ctrlchannel>
 				<dspchannel>1</dspchannel>
 				<avail>true</avail>  
 			</m7>
 			<m8>
 				<ident>REF3</ident>
-				<atmelchannel>3</atmelchannel>
+				<ctrlchannel>3</ctrlchannel>
 				<dspchannel>2</dspchannel>
 				<avail>true</avail>  
 			</m8>
 			<m9>
 				<ident>REF4</ident>
-				<atmelchannel>4</atmelchannel>
+				<ctrlchannel>4</ctrlchannel>
 				<dspchannel>3</dspchannel>
 				<avail>true</avail>  
 			</m9>
 			<m10>
 				<ident>REF5</ident>
-				<atmelchannel>5</atmelchannel>
+				<ctrlchannel>5</ctrlchannel>
 				<dspchannel>4</dspchannel>
 				<avail>true</avail>  
 			</m10>
 			<m11>
 				<ident>REF6</ident>
-				<atmelchannel>6</atmelchannel>
+				<ctrlchannel>6</ctrlchannel>
 				<dspchannel>5</dspchannel>
 				<avail>true</avail>  
 			</m11>

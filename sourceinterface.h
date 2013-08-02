@@ -11,7 +11,7 @@
 namespace SourceSystem
 {
 
-const QString Version = "1.00";
+const QString Version = "V1.00";
 
 enum Commands
 {
