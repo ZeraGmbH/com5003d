@@ -33,10 +33,10 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes).arg(m_sName),"VERSION", SCPI::isQuery, scpiInterface, SamplingSystem::cmdVersion);
+    delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"VERSION", SCPI::isQuery, scpiInterface, SamplingSystem::cmdVersion);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1SAMPLE:CHANNEL").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelCat);
+    delegate = new cSCPIDelegate(QString("%1SAMPLE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelIdent);

@@ -32,7 +32,7 @@
 		<sense>
 			<m0>
 				<ident>UL1</ident>
-				<atmelchannel>1</atmelchannel>
+				<ctrlchannel>1</ctrlchannel>
 				<dspchannel>0</dspchannel>
 				<avail>true</avail>  
 			</m0>
