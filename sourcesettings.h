@@ -10,10 +10,10 @@ namespace SourceSystem
 {
 enum configstate
 {
-    cfg0Name,
-    cfg1Name,
-    cfg2Name,
-    cfg3Name,
+    cfg0Ident,
+    cfg1Ident,
+    cfg2Ident,
+    cfg3Ident,
     cfg0dspserver,
     cfg1dspserver,
     cfg2dspserver,
@@ -31,7 +31,7 @@ enum configstate
 
 struct cChannelSettings // what we want to get configured
 {
-    QString m_sName; // the names channel
+    QString m_sIdent; // the names channel
     quint16 m_nDspServerPort; // where to control the channel
     quint8 m_nDspChannel; // where to configure the channel
     bool avail; // is this channel available ?

@@ -14,7 +14,7 @@ cSourceSettings::cSourceSettings(Zera::XMLConfig::cReader *xmlread)
     for (int i = 0; i < 4; i++)
     {
         m_ChannelSettingsList.append(settings = new SourceSystem::cChannelSettings);
-        m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:ident").arg(i)] = SourceSystem::cfg0Name + i;
+        m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:ident").arg(i)] = SourceSystem::cfg0Ident + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:dspserver").arg(i)] = SourceSystem::cfg0dspserver + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:dspchannel").arg(i)] = SourceSystem::cfg0dspchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:avail").arg(i)] = SourceSystem::cfg0avail + i;
@@ -43,17 +43,17 @@ void cSourceSettings::configXMLInfo(QString key)
     {
         switch (m_ConfigXMLMap[key])
         {
-        case SourceSystem::cfg0Name:
-            m_ChannelSettingsList.at(0)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SourceSystem::cfg0Ident:
+            m_ChannelSettingsList.at(0)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SourceSystem::cfg1Name:
-            m_ChannelSettingsList.at(1)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SourceSystem::cfg1Ident:
+            m_ChannelSettingsList.at(1)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SourceSystem::cfg2Name:
-            m_ChannelSettingsList.at(2)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SourceSystem::cfg2Ident:
+            m_ChannelSettingsList.at(2)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
-        case SourceSystem::cfg3Name:
-            m_ChannelSettingsList.at(3)->m_sName = m_pXMLReader->getValue(key).toString();
+        case SourceSystem::cfg3Ident:
+            m_ChannelSettingsList.at(3)->m_sIdent = m_pXMLReader->getValue(key).toString();
             break;
         case SourceSystem::cfg0dspserver:
             m_ChannelSettingsList.at(0)->m_nDspServerPort = m_pXMLReader->getValue(key).toInt(&ok);

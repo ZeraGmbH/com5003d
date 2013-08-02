@@ -136,6 +136,12 @@ QString &cSenseChannel::getName()
 }
 
 
+QString &cSenseChannel::getIdent()
+{
+    return m_sIdent;
+}
+
+
 QString &cSenseChannel::getDescription()
 {
     return m_sDescription;

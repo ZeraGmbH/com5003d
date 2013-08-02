@@ -41,6 +41,7 @@ public:
     quint8 getAdjustmentStatus();
 
     QString& getName();
+    QString& getIdent();
     QString& getDescription();
     bool isAvail();
 

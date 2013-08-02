@@ -8,10 +8,11 @@
 #include "fpzchannel.h"
 
 
-cFPZChannel::cFPZChannel(QString description, SourceSystem::cChannelSettings *cSettings)
+cFPZChannel::cFPZChannel(QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings)
     :m_sDescription(description)
 {
-    m_sName = cSettings->m_sName;
+    m_sName = QString("fo%1").arg(nr);
+    m_sIdent = cSettings->m_sIdent;
     m_nDspServer = cSettings->m_nDspServerPort;
     m_nDspChannel = cSettings->m_nDspChannel;
     m_nType = 0;
@@ -27,6 +28,9 @@ void cFPZChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     if (leadingNodes != "")
         leadingNodes += ":";
 
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, FPZChannel::cmdIdent);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"Type", SCPI::isQuery, scpiInterface, FPZChannel::cmdType);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -49,6 +53,9 @@ void cFPZChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
 {
     switch (cmdCode)
     {
+    case FPZChannel::cmdIdent:
+        sOutput = m_ReadIdent(sInput);
+        break;
     case FPZChannel::cmdType:
         sOutput = m_ReadType(sInput);
         break;
@@ -75,6 +82,12 @@ QString &cFPZChannel::getName()
 }
 
 
+QString &cFPZChannel::getIdent()
+{
+    return m_sIdent;
+}
+
+
 QString &cFPZChannel::getDescription()
 {
     return m_sDescription;
@@ -87,12 +100,23 @@ bool cFPZChannel::isAvail()
 }
 
 
+QString cFPZChannel::m_ReadIdent(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+        return m_sIdent+";";
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
 QString cFPZChannel::m_ReadType(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_nType);
+        return QString("%1;").arg(m_nType);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -103,7 +127,7 @@ QString cFPZChannel::m_ReadDspServer(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_nDspServer);
+        return QString("%1;").arg(m_nDspServer);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -114,7 +138,7 @@ QString cFPZChannel::m_ReadDspChannel(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_nDspChannel);
+        return QString("%1;").arg(m_nDspChannel);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -128,7 +152,7 @@ QString cFPZChannel::m_ReadChannelStatus(QString &sInput)
     {
         quint32 r;
         r = ((m_bAvail) ? 0 : 2 << 31);
-            return QString("%1").arg(r);
+            return QString("%1;").arg(r);
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
@@ -140,7 +164,7 @@ QString cFPZChannel::m_ReadFFactor(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fFormFactor);
+        return QString("%1;").arg(m_fFormFactor);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }

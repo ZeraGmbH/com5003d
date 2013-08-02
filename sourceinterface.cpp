@@ -18,13 +18,13 @@ cSourceInterface::cSourceInterface(cSourceSettings *sourceSettings)
 
     // we have 4 frequency output channels
     cFPZChannel* pChannel;
-    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", mySettings.at(0) );
+    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", 0, mySettings.at(0) );
     m_ChannelList.append(pChannel);
-    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", mySettings.at(1) );
+    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", 1, mySettings.at(1) );
     m_ChannelList.append(pChannel);
-    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", mySettings.at(2) );
+    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", 2,  mySettings.at(2) );
     m_ChannelList.append(pChannel);
-    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", mySettings.at(3) );
+    pChannel = new cFPZChannel("Reference frequency output 0..1MHz", 3, mySettings.at(3) );
     m_ChannelList.append(pChannel);
 
     m_sVersion = SourceSystem::Version;
@@ -85,7 +85,7 @@ QString cSourceInterface::m_ReadVersion(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sVersion;
+        return m_sVersion+";";
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -98,7 +98,7 @@ QString cSourceInterface::m_ReadSourceChannelCatalog(QString &sInput)
     if (cmd.isQuery())
     {   QString s;
         for (int i = 0; i < m_ChannelList.count(); i++ )
-            s += (m_ChannelList.at(i)->getName() + ";");
+            s += QString("fo%1;").arg(i);
 
         return s;
     }
