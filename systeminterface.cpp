@@ -119,7 +119,7 @@ void cSystemInterface::executeCommand(int cmdCode, QString &sInput, QString &sOu
         sOutput = m_AdjXMLRead(sInput);
         break;
     case SystemSystem::cmdAdjFlashChksum:
-        sOutput = m_AdjFlashStatus(sInput);
+        sOutput = m_AdjFlashChksum(sInput);
         break;
     }
 
@@ -193,7 +193,7 @@ QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
     {
         if (cmd.isCommand(1))
         {
-            QString Version = cmd.getParam(1);
+            QString Version = cmd.getParam(0);
             ret = pAtmel->writePCBVersion(Version);
         }
         else
@@ -258,7 +258,7 @@ QString cSystemInterface::m_ReadWriteSerialNumber(QString &sInput)
     {
         if (cmd.isCommand(1))
         {
-            QString Serial = cmd.getParam(1);
+            QString Serial = cmd.getParam(0);
             ret = pAtmel->writeSerialNumber(Serial);
         }
         else
@@ -307,7 +307,7 @@ QString cSystemInterface::m_LoadFlash(QString &sInput)
 
     if (cmd.isCommand(1))
     {
-        QString filename = cmd.getParam(1);
+        QString filename = cmd.getParam(0);
         cIntelHexFileIO IntelHexData;
         if (IntelHexData.ReadHexFile(filename))
         {
@@ -329,7 +329,7 @@ QString cSystemInterface::m_LoadEEProm(QString &sInput)
 
     if (cmd.isCommand(1))
     {
-        QString filename = cmd.getParam(1);
+        QString filename = cmd.getParam(0);
         cIntelHexFileIO IntelHexData;
         if (IntelHexData.ReadHexFile(filename))
         {
@@ -383,7 +383,7 @@ QString cSystemInterface::m_AdjXMLWrite(QString &sInput)
 
     if (cmd.isCommand(1))
     {
-        QString filename = cmd.getParam(1);
+        QString filename = cmd.getParam(0);
         if (m_pAdjHandler->exportJDataXML(filename))
             ret = cmddone;
     }
@@ -404,7 +404,7 @@ QString cSystemInterface::m_AdjXMLRead(QString &sInput)
         pAtmel->getEEPROMAccessEnable(enable);
         if (enable)
         {
-            QString filename = cmd.getParam(1);
+            QString filename = cmd.getParam(0);
             if (m_pAdjHandler->importJDataXML(filename))
                 ret = cmddone;
         }
@@ -416,7 +416,7 @@ QString cSystemInterface::m_AdjXMLRead(QString &sInput)
 }
 
 
-QString cSystemInterface::m_AdjFlashStatus(QString &sInput)
+QString cSystemInterface::m_AdjFlashChksum(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 

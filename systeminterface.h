@@ -64,7 +64,7 @@ private:
     QString m_AdjFlashRead(QString& sInput);
     QString m_AdjXMLWrite(QString& sInput);
     QString m_AdjXMLRead(QString& sInput);
-    QString m_AdjFlashStatus(QString& sInput);
+    QString m_AdjFlashChksum(QString& sInput);
 
     void m_genAnswer(int select, QString& answer);
 };

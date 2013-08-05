@@ -285,7 +285,7 @@ bool cAdjustment::exportJDataXML(QString &file)
     t = justdata.createTextNode(QString("0x%1").arg(m_nChecksum,0,16));
     chksumtag.appendChild(t);
 
-    for (int i = 0; m_AdjXMLList.count(); i++)
+    for (int i = 0; i < m_AdjXMLList.count(); i++)
         m_AdjXMLList.at(i)->exportAdjData(justdata, adjtag);
 
     QString xml = justdata.toString();
