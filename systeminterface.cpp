@@ -54,7 +54,7 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
     delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE").arg(leadingNodes), "EEPROM", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdUpdateControlerEEprom);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "WRITE", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdAdjFlashWrite);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "WRITE", SCPI::isCmd, scpiInterface, SystemSystem::cmdAdjFlashWrite);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "READ", SCPI::isCmd, scpiInterface, SystemSystem::cmdAdjFlashRead);
@@ -93,6 +93,7 @@ void cSystemInterface::executeCommand(int cmdCode, QString &sInput, QString &sOu
         break;
     case SystemSystem::cmdSerialNumber:
         sOutput = m_ReadWriteSerialNumber(sInput);
+        break;
     case SystemSystem::cmdUpdateControlerBootloader:
         sOutput = m_StartControlerBootloader(sInput);
         break;
@@ -121,6 +122,8 @@ void cSystemInterface::executeCommand(int cmdCode, QString &sInput, QString &sOu
         sOutput = m_AdjFlashStatus(sInput);
         break;
     }
+
+    sOutput += ";";
 }
 
 

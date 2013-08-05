@@ -441,12 +441,15 @@ void cAdjustment::addAdjXMLObject(cAdjXML* obj)
 quint8 cAdjustment::getAdjustmentStatus()
 {
     quint8 stat = 255;
+    quint8 ret;
 
     for (int i = 0; i < m_AdjFlashList.count(); i++)
         stat &= m_AdjFlashList.at(i)->getAdjustmentStatus();
+
+    ret = m_nAdjStatus;
     if (stat == 0)
-        m_nAdjStatus += Adjustment::notAdjusted;
-    return m_nAdjStatus;
+        ret += Adjustment::notAdjusted;
+    return ret;
 }
 
 
