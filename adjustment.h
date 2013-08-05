@@ -38,7 +38,7 @@ private:
     quint8 m_nDebugLevel;
     quint8 m_nI2CAdr;
     quint8 m_nAdjStatus;
-    quint8 m_nChecksum;
+    quint16 m_nChecksum;
 
 };
 
