@@ -91,6 +91,7 @@ cSenseInterface::cSenseInterface(cSenseSettings *senseSettings)
 
     for (i = 6; i < 12; i++)
     {
+        rngList.clear();
         rngList.append(new cSenseRange("0V",10.0,5005789.0, 14, SenseRange::Phys));
         rngList.append(new cSenseRange("10V",10.0,5005789.0, 15, SenseRange::Phys));
 
@@ -207,11 +208,9 @@ bool cSenseInterface::importAdjData(QString &s, QDataStream &stream)
 
 void cSenseInterface::exportAdjData(QDataStream &stream)
 {
-    int c1 = m_ChannelList.count();
     for (int i = 0; i < m_ChannelList.count(); i++)
     {
         QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
-        int c2 = list.count();
         QString spec;
 
         for (int j = 0; j < list.count(); j ++)
