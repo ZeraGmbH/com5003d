@@ -207,9 +207,11 @@ bool cSenseInterface::importAdjData(QString &s, QDataStream &stream)
 
 void cSenseInterface::exportAdjData(QDataStream &stream)
 {
+    int c1 = m_ChannelList.count();
     for (int i = 0; i < m_ChannelList.count(); i++)
     {
         QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
+        int c2 = list.count();
         QString spec;
 
         for (int j = 0; j < list.count(); j ++)
