@@ -37,10 +37,10 @@ void cStatusInterface::executeCommand(int cmdCode, QString &sInput, QString &sOu
         switch (cmdCode)
         {
         case StatusSystem::cmdDevice:
-            sOutput = QString("%1").arg(getDeviceStatus());
+            sOutput = QString("%1;").arg(getDeviceStatus());
             break; // StatusDevice
         case StatusSystem::cmdAdjustment:
-            sOutput = QString("%1").arg(m_pAdjHandler->getAdjustmentStatus());
+            sOutput = QString("%1;").arg(m_pAdjHandler->getAdjustmentStatus());
             break; // StatusAdjustment
         }
     }
@@ -53,7 +53,7 @@ quint8 cStatusInterface::getDeviceStatus()
 {
     QString s;
 
-    if (pAtmel->readDeviceName(s) == 0) // no problem reading from atmel
+    if (pAtmel->readDeviceName(s) == cmddone) // no problem reading from atmel
         return 1; // means device available
     else
         return 0;

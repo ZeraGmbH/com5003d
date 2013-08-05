@@ -151,7 +151,7 @@ cSenseChannel *cSenseInterface::getChannel(QString &name)
 quint8 cSenseInterface::getAdjustmentStatus()
 {
     quint8 adj = 255;
-    for (int i = 0; m_ChannelList.count(); i++)
+    for (int i = 0; i < m_ChannelList.count(); i++)
         adj &= m_ChannelList.at(i)->getAdjustmentStatus();
 
     return adj;
