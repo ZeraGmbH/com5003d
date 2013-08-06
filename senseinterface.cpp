@@ -305,7 +305,7 @@ void cSenseInterface::exportAdjData(QDomDocument& doc, QDomElement& qde)
 
 bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element dessen tagname channel ist
 {
-    if (node.toElement().tagName() != "SENSE") // data not for us
+    if (node.toElement().tagName() != "Sense") // data not for us
         return false;
 
     QDomNodeList nl=node.childNodes(); // we have a list our channels now
@@ -336,13 +336,13 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
 
                         pJustData = 0;
 
-                        if (justName == "GAIN")
+                        if (justName == "Gain")
                             pJustData = rngPtr->getJustData()->m_pGainCorrection;
 
-                        if (justName == "PHASE")
+                        if (justName == "Phase")
                             pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
 
-                        if (justName == "OFFSET")
+                        if (justName == "Offset")
                             pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
 
                         if (pJustData)
