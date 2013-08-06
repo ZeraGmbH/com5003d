@@ -244,7 +244,7 @@ bool cAdjustment::exportJDataXML(QString &file)
         return false;
     }
 
-    QString s = QString("%1AdjustmentData").arg(m_pSystemInfo->getDeviceName());
+    QString s = QString("%1AdjustmentData").arg(LeiterkartenName);
     QDomDocument justdata (s);
 
     QDomElement pcbtag = justdata.createElement( "PCB" );
@@ -252,7 +252,7 @@ bool cAdjustment::exportJDataXML(QString &file)
 
     QDomElement tag = justdata.createElement( "Type" );
     pcbtag.appendChild( tag );
-    QDomText t = justdata.createTextNode(m_pSystemInfo->getDeviceName());
+    QDomText t = justdata.createTextNode(LeiterkartenName);
     tag.appendChild( t );
 
     tag = justdata.createElement( "VersionNumber" );

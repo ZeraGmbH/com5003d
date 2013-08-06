@@ -11,7 +11,7 @@ enum DebugLevel {NoDebug, DebugLevel1, DebugLevel2, DebugLevel3 = 4, MaxDebugLev
 
 #define CheckSumOffset 56
 
-#define LeiterkartenName "com5003"
+#define LeiterkartenName "ADW5743"
 #define ServerName "com5003d"
 #define ServerVersion "V1.00"
 #define MaxClients 30
