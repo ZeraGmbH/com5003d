@@ -391,7 +391,7 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
                                     pJustData->DeserializeCoefficients(jdata);
 
                                 if (jTypeName == "Nodes")
-                                    pJustData->DeserializeCoefficients(jdata);
+                                    pJustData->DeserializeNodes(jdata);
                             }
                         }
                     }
