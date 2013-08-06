@@ -231,9 +231,9 @@ void cJustData::Serialize(QDataStream& qds) // writes adjustment data to a qdata
 {
     int i;
     qds << m_nStatus;
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         qds << m_pCoefficient[i];
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         m_pJustNode[i].Serialize(qds);
 }
 
@@ -242,9 +242,9 @@ void cJustData::Deserialize(QDataStream& qds) // reads adjustment data from a qd
 {
     int i;
     qds >> m_nStatus;
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         qds >> m_pCoefficient[i];
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         m_pJustNode[i].Deserialize(qds);
 }
 
@@ -260,7 +260,7 @@ QString cJustData::SerializeCoefficients() // writes adjustment data to qstring
 {
     int i;
     QString s = "";
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         s += QString("%1;").arg(m_pCoefficient[i],0,'f',12);
     return s;
 }
@@ -270,7 +270,7 @@ QString cJustData::SerializeNodes()
 {
     int i;
     QString s = "";
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         s += m_pJustNode[i].Serialize();
     return s;
 }
@@ -286,7 +286,7 @@ void cJustData::DeserializeStatus(const QString &s)
 void cJustData::DeserializeCoefficients(const QString& s) 
 {	
     int i;
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         m_pCoefficient[i] = s.section(';',i,i).toDouble();
 }
 
@@ -295,7 +295,7 @@ void cJustData::DeserializeNodes(const QString& s)
 {
     int i;
     QString t;
-    for (i = 0; i < m_nOrder+1; i++)
+    for (i = 0; i < m_nOrder; i++)
         m_pJustNode[i].Deserialize(s.section(';',i,i));
 }
 
@@ -305,7 +305,7 @@ bool cJustData::setNode(int index, cJustNode jn) // // !!! setting node sequence
     if (index <= m_nOrder)
     {
         int i;
-        for (i = index; i < m_nOrder+1; i++)
+        for (i = index; i < m_nOrder; i++)
             m_pJustNode[i] = jn;
         return true;
     }
@@ -321,14 +321,14 @@ cJustNode* cJustData::getNode(int index) // can be read back
 
 bool cJustData::setCoefficient(int index, double value)
 {
-    if (index <= m_nOrder)
+    if (index < m_nOrder)
     {
-	int i;
-	m_pCoefficient[index] = value;
-	if (index < m_nOrder)
-	    for (i = index+1; i < m_nOrder+1; i++)
-		m_pCoefficient[i] = 0.0;
-	return true;
+        int i;
+        m_pCoefficient[index] = value;
+        if (index < (m_nOrder-1))
+            for (i = index+1; i < m_nOrder; i++)
+                m_pCoefficient[i] = 0.0;
+        return true;
     }
     return false;
 }
