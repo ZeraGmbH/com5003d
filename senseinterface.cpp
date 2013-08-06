@@ -243,11 +243,11 @@ void cSenseInterface::exportAdjData(QDomDocument& doc, QDomElement& qde)
         QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
         for (int j = 0; j < list.count(); j++)
         {
-            cSenseRange* rng = list.at(i);
+            cSenseRange* rng = list.at(j);
 
             QDomElement rtag = doc.createElement( "Range" );
             chtag.appendChild( rtag );
-            t = doc.createTextNode(list.at(i)->getName());
+            t = doc.createTextNode(list.at(j)->getName());
             rtag.appendChild( t );
 
             QDomElement gpotag = doc.createElement( "Gain" );
