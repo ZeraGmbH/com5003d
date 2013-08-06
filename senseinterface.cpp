@@ -348,59 +348,49 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
 
                     for (quint32 k = 0; k < nl3.length(); k++)
                     {
-                       QDomNode RangeJustNode = nl3.item(k);
+                        QDomNode RangeJustNode = nl3.item(k);
 
-                       e = RangeJustNode.toElement();
-                       tName = e.tagName();
-                       qDebug() << tName;
+                        e = RangeJustNode.toElement();
+                        tName = e.tagName();
+                        qDebug() << tName;
 
-                       if (tName == "Name")
-                       {
-                           Name=e.text();
-                           qDebug() << Name;
-                           rngPtr = chnPtr->getRange(Name);
-                           if (rngPtr != 0)
-                           {
-                               QDomNodeList nl4 = RangeJustNode.childNodes();
-                               for (qint32 l = 0; l < nl4.count(); l++)
-                               {
-                                   cJustData* pJustData;
-                                   QDomNode justNode = nl4.item(l);
-                                   QString justName = justNode.toElement().tagName();
+                        if (tName == "Name")
+                        {
+                            Name=e.text();
+                            qDebug() << Name;
+                            rngPtr = chnPtr->getRange(Name);
+                        }
 
-                                   pJustData = 0;
+                        cJustData* pJustData = 0;
 
-                                   if (justName == "Gain")
-                                       pJustData = rngPtr->getJustData()->m_pGainCorrection;
+                        if (tName == "Gain")
+                            pJustData = rngPtr->getJustData()->m_pGainCorrection;
 
-                                   if (justName == "Phase")
-                                       pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
+                        if (tName == "Phase")
+                            pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
 
-                                   if (justName == "Offset")
-                                       pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
+                        if (tName == "Offset")
+                            pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
 
-                                   if (pJustData)
-                                   {
-                                       QDomNodeList nl4 = justNode.childNodes();
-                                       for (qint32 k = 0; k < nl4.count(); k++)
-                                       {
-                                           QDomNode jTypeNode = nl4.item(k);
-                                           QString jTypeName = jTypeNode.toElement().tagName();
-                                           QString jdata = jTypeNode.toElement().text();
+                        if (pJustData)
+                        {
+                            QDomNodeList nl4 = RangeJustNode.childNodes();
+                            for (qint32 k = 0; k < nl4.count(); k++)
+                            {
+                                QDomNode jTypeNode = nl4.item(k);
+                                QString jTypeName = jTypeNode.toElement().tagName();
+                                QString jdata = jTypeNode.toElement().text();
 
-                                           if (jTypeName == "Status")
-                                               pJustData->DeserializeStatus(jdata);
+                                if (jTypeName == "Status")
+                                    pJustData->DeserializeStatus(jdata);
 
-                                           if (jTypeName == "Coefficients")
-                                               pJustData->DeserializeCoefficients(jdata);
+                                if (jTypeName == "Coefficients")
+                                    pJustData->DeserializeCoefficients(jdata);
 
-                                           if (jTypeName == "Nodes")
-                                               pJustData->DeserializeCoefficients(jdata);
-                                       }
-                                   }
-                               }
-                           }
-                       }
+                                if (jTypeName == "Nodes")
+                                    pJustData->DeserializeCoefficients(jdata);
+                            }
+                        }
                     }
                 }
             }
