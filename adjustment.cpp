@@ -322,7 +322,7 @@ bool cAdjustment::importJDataXML(QString &file)
 
     QDomDocumentType TheDocType=justdata.doctype ();
 
-    if  (TheDocType.name() != QString("%1AdjustmentData").arg(m_pSystemInfo->getDeviceName()))
+    if  (TheDocType.name() != QString("%1AdjustmentData").arg(LeiterkartenName))
     {
         if DEBUG1 syslog(LOG_ERR,"justdata import, wrong xml documentype\n");
         return false;
