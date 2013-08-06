@@ -314,8 +314,8 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
     for (quint32 i = 0; i < nl.length(); i++)
     {
         QDomNode chnNode = nl.item(i); // we iterate over all channels from xml file
-        QString chnName = chnNode.toElement().tagName();
-
+        QString chnName = chnNode.toElement().text();
+        qDebug() << chnName;
         cSenseChannel* chnPtr;
         if ((chnPtr = getChannel(chnName)) != 0) // if we know this channel
         {
@@ -323,7 +323,7 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
             for (quint32 k = 0; k < nl2.length(); k++)
             {
                 QDomNode rngNode = nl2.item(k);
-                QString rngName = rngNode.toElement().tagName();
+                QString rngName = rngNode.toElement().text();
 
                 cSenseRange* rngPtr;
                 if ((rngPtr = chnPtr->getRange(rngName)) != 0 ) // if we know this range
