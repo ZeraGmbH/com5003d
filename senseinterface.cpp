@@ -344,7 +344,7 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
             {
                 if (chnPtr != 0) // if we know this channel
                 {
-                    QDomNodeList nl3 = chnNode.childNodes();
+                    QDomNodeList nl3 = ChannelJustNode.childNodes();
 
                     for (quint32 k = 0; k < nl3.length(); k++)
                     {
@@ -363,14 +363,17 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
 
                         cJustData* pJustData = 0;
 
-                        if (tName == "Gain")
-                            pJustData = rngPtr->getJustData()->m_pGainCorrection;
+                        if (rngPtr != 0)
+                        {
+                            if (tName == "Gain")
+                                pJustData = rngPtr->getJustData()->m_pGainCorrection;
 
-                        if (tName == "Phase")
-                            pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
+                            if (tName == "Phase")
+                                pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
 
-                        if (tName == "Offset")
-                            pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
+                            if (tName == "Offset")
+                                pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
+                        }
 
                         if (pJustData)
                         {
