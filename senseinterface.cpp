@@ -3,7 +3,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QDomText>
-
+#include <QDebug>
 #include "xmlsettings.h"
 #include "scpiconnection.h"
 #include "resource.h"
@@ -305,6 +305,7 @@ void cSenseInterface::exportAdjData(QDomDocument& doc, QDomElement& qde)
 
 bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element dessen tagname channel ist
 {
+    qDebug() << node.toElement().tagName();
     if (node.toElement().tagName() != "Sense") // data not for us
         return false;
 
