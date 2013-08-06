@@ -237,8 +237,10 @@ void cSenseInterface::exportAdjData(QDomDocument& doc, QDomElement& qde)
         QDomText t;
         QDomElement chtag = doc.createElement( "Channel" );
         typeTag.appendChild( chtag );
+        QDomElement nametag = doc.createElement( "Name" );
+        chtag.appendChild(nametag);
         t = doc.createTextNode(m_ChannelList.at(i)->getName());
-        chtag.appendChild( t );
+        nametag.appendChild( t );
 
         QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
         for (int j = 0; j < list.count(); j++)
@@ -247,8 +249,12 @@ void cSenseInterface::exportAdjData(QDomDocument& doc, QDomElement& qde)
 
             QDomElement rtag = doc.createElement( "Range" );
             chtag.appendChild( rtag );
+
+            nametag = doc.createElement( "Name" );
+            rtag.appendChild(nametag);
+
             t = doc.createTextNode(list.at(j)->getName());
-            rtag.appendChild( t );
+            nametag.appendChild( t );
 
             QDomElement gpotag = doc.createElement( "Gain" );
             rtag.appendChild(gpotag);
@@ -309,62 +315,92 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
     if (node.toElement().tagName() != "Sense") // data not for us
         return false;
 
-    QDomNodeList nl=node.childNodes(); // we have a list our channels now
+    QDomNodeList nl=node.childNodes(); // we have a list our channels entries now
 
     for (quint32 i = 0; i < nl.length(); i++)
     {
         QDomNode chnNode = nl.item(i); // we iterate over all channels from xml file
-        QString chnName = chnNode.toElement().text();
-        qDebug() << chnName;
-        cSenseChannel* chnPtr;
-        if ((chnPtr = getChannel(chnName)) != 0) // if we know this channel
+
+        QDomNodeList nl2 = chnNode.childNodes();
+        for (quint32 j = 0; j < nl2.length(); j++)
         {
-            QDomNodeList nl2 = chnNode.childNodes(); // we have a list of all ranges of this channel from xml
-            for (quint32 k = 0; k < nl2.length(); k++)
+            cSenseChannel* chnPtr;
+            cSenseRange* rngPtr;
+            QString Name;
+
+            QDomNode ChannelJustNode = nl2.item(j);
+            QDomElement e=ChannelJustNode.toElement();
+            QString tName=e.tagName();
+            qDebug() << tName;
+
+            if (tName == "Name")
             {
-                QDomNode rngNode = nl2.item(k);
-                QString rngName = rngNode.toElement().text();
+                Name=e.text();
+                qDebug() << Name;
+                chnPtr = getChannel(Name);
+            }
 
-                cSenseRange* rngPtr;
-                if ((rngPtr = chnPtr->getRange(rngName)) != 0 ) // if we know this range
+            if (tName == "Range")
+            {
+                if (chnPtr != 0) // if we know this channel
                 {
-                    QDomNodeList nl3 = rngNode.childNodes();
-                    for (qint32 l = 0; l < nl3.count(); l++)
+                    QDomNodeList nl3 = chnNode.childNodes();
+
+                    for (quint32 k = 0; k < nl3.length(); k++)
                     {
-                        cJustData* pJustData;
-                        QDomNode justNode = nl3.item(l);
-                        QString justName = justNode.toElement().tagName();
+                       QDomNode RangeJustNode = nl3.item(k);
 
-                        pJustData = 0;
+                       e = RangeJustNode.toElement();
+                       tName = e.tagName();
+                       qDebug() << tName;
 
-                        if (justName == "Gain")
-                            pJustData = rngPtr->getJustData()->m_pGainCorrection;
+                       if (tName == "Name")
+                       {
+                           Name=e.text();
+                           qDebug() << Name;
+                           rngPtr = chnPtr->getRange(Name);
+                           if (rngPtr != 0)
+                           {
+                               QDomNodeList nl4 = RangeJustNode.childNodes();
+                               for (qint32 l = 0; l < nl4.count(); l++)
+                               {
+                                   cJustData* pJustData;
+                                   QDomNode justNode = nl4.item(l);
+                                   QString justName = justNode.toElement().tagName();
 
-                        if (justName == "Phase")
-                            pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
+                                   pJustData = 0;
 
-                        if (justName == "Offset")
-                            pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
+                                   if (justName == "Gain")
+                                       pJustData = rngPtr->getJustData()->m_pGainCorrection;
 
-                        if (pJustData)
-                        {
-                            QDomNodeList nl4 = justNode.childNodes();
-                            for (qint32 k = 0; k < nl4.count(); k++)
-                            {
-                                QDomNode jTypeNode = nl4.item(k);
-                                QString jTypeName = jTypeNode.toElement().tagName();
-                                QString jdata = jTypeNode.toElement().text();
+                                   if (justName == "Phase")
+                                       pJustData = rngPtr->getJustData()->m_pPhaseCorrection;
 
-                                if (jTypeName == "Status")
-                                    pJustData->DeserializeStatus(jdata);
+                                   if (justName == "Offset")
+                                       pJustData = rngPtr->getJustData()->m_pOffsetCorrection;
 
-                                if (jTypeName == "Coefficients")
-                                    pJustData->DeserializeCoefficients(jdata);
+                                   if (pJustData)
+                                   {
+                                       QDomNodeList nl4 = justNode.childNodes();
+                                       for (qint32 k = 0; k < nl4.count(); k++)
+                                       {
+                                           QDomNode jTypeNode = nl4.item(k);
+                                           QString jTypeName = jTypeNode.toElement().tagName();
+                                           QString jdata = jTypeNode.toElement().text();
 
-                                if (jTypeName == "Nodes")
-                                    pJustData->DeserializeCoefficients(jdata);
-                            }
-                        }
+                                           if (jTypeName == "Status")
+                                               pJustData->DeserializeStatus(jdata);
+
+                                           if (jTypeName == "Coefficients")
+                                               pJustData->DeserializeCoefficients(jdata);
+
+                                           if (jTypeName == "Nodes")
+                                               pJustData->DeserializeCoefficients(jdata);
+                                       }
+                                   }
+                               }
+                           }
+                       }
                     }
                 }
             }
