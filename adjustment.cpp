@@ -394,7 +394,8 @@ bool cAdjustment::importJDataXML(QString &file)
         {
             if ( VersionNrOK && SerialNrOK && DateOK && TimeOK)
             {
-                QDomNodeList nl2=e.elementsByTagName ("Adjustment") ;
+                //QDomNodeList nl2=e.elementsByTagName ("Adjustment") ;
+                QDomNodeList nl2=e.childNodes();
                 for (quint32 j=0;j<nl2.length();j++)
                 {
                     bool done;
