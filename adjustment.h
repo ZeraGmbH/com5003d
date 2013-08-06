@@ -1,6 +1,8 @@
 #ifndef ADJUSTMENT_H
 #define ADJUSTMENT_H
 
+#include "adjxml.h"
+
 namespace Adjustment
 {
 enum jDataStatus
@@ -14,10 +16,9 @@ enum jDataStatus
 
 class QString;
 class cAdjFlash;
-class cAdjXML;
 class cSystemInfo;
 
-class cAdjustment
+class cAdjustment: public cAdjXML
 {
 public:
     cAdjustment(cSystemInfo* sInfo, QString& devNode, quint8 dlevel, quint8 adr); //
@@ -25,6 +26,8 @@ public:
     bool importJDataFlash();
     bool exportJDataXML(QString& file);
     bool importJDataXML(QString& file);
+    virtual void exportAdjData(QDomDocument& doc, QDomElement& qde);
+    virtual bool importAdjData(QDomNode& node);
     void addAdjFlashObject(cAdjFlash* obj);
     void addAdjXMLObject(cAdjXML* obj);
     quint8 getAdjustmentStatus();

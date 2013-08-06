@@ -25,6 +25,7 @@ extern cATMEL* pAtmel;
 cAdjustment::cAdjustment(cSystemInfo* sInfo, QString &devNode, quint8 dlevel, quint8 adr)
     :m_pSystemInfo(sInfo), m_sDeviceNode(devNode), m_nDebugLevel(dlevel), m_nI2CAdr(adr)
 {
+    m_AdjXMLList.append(this);
 }
 
 
@@ -423,6 +424,23 @@ bool cAdjustment::importJDataXML(QString &file)
 
     }
 
+    return true;
+}
+
+
+void cAdjustment::exportAdjData(QDomDocument &doc, QDomElement &qde)
+{
+}
+
+
+bool cAdjustment::importAdjData(QDomNode &node)
+{
+    bool ok;
+
+    if (node.toElement().tagName() != "Chksum") // data not for us
+        return false;
+
+    m_nChecksum = node.toElement().text().toInt(&ok);
     return true;
 }
 
