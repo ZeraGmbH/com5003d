@@ -1,4 +1,5 @@
 #include <QDataStream>
+#include <QDebug>
 #include <QString>
 #include <math.h>
 #include <scpi.h>
