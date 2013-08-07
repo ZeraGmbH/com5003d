@@ -55,6 +55,7 @@ void cJustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient3);
     m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode0);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -66,6 +67,8 @@ void cJustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode3);
     m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+
 }
 
 
