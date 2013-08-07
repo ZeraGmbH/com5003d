@@ -1,5 +1,4 @@
 #include <QDataStream>
-#include <QDebug>
 #include <QString>
 
 #include "justnode.h"
@@ -34,7 +33,6 @@ QString cJustNode::Serialize()
 
 void cJustNode::Deserialize(const QString& s)
 {
-    qDebug() << s;
     m_fCorrection = s.section( ';',0,0).toDouble();
     m_fArgument = s.section( ';',1,1).toDouble();
 }
