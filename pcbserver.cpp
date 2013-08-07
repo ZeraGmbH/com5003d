@@ -58,11 +58,12 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     m_sInput = QString::fromUtf8(cmd.data(),cmd.size());
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
+        m_sOutput = QString("nyet;"); // only gets output in case of program error
         if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
-            m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+                m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
     }
     else
-        m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+        m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
 
     QByteArray block;
     block = m_sOutput.toUtf8();
