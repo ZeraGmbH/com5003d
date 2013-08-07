@@ -191,7 +191,7 @@ QString cJustData::m_ReadWriteJustNode(QString &sInput, quint8 index)
 
     if (cmd.isQuery())
     {
-        return QString("%1;").arg(getNode(index)->Serialize());
+        return QString("%1").arg(getNode(index)->Serialize());
     }
     else
     {
@@ -304,9 +304,10 @@ void cJustData::DeserializeNodes(const QString& s)
 
 bool cJustData::setNode(int index, cJustNode jn) // // !!! setting node sequence is relevant !!!
 {
-    if (index <= m_nOrder)
+    if (index < m_nOrder)
     {
         int i;
+        if (index < (m_nOrder-1))
         for (i = index; i < m_nOrder; i++)
             m_pJustNode[i] = jn;
         return true;
