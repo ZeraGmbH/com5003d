@@ -285,6 +285,7 @@ void cJustData::DeserializeStatus(const QString &s)
 
 void cJustData::DeserializeCoefficients(const QString& s) 
 {	
+    qDebug() << s;
     int i;
     for (i = 0; i < m_nOrder; i++)
         m_pCoefficient[i] = s.section(';',i,i).toDouble();
@@ -293,8 +294,8 @@ void cJustData::DeserializeCoefficients(const QString& s)
 
 void cJustData::DeserializeNodes(const QString& s)
 {
+    qDebug() << s;
     int i;
-    QString t;
     for (i = 0; i < m_nOrder; i++)
         m_pJustNode[i].Deserialize(s.section(';',i,i));
 }
