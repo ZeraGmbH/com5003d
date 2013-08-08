@@ -80,8 +80,8 @@ enum enConfFlags { blAutoIncr = 1, blReadCommandsAvail = 2};
 
 
 struct blInfo {
-    ulong ConfigurationFlags;
-    quint32 MemPageSize;
+    quint16 ConfigurationFlags;
+    quint16 MemPageSize;
     uchar AdressPointerSize;
 };
 
