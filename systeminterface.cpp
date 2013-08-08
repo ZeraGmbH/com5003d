@@ -30,7 +30,7 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"DEVICE", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionDevice);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionPCB);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery | SCPI::isCmdwP, scpiInterface, SystemSystem::cmdVersionPCB);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "CTRL", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionCTRL);
@@ -39,7 +39,7 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "FPGA", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionFPGA);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery, scpiInterface, SystemSystem::cmdSerialNumber);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, SystemSystem::cmdSerialNumber);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "BOOTLOADER", SCPI::isCmd, scpiInterface, SystemSystem::cmdUpdateControlerBootloader);
@@ -196,8 +196,8 @@ QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
             QString Version = cmd.getParam(0);
             ret = pAtmel->writePCBVersion(Version);
         }
-        else
-            m_genAnswer(ret, s);
+
+        m_genAnswer(ret, s);
     }
 
     return s;
@@ -261,8 +261,8 @@ QString cSystemInterface::m_ReadWriteSerialNumber(QString &sInput)
             QString Serial = cmd.getParam(0);
             ret = pAtmel->writeSerialNumber(Serial);
         }
-        else
-            m_genAnswer(ret, s);
+
+        m_genAnswer(ret, s);
     }
 
     return s;
