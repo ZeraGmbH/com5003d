@@ -195,6 +195,7 @@ QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
         {
             QString Version = cmd.getParam(0);
             ret = pAtmel->writePCBVersion(Version);
+            m_pSystemInfo->getSystemInfo(); // read back info
         }
 
         m_genAnswer(ret, s);
@@ -260,6 +261,7 @@ QString cSystemInterface::m_ReadWriteSerialNumber(QString &sInput)
         {
             QString Serial = cmd.getParam(0);
             ret = pAtmel->writeSerialNumber(Serial);
+            m_pSystemInfo->getSystemInfo(); // read back info
         }
 
         m_genAnswer(ret, s);
