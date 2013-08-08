@@ -134,7 +134,7 @@ atmelRM cATMEL::loadEEprom(cIntelHexFileIO &ihxFIO)
 atmelRM cATMEL::readChannelStatus(quint8 channel, quint8 &stat)
 {
     quint8 PAR[1];
-    quint8 answ[2];
+    char answ[2];
 
     struct hw_cmd CMD = { cmdcode: hwGetStatus, device: channel, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
 
@@ -155,7 +155,7 @@ atmelRM cATMEL::readRange(quint8 channel, quint8 &range)
 
     struct hw_cmd CMD = { cmdcode: hwGetRange, device: channel, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
 
-    quint8 answ[2];
+    char answ[2];
 
     if ( ( (rlen = writeCommand(&CMD)) == 2) && (CMD.RM == 0) && (readOutput(answ,rlen) == rlen) )
     {
@@ -190,7 +190,7 @@ atmelRM cATMEL::getEEPROMAccessEnable(bool &enable)
 
     if ( (writeCommand(&CMD) == 2) && (CMD.RM == 0))
     {
-        quint8 answ[2];
+        char answ[2];
         if (readOutput(answ,2) == 2)
             enable = (answ[0] != 0);
         return cmddone;
@@ -235,7 +235,7 @@ atmelRM cATMEL::mGetText(hw_cmdcode hwcmd, QString& answer)
 
     if ( ( (rlen = writeCommand(&CMD)) > 0) && (CMD.RM == 0))
     {
-        quint8 answ[rlen];
+        char answ[rlen];
         if (readOutput(answ,rlen) == rlen)
         {
             answ[rlen-1] = 0;
@@ -315,17 +315,17 @@ qint16 cATMEL::writeBootloaderCommand(bl_cmd* blc)
 }
 
 
-qint16 cATMEL::readOutput(quint8* data, quint16 dlen)
+qint16 cATMEL::readOutput(char* data, quint16 dlen)
 {
     int rlen = -1; // return value ; < 0 means error
 
-    struct i2c_msg Msgs = {addr :m_nI2CAdr, flags: I2C_M_RD,len: dlen,buf: data}; // 1 message
+    struct i2c_msg Msgs = {addr :m_nI2CAdr, flags: I2C_M_RD,len: dlen,buf: (uchar*) data}; // 1 message
     struct i2c_rdwr_ioctl_data comData = {  msgs: &Msgs, nmsgs: 1 };
 
     if DEBUG2 syslog(LOG_INFO,"i2c readoutput %d bytes from i2cslave at 0x%x",dlen+1, m_nI2CAdr);
     if (! I2CTransfer(m_sI2CDevNode,m_nI2CAdr,m_nDebugLevel,&comData)) // if no error
     {
-        if (data[dlen-1] == myCRCGenerator.CalcBlockCRC(data, dlen-1) )
+        if (data[dlen-1] == myCRCGenerator.CalcBlockCRC((quint8*) data, dlen-1) )
         rlen = dlen;
      }
      else
@@ -398,13 +398,13 @@ atmelRM cATMEL::loadMemory(bl_cmdcode blwriteCmd, cIntelHexFileIO& ihxFIO)
     if ( (dlen > 5) && (blInfoCMD.RM == 0) ) // we must get at least 6 bytes
     { // we've got them and no error
         dlen++; // dlen is only data lenght but we also want the crc-byte
-        quint8 blInput[255];
+        char blInput[255];
         int read = readOutput(blInput, dlen);
         if ( read == dlen) // we got the reqired information from bootloader
         {
             blInfo BootloaderInfo;
             quint8* dest = (quint8*) &BootloaderInfo;
-            int pos = dlen; //strlen(blInput);
+            int pos = strlen(blInput);
             int i;
             for (i = 0; i < 4; i++)
                 dest[i ^ 1] = blInput[pos+1+i]; // little endian ... big endian

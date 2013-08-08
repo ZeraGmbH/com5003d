@@ -126,7 +126,7 @@ private:
     void GenBootloaderCommand(bl_cmd* blc);
     qint16 writeCommand(hw_cmd* hc); // return -1  on error else length info of answer we can get
     qint16 writeBootloaderCommand(bl_cmd* blc); // return -1  on error else length info of answer we can get
-    qint16 readOutput(quint8 *data, quint16 dlen); // return -1  on error else length info
+    qint16 readOutput(char *data, quint16 dlen); // return -1  on error else length info
     quint8* GenAdressPointerParameter(quint8 adresspointerSize, quint32 adr);
     atmelRM loadMemory(bl_cmdcode blwriteCmd, cIntelHexFileIO& ihxFIO);
 
