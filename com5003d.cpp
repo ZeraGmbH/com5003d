@@ -218,7 +218,7 @@ void cCOM5003dServer::doIdentAndRegister()
     m_pRMConnection->SendIdent(getName());
 
     for (int i = 0; i < resourceList.count(); i++)
-        resourceList.at(i)->registerResource(m_pRMConnection);
+        resourceList.at(i)->registerResource(m_pRMConnection, m_pETHSettings->getPort(server));
 }
 
 

@@ -398,15 +398,16 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
 }
 
 
-void cSenseInterface::registerResource(cRMConnection *rmConnection)
+void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     cSenseChannel* pChannel;
     for (int i = 0; i < 8; i++)
     {
         pChannel = m_ChannelList.at(i);
-        register1Resource(rmConnection, QString("SENSE;%1;;%2;")
+        register1Resource(rmConnection, QString("SENSE;%1;;%2;%3;")
                          .arg(pChannel->getName())
-                         .arg(pChannel->getDescription()));
+                         .arg(pChannel->getDescription())
+                         .arg(port));
     }
 }
 

@@ -42,7 +42,7 @@ public:
     virtual bool importAdjData(QString& s, QDataStream& stream);
     virtual void exportAdjData(QDomDocument& doc, QDomElement& qde); // the derived class exports adjdata beneath qdomelement
     virtual bool importAdjData(QDomNode& node);
-    virtual void registerResource(cRMConnection *rmConnection);
+    virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
 
 protected slots:

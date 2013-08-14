@@ -65,9 +65,9 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
 }
 
 
-void cSamplingInterface::registerResource(cRMConnection *rmConnection)
+void cSamplingInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
-    register1Resource(rmConnection, QString("SAMPLE;%1;;%2;").arg(m_sName).arg(m_sDescription));
+    register1Resource(rmConnection, QString("SAMPLE;%1;;%2;%3;").arg(m_sName).arg(m_sDescription).arg(port));
 }
 
 

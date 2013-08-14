@@ -14,7 +14,7 @@ class cResource
 public:
     cResource();
     virtual ~cResource();
-    virtual void registerResource(cRMConnection *rmConnection) = 0;
+    virtual void registerResource(cRMConnection *rmConnection, quint16 port) = 0;
     virtual void unregisterResource(cRMConnection *rmConnection) = 0;
 
 protected:

@@ -61,13 +61,13 @@ void cSourceInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInter
 }
 
 
-void cSourceInterface::registerResource(cRMConnection *rmConnection)
+void cSourceInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     cFPZChannel* pChannel;
     for (int i = 0; i < 4; i++)
     {
         pChannel = m_ChannelList.at(i);
-        register1Resource(rmConnection, QString("SOURCE;%1;;%2;").arg(pChannel->getName()).arg(pChannel->getDescription()));
+        register1Resource(rmConnection, QString("SOURCE;%1;;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
     }
 }
 

@@ -38,7 +38,7 @@ class cSamplingInterface:public cSCPIConnection, public cResource
 public:
     cSamplingInterface(cSamplingSettings* samplingSettings);
     virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
-    virtual void registerResource(cRMConnection *rmConnection);
+    virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
 
 protected slots:
