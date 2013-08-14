@@ -15,6 +15,7 @@ enum ethmember
 
 enum ethconfigstate
 {
+    setRMIPAdress,
     setServerPort,
     setRMPort
 };
@@ -34,12 +35,14 @@ class cETHSettings : public cXMLSettings
 
 public:
     cETHSettings(Zera::XMLConfig::cReader *xmlread);
+    QString getRMIPadr();
     quint16 getPort(ethmember member);
 
 public slots:
     virtual void configXMLInfo(QString key);
 
 private:
+    QString m_sRMIPAdr;
     quint16 m_nServerPort, m_nRMPort;
 };
 

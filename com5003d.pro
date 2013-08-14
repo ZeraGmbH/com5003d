@@ -8,11 +8,14 @@ QMAKE_CXXFLAGS += -O0
 
 LIBS +=  -lSCPI
 LIBS +=  -lzeranet
+LIBS +=  -lzeranetclient
 LIBS +=  -lzerai2c
 LIBS +=  -lzeramisc
 LIBS +=  -lzeraxmlconfig
 LIBS +=  -lzeramath
 LIBS +=  -lzeradev
+LIBS +=  -lprotobuf
+LIBS +=  -lzera-resourcemanager-protobuf
 
 
 CONFIG	+= qt debug
@@ -52,7 +55,8 @@ HEADERS	+= \
     adjflash.h \
     adjxml.h \
     adjustment.h \
-    systeminfo.h
+    systeminfo.h \
+    rmconnection.h
 
 SOURCES	+= \
 	main.cpp \
@@ -83,7 +87,8 @@ SOURCES	+= \
     sourceinterface.cpp \
     adjustment.cpp \
     systeminfo.cpp \
-    resource.cpp
+    resource.cpp \
+    rmconnection.cpp
 
 unix {
   UI_DIR = .ui

@@ -6,6 +6,9 @@
 	<connectivity>
 		<debuglevel>0</debuglevel>
 		<ethernet>
+			<ipadress>
+				<resourcemanager>192.168.6.124</resourcemanager>
+			</ipadress>	
 			<port>
 				<server>6307</server>
 				<resourcemanager>6312</resourcemanager>

@@ -33,7 +33,8 @@ public:
     cSourceInterface(cSourceSettings* sourceSettings);
     ~cSourceInterface();
     virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
-    virtual void registerResource(QDataStream& stream);
+    virtual void registerResource(cRMConnection *rmConnection);
+    virtual void unregisterResource(cRMConnection *rmConnection);
 
 protected slots:
     virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);

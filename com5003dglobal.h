@@ -33,7 +33,8 @@ enum ServerErrors
     parameterError,
     xsdfileError,
     xmlfileError,
-    atmelError
+    atmelError,
+    rmConnectionError
 };
 
 // wenn COM5003DDEBUG -> kein fork()

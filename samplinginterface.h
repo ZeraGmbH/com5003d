@@ -5,6 +5,7 @@
 #include <QList>
 
 #include "samplerange.h"
+#include "resource.h"
 
 namespace SamplingSystem
 {
@@ -28,15 +29,17 @@ enum Commands
 class QString;
 class cSCPIConnection;
 class cSamplingSettings;
+class cClientNetBase;
 
-
-class cSamplingInterface:public cSCPIConnection
+class cSamplingInterface:public cSCPIConnection, public cResource
 {
     Q_OBJECT
 
 public:
     cSamplingInterface(cSamplingSettings* samplingSettings);
     virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    virtual void registerResource(cRMConnection *rmConnection);
+    virtual void unregisterResource(cRMConnection *rmConnection);
 
 protected slots:
     virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);

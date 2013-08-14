@@ -16,6 +16,7 @@ cSamplingInterface::cSamplingInterface(cSamplingSettings *samplingSettings)
 
     mySettings = samplingSettings->getChannelSettings();
     m_sName = "s0";
+    m_sDescription = "Samplingsytem base frequency 10Hz..400Hz";
     m_sIdent = mySettings.at(0)->m_sIdent;
     m_bAvail = mySettings.at(0)->m_bAvail;
     m_sVersion = SamplingSystem::Version;
@@ -61,6 +62,18 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     for (int i = 0; i < m_SampleRangeList.count(); i++)
         m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName), scpiInterface);
 
+}
+
+
+void cSamplingInterface::registerResource(cRMConnection *rmConnection)
+{
+    register1Resource(rmConnection, QString("SAMPLE;%1;;%2;").arg(m_sName).arg(m_sDescription));
+}
+
+
+void cSamplingInterface::unregisterResource(cRMConnection *rmConnection)
+{
+    unregister1Resource(rmConnection, QString("SAMPLE;%1;").arg(m_sName));
 }
 
 

@@ -7,6 +7,7 @@
 #include <QCoreApplication>
 #include <zeraserver.h>
 
+
 #include "com5003dglobal.h"
 #include "com5003d.h"
 #include "pcbserver.h"
@@ -26,6 +27,7 @@
 #include "atmel.h"
 #include "atmelwatcher.h"
 #include "adjustment.h"
+#include "rmconnection.h"
 
 
 cATMEL* pAtmel; // we take a static object for atmel connection
@@ -46,6 +48,7 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     m_pSenseInterface = 0;
     m_pSystemInfo = 0;
     m_pAdjHandler = 0;
+    m_pRMConnection = 0;
 
     m_pInitializationMachine = new QStateMachine(this);
 
@@ -54,14 +57,18 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
 
     stateCONF->addTransition(this, SIGNAL(abortInit()),stateFINISH); // from anywhere we arrive here if some error
 
-    QState* statexmlConfiguration = new QState(stateCONF);
-    QState* statewait4Atmel = new QState(stateCONF);
-    QState* statesetupServer = new QState(stateCONF);
+    QState* statexmlConfiguration = new QState(stateCONF); // we configure our server with xml file
+    QState* statewait4Atmel = new QState(stateCONF); // we snchronize on atmel running
+    QState* statesetupServer = new QState(stateCONF); // we setup our server now
+    QState* stateconnect2RM = new QState(stateCONF); // we connect to resource manager
+    QState* stateSendRMIdentandRegister = new QState(stateCONF); // we send ident. to rm and register our resources
 
     stateCONF->setInitialState(statexmlConfiguration);
-    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML()), statewait4Atmel);
 
+    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML()), statewait4Atmel);
     statewait4Atmel->addTransition(this, SIGNAL(atmelRunning()), statesetupServer);
+    statesetupServer->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
+    stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
 
     m_pInitializationMachine->addState(stateCONF);
     m_pInitializationMachine->addState(stateFINISH);
@@ -70,6 +77,10 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QObject::connect(statexmlConfiguration, SIGNAL(entered()), this, SLOT(doConfiguration()));
     QObject::connect(statewait4Atmel, SIGNAL(entered()), this, SLOT(doWait4Atmel()));
     QObject::connect(statesetupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
+    QObject::connect(stateconnect2RM, SIGNAL(entered()), this, SLOT(doConnect2RM()));
+    QObject::connect(stateSendRMIdentandRegister, SIGNAL(entered()), this, SLOT(doIdentAndRegister()));
+
+    QObject::connect(m_pRMConnection , SIGNAL(communicationError()), this, SIGNAL(abortInit()));
     QObject::connect(stateFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
     m_pInitializationMachine->start();
@@ -89,6 +100,7 @@ cCOM5003dServer::~cCOM5003dServer()
     if (m_pSystemInterface) delete m_pSystemInterface;
     if (m_pSystemInfo) delete m_pSystemInfo;
     if (m_pAdjHandler) delete m_pAdjHandler;
+    if (m_pRMConnection) delete m_pRMConnection;
 }
 
 
@@ -169,6 +181,10 @@ void cCOM5003dServer::doSetupServer()
     scpiConnectionList.append(m_pSamplingInterface = new cSamplingInterface(m_pSamplingSettings));
     scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(m_pSourceSettings));
 
+    resourceList.append(m_pSenseInterface); // all our resources
+    resourceList.append(m_pSamplingInterface);
+    resourceList.append(m_pSourceInterface);
+
     m_pAdjHandler->addAdjFlashObject(m_pSenseInterface); // we add the senseinterface to both
     m_pAdjHandler->addAdjXMLObject(m_pSenseInterface); // adjustment list (flash and xml)
     m_pAdjHandler->importJDataFlash(); // we read adjustmentdata at least once
@@ -176,12 +192,33 @@ void cCOM5003dServer::doSetupServer()
     initSCPIConnections();
 
     myServer->startServer(m_pETHSettings->getPort(server)); // and can start the server now
+
+    // our resource mananager connection
+    m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
+    connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
+
+    emit serverSetup(); // so we enter state machine's next state
 }
 
 
 void cCOM5003dServer::doCloseServer()
 {
     QCoreApplication::instance()->exit(m_nerror);
+}
+
+
+void cCOM5003dServer::doConnect2RM()
+{
+    m_pRMConnection->connect2RM();
+}
+
+
+void cCOM5003dServer::doIdentAndRegister()
+{
+    m_pRMConnection->SendIdent(getName());
+
+    for (int i = 0; i << resourceList.count(); i++)
+        resourceList.at(i)->registerResource(m_pRMConnection);
 }
 
 

@@ -159,12 +159,6 @@ quint8 cSenseInterface::getAdjustmentStatus()
 }
 
 
-void cSenseInterface::registerResource(QDataStream &stream)
-{
-
-}
-
-
 void cSenseInterface::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
 {
     switch (cmdCode)
@@ -401,6 +395,31 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
     }
 
     return true;
+}
+
+
+void cSenseInterface::registerResource(cRMConnection *rmConnection)
+{
+    cSenseChannel* pChannel;
+    for (int i = 0; i < 8; i++)
+    {
+        pChannel = m_ChannelList.at(i);
+        register1Resource(rmConnection, QString("SENSE;%1;;%2;")
+                         .arg(pChannel->getName())
+                         .arg(pChannel->getDescription()));
+    }
+}
+
+
+void cSenseInterface::unregisterResource(cRMConnection *rmConnection)
+{
+    cSenseChannel* pChannel;
+    for (int i = 0; i < 8; i++)
+    {
+        pChannel = m_ChannelList.at(i);
+        unregister1Resource(rmConnection, QString("SENSE;%1;")
+                         .arg(pChannel->getName()));
+    }
 }
 
 

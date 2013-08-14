@@ -8,10 +8,17 @@
 cETHSettings::cETHSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
+    m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:ipadress:resourcemanager"] = setRMIPAdress;
     m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:server"] = setServerPort;
     m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:resourcemanager"] = setRMPort;
     m_nServerPort = defaultServerPort;
     m_nRMPort = defaultRMPort;
+}
+
+
+QString cETHSettings::getRMIPadr()
+{
+    return m_sRMIPAdr;
 }
 
 
@@ -41,6 +48,9 @@ void cETHSettings::configXMLInfo(QString key)
     {
         switch (m_ConfigXMLMap[key])
         {
+        case setRMIPAdress:
+            m_sRMIPAdr = m_pXMLReader->getValue(key).toString();
+            break;
         case setServerPort:
             m_nServerPort = m_pXMLReader->getValue(key).toInt(&ok);
             break;

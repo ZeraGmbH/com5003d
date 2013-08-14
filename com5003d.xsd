@@ -17,6 +17,12 @@
 	</xs:simpleType>
 
 
+	<xs:simpleType name="ipadresstype">
+		<xs:restriction base="xs:string">
+			<xs:pattern value = '\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'/>
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:simpleType name="nodetype">
 		<xs:restriction base="xs:string"/>
 	</xs:simpleType>
@@ -60,11 +66,18 @@
 			<xs:element name="ethernet">
 				<xs:complexType>
 					<xs:sequence>
+						<xs:element name="ipadress">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="resourcemanager" type="ipadresstype"/>
+								</xs:sequence>
+							</xs:complexType>		
+						</xs:element>	
 						<xs:element name="port">
 							<xs:complexType>
 								<xs:sequence>
 									<xs:element name="server" type="porttype"/>
-								<xs:element name="resourcemanager" type="porttype"/>
+									<xs:element name="resourcemanager" type="porttype"/>
 								</xs:sequence>	
 							</xs:complexType>	
 						</xs:element>

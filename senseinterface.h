@@ -25,6 +25,7 @@ enum Commands
 
 class cSenseSettings;
 class QDataStream;
+class cClientNetBase;
 
 
 class cSenseInterface : public cSCPIConnection, public cAdjFlash, public cAdjXML, public cResource
@@ -37,11 +38,12 @@ public:
     virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
     cSenseChannel* getChannel(QString& name);
     quint8 getAdjustmentStatus(); // we return 0 if not adj. else 1
-    virtual void registerResource(QDataStream& stream);
     virtual void exportAdjData(QDataStream& stream);
     virtual bool importAdjData(QString& s, QDataStream& stream);
     virtual void exportAdjData(QDomDocument& doc, QDomElement& qde); // the derived class exports adjdata beneath qdomelement
     virtual bool importAdjData(QDomNode& node);
+    virtual void registerResource(cRMConnection *rmConnection);
+    virtual void unregisterResource(cRMConnection *rmConnection);
 
 protected slots:
     virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);

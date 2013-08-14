@@ -61,9 +61,27 @@ void cSourceInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInter
 }
 
 
-void cSourceInterface::registerResource(QDataStream &stream)
+void cSourceInterface::registerResource(cRMConnection *rmConnection)
 {
+    cFPZChannel* pChannel;
+    for (int i = 0; i < 4; i++)
+    {
+        pChannel = m_ChannelList.at(i);
+        register1Resource(rmConnection, QString("SOURCE;%1;;%2;").arg(pChannel->getName()).arg(pChannel->getDescription()));
+    }
 }
+
+
+void cSourceInterface::unregisterResource(cRMConnection *rmConnection)
+{
+    cFPZChannel* pChannel;
+    for (int i = 0; i < 4; i++)
+    {
+        pChannel = m_ChannelList.at(i);
+        unregister1Resource(rmConnection, QString("SOURCE;%1;").arg(pChannel->getName()));
+    }
+}
+
 
 
 void cSourceInterface::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
@@ -106,15 +124,6 @@ QString cSourceInterface::m_ReadSourceChannelCatalog(QString &sInput)
         return SCPI::scpiAnswer[SCPI::nak];
 }
 
-/*
-void cSenseInterface::registerResource(QDataStream &stream)
-{
-    for (int i = 0; i < m_ChannelList.count(); i++)
-        if (m_ChannelList.at(i)->isAvail() )
-            stream << QString("RESOURCE:ADD SENSE;%1;;%2").arg(m_ChannelList.at(i)->getName()
-                                                      .arg((m_ChannelList.at(i)->getDescription());
-}
-*/
 
 
 

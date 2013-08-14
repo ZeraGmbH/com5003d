@@ -4,6 +4,7 @@
 #ifndef COM5003D_H
 #define COM5003D_H
 
+#include <QAbstractSocket>
 #include "pcbserver.h"
 
 class QStateMachine;
@@ -22,6 +23,7 @@ class cSourceInterface;
 class cSystemInfo;
 class cAdjustment;
 class cAtmelWatcher;
+class cRMConnection;
 
 
 class cCOM5003dServer: public cPCBServer
@@ -47,6 +49,7 @@ public:
     cSourceInterface* m_pSourceInterface;
     cSystemInfo* m_pSystemInfo;
     cAdjustment* m_pAdjHandler;
+    cRMConnection* m_pRMConnection;
 
 
 signals:
@@ -54,6 +57,7 @@ signals:
     void confStarting();
     void confFinished();
     void atmelRunning();
+    void serverSetup();
 
 private:
     QStateMachine* m_pInitializationMachine;
@@ -65,6 +69,8 @@ private slots:
     void doWait4Atmel();
     void doSetupServer();
     void doCloseServer();
+    void doConnect2RM();
+    void doIdentAndRegister();
 };
 
 

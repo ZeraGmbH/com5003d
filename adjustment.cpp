@@ -29,6 +29,11 @@ cAdjustment::cAdjustment(cSystemInfo* sInfo, QString &devNode, quint8 dlevel, qu
 }
 
 
+cAdjustment::~cAdjustment()
+{
+}
+
+
 bool cAdjustment::exportJDataFlash()
 {
    quint32 count=0;

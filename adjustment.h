@@ -22,6 +22,7 @@ class cAdjustment: public cAdjXML
 {
 public:
     cAdjustment(cSystemInfo* sInfo, QString& devNode, quint8 dlevel, quint8 adr); //
+    virtual ~cAdjustment();
     bool exportJDataFlash();
     bool importJDataFlash();
     bool exportJDataXML(QString& file);
