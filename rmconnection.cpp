@@ -38,7 +38,7 @@ void cRMConnection::SendCommand(QString &cmd, QString &par)
 
 void cRMConnection::tcpErrorHandler(QAbstractSocket::SocketError errorCode)
 {
-    if (DEBUG1) syslog(LOG_ERR,"tcp sockket error resource manager port: %d\n",errorCode);
+    if (DEBUG1) syslog(LOG_ERR,"tcp socket error resource manager port: %d\n",errorCode);
     emit connectionRMError();
 }
 
@@ -49,10 +49,20 @@ void cRMConnection::responseHandler(QByteArray message)
     if (answer.ParseFromArray(message, message.count()))
     {
         if ( !(answer.has_reply() && answer.reply().rtype() == answer.reply().ACK))
-           emit connectionRMError();
+        {
+            if (DEBUG1)
+            {
+                QByteArray ba = m_sCommand.toLocal8Bit();
+                syslog(LOG_ERR,"command: %s, was not acknowledged\n", ba.data() );
+            }
+            emit connectionRMError();
+        }
     }
     else
+    {
+        if (DEBUG1) syslog(LOG_ERR,"answer from resource manager not protobuf \n");
         emit connectionRMError();
+    }
 }
 
 
