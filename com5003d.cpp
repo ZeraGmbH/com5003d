@@ -48,7 +48,11 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     m_pSenseInterface = 0;
     m_pSystemInfo = 0;
     m_pAdjHandler = 0;
-    m_pRMConnection = 0;
+
+    // our resource mananager connection
+    m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
+    connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
+    QObject::connect(m_pRMConnection , SIGNAL(communicationError()), this, SIGNAL(abortInit()));
 
     m_pInitializationMachine = new QStateMachine(this);
 
@@ -79,8 +83,6 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QObject::connect(statesetupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
     QObject::connect(stateconnect2RM, SIGNAL(entered()), this, SLOT(doConnect2RM()));
     QObject::connect(stateSendRMIdentandRegister, SIGNAL(entered()), this, SLOT(doIdentAndRegister()));
-
-    QObject::connect(m_pRMConnection , SIGNAL(communicationError()), this, SIGNAL(abortInit()));
     QObject::connect(stateFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
     m_pInitializationMachine->start();
@@ -192,10 +194,6 @@ void cCOM5003dServer::doSetupServer()
     initSCPIConnections();
 
     myServer->startServer(m_pETHSettings->getPort(server)); // and can start the server now
-
-    // our resource mananager connection
-    m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
-    connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
 
     emit serverSetup(); // so we enter state machine's next state
 }
