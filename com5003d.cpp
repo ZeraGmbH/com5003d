@@ -49,11 +49,6 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     m_pSystemInfo = 0;
     m_pAdjHandler = 0;
 
-    // our resource mananager connection
-    m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
-    connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
-    QObject::connect(m_pRMConnection , SIGNAL(communicationError()), this, SIGNAL(abortInit()));
-
     m_pInitializationMachine = new QStateMachine(this);
 
     QState* stateCONF = new QState(); // we start from here
@@ -64,15 +59,14 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QState* statexmlConfiguration = new QState(stateCONF); // we configure our server with xml file
     QState* statewait4Atmel = new QState(stateCONF); // we snchronize on atmel running
     QState* statesetupServer = new QState(stateCONF); // we setup our server now
-    QState* stateconnect2RM = new QState(stateCONF); // we connect to resource manager
-    QState* stateSendRMIdentandRegister = new QState(stateCONF); // we send ident. to rm and register our resources
+    stateconnect2RM = new QState(stateCONF); // we connect to resource manager
+    stateSendRMIdentandRegister = new QState(stateCONF); // we send ident. to rm and register our resources
 
     stateCONF->setInitialState(statexmlConfiguration);
 
     statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML()), statewait4Atmel);
     statewait4Atmel->addTransition(this, SIGNAL(atmelRunning()), statesetupServer);
     statesetupServer->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
-    stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
 
     m_pInitializationMachine->addState(stateCONF);
     m_pInitializationMachine->addState(stateFINISH);
@@ -194,6 +188,14 @@ void cCOM5003dServer::doSetupServer()
     initSCPIConnections();
 
     myServer->startServer(m_pETHSettings->getPort(server)); // and can start the server now
+
+    // our resource mananager connection must be opened after configuration is done
+    m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
+    connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
+    connect(m_pRMConnection , SIGNAL(communicationError()), this, SIGNAL(abortInit()));
+    // so we must complete our state machine here
+    stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
+
 
     emit serverSetup(); // so we enter state machine's next state
 }

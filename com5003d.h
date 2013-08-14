@@ -8,6 +8,7 @@
 #include "pcbserver.h"
 
 class QStateMachine;
+class QState;
 class cDebugSettings;
 class cFPGASettings;
 class cI2CSettings;
@@ -61,6 +62,8 @@ signals:
 
 private:
     QStateMachine* m_pInitializationMachine;
+    QState* stateconnect2RM;
+    QState* stateSendRMIdentandRegister;
     cAtmelWatcher* m_pAtmelWatcher;
     quint8 m_nerror;
 
