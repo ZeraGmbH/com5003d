@@ -217,8 +217,7 @@ void cCOM5003dServer::doIdentAndRegister()
 {
     m_pRMConnection->SendIdent(getName());
 
-    qDebug() << resourceList.count();
-    for (int i = 0; i << resourceList.count(); i++)
+    for (int i = 0; i < resourceList.count(); i++)
         resourceList.at(i)->registerResource(m_pRMConnection);
 }
 
