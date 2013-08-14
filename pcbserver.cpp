@@ -1,6 +1,5 @@
 #include <QFile>
 #include <QByteArray>
-#include <QDataStream>
 #include <QTextCodec>
 #include <QList>
 #include <QString>
@@ -78,11 +77,3 @@ void cPCBServer::initSCPIConnections()
 }
 
 
-void cPCBServer::registerResources()
-{
-/*
-    QDataStream stream(resourceManagerSocket); //
-    for (int i = 0; i < resourceList.count(); i++)
-        resourceList.at(i)->registerResource(stream);
-*/
-}

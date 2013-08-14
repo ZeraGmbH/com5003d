@@ -74,7 +74,6 @@ signals:
 
 protected:
     void initSCPIConnections();
-    void registerResources();
     Zera::Net::cServer* myServer; // the real server that does the communication job
     Zera::XMLConfig::cReader* myXMLConfigReader; // the xml configurator
     QString m_sConfigurationPath;
