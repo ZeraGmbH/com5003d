@@ -192,7 +192,6 @@ void cCOM5003dServer::doSetupServer()
     // our resource mananager connection must be opened after configuration is done
     m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
     connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
-    connect(m_pRMConnection , SIGNAL(communicationError()), this, SIGNAL(abortInit()));
     // so we must complete our state machine here
     stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
 
