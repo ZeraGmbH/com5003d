@@ -208,6 +208,7 @@ void cCOM5003dServer::doCloseServer()
 
 void cCOM5003dServer::doConnect2RM()
 {
+    m_nerror = rmConnectionError; // preset error condition
     m_pRMConnection->connect2RM();
 }
 
