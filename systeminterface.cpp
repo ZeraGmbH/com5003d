@@ -69,6 +69,9 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "CHKSUM", SCPI::isQuery, scpiInterface, SystemSystem::cmdAdjFlashChksum);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:INTERFACE").arg(leadingNodes), "READ", SCPI::isQuery, scpiInterface, SystemSystem::cmdInterfaceRead);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
 }
 
 
@@ -120,6 +123,9 @@ void cSystemInterface::executeCommand(int cmdCode, QString &sInput, QString &sOu
         break;
     case SystemSystem::cmdAdjFlashChksum:
         sOutput = m_AdjFlashChksum(sInput);
+        break;
+    case SystemSystem::cmdInterfaceRead:
+        sOutput = m_InterfaceRead(sInput);
         break;
     }
 
@@ -425,6 +431,21 @@ QString cSystemInterface::m_AdjFlashChksum(QString &sInput)
     if (cmd.isQuery())
     {
         QString s = QString("%1").arg(m_pAdjHandler->getAdjustmentStatus());
+        return s;
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSystemInterface::m_InterfaceRead(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        QString s;
+        m_pMyServer->getSCPIInterface()->exportSCPIModelXML(s);
         return s;
     }
     else

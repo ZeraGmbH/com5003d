@@ -34,6 +34,12 @@ QString &cPCBServer::getVersion()
 }
 
 
+cSCPI *cPCBServer::getSCPIInterface()
+{
+    return m_pSCPInterface;
+}
+
+
 void cPCBServer::setupServer()
 {
     m_pSCPInterface = new cSCPI(m_sServerName); // our scpi interface

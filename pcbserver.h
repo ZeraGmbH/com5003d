@@ -64,6 +64,7 @@ public:
       */
     QString& getName();
     QString& getVersion();
+    cSCPI* getSCPIInterface();
 
     cStatusInterface* m_pStatusInterface;
 
