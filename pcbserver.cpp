@@ -51,7 +51,7 @@ void cPCBServer::setupServer()
 void cPCBServer::establishNewConnection(Zera::Net::cClient *newClient)
 {
     connect(newClient,SIGNAL(messageReceived(QByteArray)),this,SLOT(executeCommand(QByteArray)));
-    connect(this, SIGNAL(sendAnswer(QByteArray)),newClient,SLOT(writeClient(QByteArray)));
+//    connect(this, SIGNAL(sendAnswer(QByteArray)),newClient,SLOT(writeClient(QByteArray)));
 }
 
 
@@ -60,6 +60,7 @@ void cPCBServer::executeCommand(const QByteArray cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
+    Zera::Net::cClient* client = qobject_cast<Zera::Net::cClient*>(sender());
     m_sInput = QString::fromUtf8(cmd.data(),cmd.size());
     if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
@@ -72,7 +73,9 @@ void cPCBServer::executeCommand(const QByteArray cmd)
 
     QByteArray block;
     block = m_sOutput.toUtf8();
-    emit sendAnswer(block);
+    //emit sendAnswer(block);
+    if (client)
+        client->writeClient(block);
 }
 
 
