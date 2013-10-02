@@ -66,6 +66,7 @@ private:
     QState* stateSendRMIdentandRegister;
     cAtmelWatcher* m_pAtmelWatcher;
     quint8 m_nerror;
+    int m_nFPGAfd;
 
 private slots:
     void doConfiguration();

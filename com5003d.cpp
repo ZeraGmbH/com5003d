@@ -6,7 +6,8 @@
 #include <xmlconfigreader.h>
 #include <QCoreApplication>
 #include <zeraserver.h>
-
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "com5003dglobal.h"
 #include "com5003d.h"
@@ -111,6 +112,12 @@ void cCOM5003dServer::doConfiguration()
     }
     else
     {
+        m_nFPGAfd = open("/dev/zFPGA1reg",O_RDWR);
+        lseek(m_nFPGAfd,0x0,0);
+        quint32 sigStart = 0;
+        write(m_nFPGAfd,(char*) &sigStart, 4);
+        sigStart = 1;
+        write(m_nFPGAfd,(char*) &sigStart, 4);
         if (myXMLConfigReader->loadSchema(defaultXSDFile))
         {
             // we want to initialize all settings first
@@ -147,6 +154,9 @@ void cCOM5003dServer::doConfiguration()
             m_nerror = xsdfileError;
             emit abortInit();
         }
+
+        sigStart = 2;
+        write(m_nFPGAfd,(char*) &sigStart, 4);
     }
 }
 
