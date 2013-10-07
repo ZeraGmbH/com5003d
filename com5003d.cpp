@@ -49,6 +49,7 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     m_pSenseInterface = 0;
     m_pSystemInfo = 0;
     m_pAdjHandler = 0;
+    m_pRMConnection = 0;
 
     m_pInitializationMachine = new QStateMachine(this);
 
@@ -95,6 +96,7 @@ cCOM5003dServer::~cCOM5003dServer()
     if (m_pAtmelWatcher) delete m_pAtmelWatcher;
     if (m_pStatusInterface) delete m_pStatusInterface;
     if (m_pSystemInterface) delete m_pSystemInterface;
+    if (m_pSenseInterface) delete m_pSenseInterface;
     if (m_pSystemInfo) delete m_pSystemInfo;
     if (m_pAdjHandler) delete m_pAdjHandler;
     if (m_pRMConnection) delete m_pRMConnection;
