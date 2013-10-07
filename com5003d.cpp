@@ -162,6 +162,7 @@ void cCOM5003dServer::doConfiguration()
 
         sigStart = 2;
         write(m_nFPGAfd,(char*) &sigStart, 4);
+        close(m_nFPGAfd);
     }
 }
 
