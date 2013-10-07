@@ -104,6 +104,8 @@ cCOM5003dServer::~cCOM5003dServer()
 void cCOM5003dServer::doConfiguration()
 {
     QStringList args;
+    quint32 sigStart;
+
     args = QCoreApplication::instance()->arguments();
     if (args.count() != 2) // we want exactly 1 parameter
     {
@@ -112,12 +114,7 @@ void cCOM5003dServer::doConfiguration()
     }
     else
     {
-        m_nFPGAfd = open("/dev/zFPGA1reg",O_RDWR);
-        lseek(m_nFPGAfd,0x0,0);
-        quint32 sigStart = 0;
-        write(m_nFPGAfd,(char*) &sigStart, 4);
-        sigStart = 1;
-        write(m_nFPGAfd,(char*) &sigStart, 4);
+
         if (myXMLConfigReader->loadSchema(defaultXSDFile))
         {
             // we want to initialize all settings first
@@ -138,6 +135,12 @@ void cCOM5003dServer::doConfiguration()
 
             QString s = args.at(1);
             qDebug() << s;
+            m_nFPGAfd = open("/dev/zFPGA1reg",O_RDWR);
+            lseek(m_nFPGAfd,0x0,0);
+            sigStart = 0;
+            write(m_nFPGAfd,(char*) &sigStart, 4);
+            sigStart = 1;
+            write(m_nFPGAfd,(char*) &sigStart, 4);
             if (myXMLConfigReader->loadXML(s)) // the first parameter should be the filename
             {
                 // xmlfile ok -> nothing to do .. the configreader will emit all configuration
