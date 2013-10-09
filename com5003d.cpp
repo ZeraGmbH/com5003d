@@ -66,7 +66,8 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
 
     stateCONF->setInitialState(statexmlConfiguration);
 
-    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML()), statewait4Atmel);
+
+    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML(bool)), statewait4Atmel);
     statewait4Atmel->addTransition(this, SIGNAL(atmelRunning()), statesetupServer);
     statesetupServer->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
 
