@@ -17,7 +17,7 @@ cSamplingInterface::cSamplingInterface(cSamplingSettings *samplingSettings)
     mySettings = samplingSettings->getChannelSettings();
     m_sName = "s0";
     m_sDescription = "Samplingsytem base frequency 10Hz..400Hz";
-    m_sIdent = mySettings.at(0)->m_sIdent;
+    m_sAlias = mySettings.at(0)->m_sAlias;
     m_bAvail = mySettings.at(0)->m_bAvail;
     m_sVersion = SamplingSystem::Version;
     m_nType = 0;
@@ -40,7 +40,7 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     delegate = new cSCPIDelegate(QString("%1SAMPLE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelIdent);
+    delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelAlias);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelType);
@@ -87,8 +87,8 @@ void cSamplingInterface::executeCommand(int cmdCode, QString &sInput, QString &s
     case SamplingSystem::cmdChannelCat:
         sOutput = m_ReadSamplingChannelCatalog(sInput);
         break;
-    case SamplingSystem::cmdChannelIdent:
-        sOutput = m_ReadIdent(sInput);
+    case SamplingSystem::cmdChannelAlias:
+        sOutput = m_ReadAlias(sInput);
         break;
     case SamplingSystem::cmdChannelType:
         sOutput = m_ReadType(sInput);
@@ -131,12 +131,12 @@ QString cSamplingInterface::m_ReadSamplingChannelCatalog(QString &sInput)
 }
 
 
-QString cSamplingInterface::m_ReadIdent(QString &sInput)
+QString cSamplingInterface::m_ReadAlias(QString &sInput)
 {
      cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_sIdent);
+        return QString("%1;").arg(m_sAlias);
     else
         return SCPI::scpiAnswer[SCPI::nak]+";";
 }

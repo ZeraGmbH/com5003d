@@ -16,7 +16,7 @@ enum Commands
 {
     cmdVersion,
     cmdChannelCat,
-    cmdChannelIdent,
+    cmdChannelAlias,
     cmdChannelType,
     cmdChannelMode,
     cmdChannelStatus,
@@ -47,7 +47,7 @@ protected slots:
 private:
     quint16 m_nType;
     QString m_sVersion;
-    QString m_sIdent;
+    QString m_sAlias;
     QString m_sName; // the samplingsystem's name
     QString m_sDescription; // the samplingsystem's brief description
     bool m_bAvail; // is this sampling system available ?
@@ -55,7 +55,7 @@ private:
 
     QString m_ReadVersion(QString& sInput);
     QString m_ReadSamplingChannelCatalog(QString& sInput);
-    QString m_ReadIdent(QString&sInput);
+    QString m_ReadAlias(QString&sInput);
     QString m_ReadType(QString&sInput);
     QString m_ReadWriteMode(QString& sInput);
     QString m_ReadStatus(QString& sInput);

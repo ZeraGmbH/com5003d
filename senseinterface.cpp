@@ -8,8 +8,10 @@
 #include "scpiconnection.h"
 #include "resource.h"
 
+#include "com5003d.h"
 #include "justdata.h"
 #include "sensesettings.h"
+#include "ethsettings.h"
 #include "senseinterface.h"
 #include "sensechannel.h"
 #include "senserange.h"
@@ -17,29 +19,35 @@
 #include "adjflash.h"
 
 
-cSenseInterface::cSenseInterface(cSenseSettings *senseSettings)
+cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseSettings)
+    :m_pMyServer(server)
 {
     int i;
+
+    m_nMMode = SenseSystem::modeAC; // default ac measurement
+
     QList<SenseSystem::cChannelSettings*> mySettings;
 
     mySettings = senseSettings->getChannelSettings();
 
-    // our sense has 3 voltage and 3 current measuring channels
+    // default our sense has 3 voltage and 3 current measuring channels
     cSenseChannel* pChannel;
-    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(0), 0);
+    pChannel = new cSenseChannel(SenseSystem::sVoltageChannelDescription,"V", mySettings.at(0), 0);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(1), 1);
+    pChannel = new cSenseChannel(SenseSystem::sVoltageChannelDescription,"V", mySettings.at(1), 1);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..480V AC","V", mySettings.at(2), 2);
+    pChannel = new cSenseChannel(SenseSystem::sVoltageChannelDescription,"V", mySettings.at(2), 2);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(3), 3);
+    pChannel = new cSenseChannel(SenseSystem::sCurrentChannelDescription,"A", mySettings.at(3), 3);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(4), 4);
+    pChannel = new cSenseChannel(SenseSystem::sCurrentChannelDescription,"A", mySettings.at(4), 4);
     m_ChannelList.append(pChannel);
-    pChannel = new cSenseChannel("Measuring channel 0..160A AC","A", mySettings.at(5), 5);
+    pChannel = new cSenseChannel(SenseSystem::sCurrentChannelDescription,"A", mySettings.at(5), 5);
     m_ChannelList.append(pChannel);
 
+    // no it doesn't have, the above will be changed if necessary
     // and 6 reference channels
+    /*
     pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(6), 6);
     m_ChannelList.append(pChannel);
     pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(7), 7);
@@ -52,43 +60,50 @@ cSenseInterface::cSenseInterface(cSenseSettings *senseSettings)
     m_ChannelList.append(pChannel);
     pChannel = new cSenseChannel("Reference channel 0..10V DC","V", mySettings.at(11), 11);
     m_ChannelList.append(pChannel);
+    */
 
     QList<cSenseRange*> rngList;
 
     for (i = 0; i < 3; i++)
     {
         rngList.clear();
-        rngList.append(new cSenseRange("480V",480.0,4712563.0, 0, SenseRange::Phys));
-        rngList.append(new cSenseRange("240V",240.0,4712563.0, 1, SenseRange::Phys));
-        rngList.append(new cSenseRange("120V",120.0,4712563.0, 2, SenseRange::Phys));
-        rngList.append(new cSenseRange("60V",60.0,4859831.0, 3, SenseRange::Phys));
-        rngList.append(new cSenseRange("15V",15.0,4712563.0, 4, SenseRange::Phys));
-        rngList.append(new cSenseRange("5V",5.0,4712563.0, 5, SenseRange::Phys));
+        rngList.append(new cSenseRange("480V", "480V", true, 480.0, 4712563.0, 5655075.0, 0, SenseRange::Phys));
+        rngList.append(new cSenseRange("240V", "240V", true, 240.0, 4712563.0, 5655075.0, 1, SenseRange::Phys));
+        rngList.append(new cSenseRange("120V", "120V", true, 120.0, 4712563.0, 5655075.0, 2, SenseRange::Phys));
+        rngList.append(new cSenseRange("60V" , "60V" , true, 60.0 , 4859831.0, 5831797.0, 3, SenseRange::Phys));
+        rngList.append(new cSenseRange("15V" , "15V" , true, 15.0 , 4712563.0, 5655075.0, 4, SenseRange::Phys));
+        rngList.append(new cSenseRange("5V"  , "5V"  , true, 5.0  , 4712563.0, 5655075.0, 5, SenseRange::Phys));
 
+        rngList.append(new cSenseRange("0V" , "0V" , false, 10.0, 5005789.0, 6006947.0, 14, SenseRange::Phys));
+        rngList.append(new cSenseRange("10V", "10V", false, 10.0, 5005789.0, 6006947.0, 15, SenseRange::Phys));
         m_ChannelList.at(i)->setRangeList(rngList);
     }
 
     for (i = 3; i < 6; i++)
     {
         rngList.clear();
-        rngList.append(new cSenseRange("160A",160.0,5005789.0, 0, SenseRange::Phys));
-        rngList.append(new cSenseRange("100A",100.0,4692928.0, 1, SenseRange::Phys));
-        rngList.append(new cSenseRange("50A",100.0,4692928.0, 2, SenseRange::Phys));
-        rngList.append(new cSenseRange("25A",25.0,4692928.0, 3, SenseRange::Phys));
-        rngList.append(new cSenseRange("10A",10.0,4692928.0, 4, SenseRange::Phys));
-        rngList.append(new cSenseRange("2.5A",2.5,4692928.0, 5, SenseRange::Phys));
-        rngList.append(new cSenseRange("1.0A",1.0,4692928.0, 6, SenseRange::Phys));
-        rngList.append(new cSenseRange("500mA",0.5,4692928.0, 7, SenseRange::Phys));
-        rngList.append(new cSenseRange("250mA",0.25,4692928.0, 8, SenseRange::Phys));
-        rngList.append(new cSenseRange("100mA",0.1,4692928.0, 9, SenseRange::Phys));
-        rngList.append(new cSenseRange("50mA",0.05,4692928.0, 10, SenseRange::Phys));
-        rngList.append(new cSenseRange("25mA",0.025,4692928.0, 11, SenseRange::Phys));
-        rngList.append(new cSenseRange("10mA",0.01,4692928.0, 12, SenseRange::Phys));
-        rngList.append(new cSenseRange("5mA",0.005,4692928.0, 13, SenseRange::Phys));
+        rngList.append(new cSenseRange("160A" ,"160A" , true, 160.0,5005789.0, 6006947.0, 0 , SenseRange::Phys));
+        rngList.append(new cSenseRange("100A" ,"100A" , true, 100.0,4692928.0, 5631514.0, 1 , SenseRange::Phys));
+        rngList.append(new cSenseRange("50A"  ,"50A"  , true, 100.0,4692928.0, 5631514.0, 2 , SenseRange::Phys));
+        rngList.append(new cSenseRange("25A"  ,"25A"  , true, 25.0 ,4692928.0, 5631514.0, 3 , SenseRange::Phys));
+        rngList.append(new cSenseRange("10A"  ,"10A"  , true, 10.0 ,4692928.0, 5631514.0, 4 , SenseRange::Phys));
+        rngList.append(new cSenseRange("2.5A" ,"2.5A" , true, 2.5  ,4692928.0, 5631514.0, 5 , SenseRange::Phys));
+        rngList.append(new cSenseRange("1.0A" ,"1.0A" , true, 1.0  ,4692928.0, 5631514.0, 6 , SenseRange::Phys));
+        rngList.append(new cSenseRange("500mA","500mA", true, 0.5  ,4692928.0, 5631514.0, 7 , SenseRange::Phys));
+        rngList.append(new cSenseRange("250mA","250mA", true, 0.25 ,4692928.0, 5631514.0, 8 , SenseRange::Phys));
+        rngList.append(new cSenseRange("100mA","100mA", true, 0.1  ,4692928.0, 5631514.0, 9 , SenseRange::Phys));
+        rngList.append(new cSenseRange("50mA" ,"50mA" , true, 0.05 ,4692928.0, 5631514.0, 10, SenseRange::Phys));
+        rngList.append(new cSenseRange("25mA" ,"25mA" , true, 0.025,4692928.0, 5631514.0, 11, SenseRange::Phys));
+        rngList.append(new cSenseRange("10mA" ,"10mA" , true, 0.01 ,4692928.0, 5631514.0, 12, SenseRange::Phys));
+        rngList.append(new cSenseRange("5mA"  ,"5mA"  , true, 0.005,4692928.0, 5631514.0, 13, SenseRange::Phys));
+
+        rngList.append(new cSenseRange("0V" , "0V" , false, 10.0, 5005789.0, 6006947.0, 14, SenseRange::Phys));
+        rngList.append(new cSenseRange("10V", "10V", false, 10.0, 5005789.0, 6006947.0, 15, SenseRange::Phys));
 
         m_ChannelList.at(i)->setRangeList(rngList);
     }
 
+    /*
     for (i = 6; i < 12; i++)
     {
         rngList.clear();
@@ -97,6 +112,7 @@ cSenseInterface::cSenseInterface(cSenseSettings *senseSettings)
 
         m_ChannelList.at(i)->setRangeList(rngList);
     }
+    */
 
     m_sVersion = SenseSystem::Version;
 }
@@ -123,6 +139,12 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInterf
         leadingNodes += ":";
 
     delegate = new cSCPIDelegate(QString("%1SENSE").arg(leadingNodes),"VERSION",SCPI::isQuery,scpiInterface, SenseSystem::cmdVersion);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1SENSE").arg(leadingNodes),"MMODE",SCPI::isQuery | SCPI::isCmdwP ,scpiInterface, SenseSystem::cmdMMode);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1SENSE:MMODE").arg(leadingNodes),"CATALOG",SCPI::isQuery,scpiInterface, SenseSystem::cmdMModeCat );
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SENSE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SenseSystem::cmdChannelCat);
@@ -170,6 +192,53 @@ void cSenseInterface::executeCommand(int cmdCode, QString &sInput, QString &sOut
         sOutput = m_ReadSenseChannelCatalog(sInput);
         break;
     }
+}
+
+
+void cSenseInterface::ChangeSenseMode()
+{
+    int i;
+    QString s;
+
+    unregisterResource(m_pMyServer->m_pRMConnection);
+
+    // first we change the channels units and descriptions
+    if (m_nMMode == SenseSystem::modeAC)
+    {
+        m_ChannelList.at(0)->setDescription(SenseSystem::sVoltageChannelDescription);
+        m_ChannelList.at(0)->setUnit(s = "V");
+        m_ChannelList.at(1)->setDescription(SenseSystem::sVoltageChannelDescription);
+        m_ChannelList.at(1)->setUnit(s = "V");
+        m_ChannelList.at(2)->setDescription(SenseSystem::sVoltageChannelDescription);
+        m_ChannelList.at(2)->setUnit(s = "V");
+
+        m_ChannelList.at(3)->setDescription(SenseSystem::sCurrentChannelDescription);
+        m_ChannelList.at(3)->setUnit(s = "A");
+        m_ChannelList.at(4)->setDescription(SenseSystem::sCurrentChannelDescription);
+        m_ChannelList.at(4)->setUnit(s = "A");
+        m_ChannelList.at(5)->setDescription(SenseSystem::sCurrentChannelDescription);
+        m_ChannelList.at(5)->setUnit(s = "A");
+    }
+    else
+    {
+        for (i = 0; i < m_ChannelList.count(); i++) // for each channel
+        {
+            m_ChannelList.at(i)->setDescription(SenseSystem::sReferenceChannelDescription);
+            m_ChannelList.at(i)->setUnit(s = "V");
+        }
+    }
+
+    // here we do the rest of reconfiguring
+    for (i = 0; i < m_ChannelList.count(); i++) // for each channel
+    {
+        m_ChannelList.at(i)->setMMode(m_nMMode); // this indirectly changes the channnels alias
+        QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
+        for (int j = 0; j < list.count(); j++ )
+            list.at(j)->setAvail( !list.at(j)->getAvail()); // we only toggle the ranges avail
+
+    }
+
+    registerResource(m_pMyServer->m_pRMConnection, m_pMyServer->m_pETHSettings->getPort(server));
 }
 
 
@@ -401,7 +470,7 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
 void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     cSenseChannel* pChannel;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 6; i++)
     {
         pChannel = m_ChannelList.at(i);
         register1Resource(rmConnection, QString("SENSE;%1;;%2;%3;")
@@ -415,7 +484,7 @@ void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port
 void cSenseInterface::unregisterResource(cRMConnection *rmConnection)
 {
     cSenseChannel* pChannel;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 6; i++)
     {
         pChannel = m_ChannelList.at(i);
         unregister1Resource(rmConnection, QString("SENSE;%1;")
@@ -432,6 +501,66 @@ QString cSenseInterface::m_ReadVersion(QString &sInput)
         return m_sVersion+";";
     else
         return SCPI::scpiAnswer[SCPI::nak]+";";
+}
+
+
+QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        return SenseSystem::sMMode[m_nMMode];
+
+    }
+    else
+    {
+        if (cmd.isCommand(1))
+        {
+            QString mode = cmd.getParam(0);
+
+            quint8 oldMode = m_nMMode;
+
+            if (mode == SenseSystem::sMMode[SenseSystem::modeAC] )
+            {
+                m_nMMode = 0;
+                if (oldMode != m_nMMode)
+                    ChangeSenseMode();
+                return SCPI::scpiAnswer[SCPI::ack]+";";
+
+            }
+
+            if (mode == SenseSystem::sMMode[SenseSystem::modeREF] )
+            {
+                m_nMMode = 1;
+                if (oldMode != m_nMMode)
+                    ChangeSenseMode();
+                return SCPI::scpiAnswer[SCPI::ack]+";";
+            }
+
+            return SCPI::scpiAnswer[SCPI::nak]+";";
+        }
+    }
+
+    return SCPI::scpiAnswer[SCPI::nak]+";";
+
+}
+
+
+QString cSenseInterface::m_ReadMModeCatalog(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        QString s;
+        for (int i = 0; i < SenseSystem::modeAnz; i++ )
+            s += SenseSystem::sMMode[i] + ";";
+        return s;
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak]+";";
+
 }
 
 

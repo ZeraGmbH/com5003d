@@ -18,11 +18,25 @@ const QString Version = "V1.00";
 enum Commands
 {
     cmdVersion,
+    cmdMMode,
+    cmdMModeCat,
     cmdChannelCat
 };
+
+enum MMode
+{
+    modeAC,
+    modeREF,
+    modeAnz
+};
+
+const QString sVoltageChannelDescription = "Measuring channel 0..480V AC";
+const QString sCurrentChannelDescription = "Measuring channel 0..160A AC";
+const QString sReferenceChannelDescription = "Reference channel 0..10V DC";
+const QString sMMode[2] = {"AC", "REF"};
 }
 
-
+class cCOM5003dServer;
 class cSenseSettings;
 class QDataStream;
 class cClientNetBase;
@@ -33,7 +47,7 @@ class cSenseInterface : public cSCPIConnection, public cAdjFlash, public cAdjXML
     Q_OBJECT
 
 public:
-    cSenseInterface(cSenseSettings* senseSettings);
+    cSenseInterface(cCOM5003dServer* server,cSenseSettings* senseSettings);
     ~cSenseInterface();
     virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
     cSenseChannel* getChannel(QString& name);
@@ -49,10 +63,16 @@ protected slots:
     virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
 
 private:
+    cCOM5003dServer* m_pMyServer;
     QList<cSenseChannel*> m_ChannelList;
     QString m_sVersion;
+    quint8 m_nMMode;
+
+    void ChangeSenseMode();
 
     QString m_ReadVersion(QString& sInput);
+    QString m_ReadWriteMModeVersion(QString& sInput);
+    QString m_ReadMModeCatalog(QString& sInput);
     QString m_ReadSenseChannelCatalog(QString& sInput);
 };
 

@@ -16,10 +16,12 @@ cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cCh
     :m_sDescription(description), m_sUnit(unit)
 {
     m_sName = QString("m%1").arg(nr);
-    m_sIdent = cSettings->m_sIdent;
+    m_sAlias[0] = cSettings->m_sAlias[0];
+    m_sAlias[1] = cSettings->m_sAlias[1];
     m_nCtrlChannel = cSettings->m_nCtrlChannel;
     m_nDspChannel = cSettings->m_nDspChannel;
     m_bAvail = cSettings->avail;
+    m_nMMode = SenseChannel::modeAC; // the default
 }
 
 
@@ -38,7 +40,7 @@ void cSenseChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterfac
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, SenseChannel::cmdIdent);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, SenseChannel::cmdAlias);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, SenseChannel::cmdType);
@@ -69,8 +71,8 @@ void cSenseChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutpu
 {
     switch (cmdCode)
     {
-    case SenseChannel::cmdIdent:
-        sOutput = m_ReadIdent(sInput);
+    case SenseChannel::cmdAlias:
+        sOutput = m_ReadAlias(sInput);
         break;
     case SenseChannel::cmdType:
         sOutput = m_ReadType(sInput);
@@ -136,9 +138,12 @@ QString &cSenseChannel::getName()
 }
 
 
-QString &cSenseChannel::getIdent()
+QString &cSenseChannel::getAlias()
 {
-    return m_sIdent;
+    if (m_nMMode == 0)
+        return m_sAlias[0];
+    else
+        return m_sAlias[1];
 }
 
 
@@ -148,18 +153,41 @@ QString &cSenseChannel::getDescription()
 }
 
 
+void cSenseChannel::setDescription(const QString &s)
+{
+    m_sDescription = s;
+}
+
+
+void cSenseChannel::setUnit(QString &s)
+{
+    m_sUnit = s;
+}
+
+
+void cSenseChannel::setMMode(int m)
+{
+    m_nMMode = m;
+}
+
+
 bool cSenseChannel::isAvail()
 {
     return m_bAvail;
 }
 
 
-QString cSenseChannel::m_ReadIdent(QString &sInput)
+QString cSenseChannel::m_ReadAlias(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sIdent+";";
+    {
+        if (m_nMMode == 0)
+            return m_sAlias[0]+";";
+        else
+            return m_sAlias[1]+";";
+    }
     else
         return SCPI::scpiAnswer[SCPI::nak]+";";
 }

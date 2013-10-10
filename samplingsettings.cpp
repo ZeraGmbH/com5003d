@@ -9,7 +9,7 @@ cSamplingSettings::cSamplingSettings(Zera::XMLConfig::cReader *xmlread)
     SamplingSystem::cChannelSettings* settings = new SamplingSystem::cChannelSettings;
     m_ChannelSettingsList.append(settings);
 
-    m_ConfigXMLMap["com5003dconfig:resource:sample:s0:ident"] = SamplingSystem::cfgIdent;
+    m_ConfigXMLMap["com5003dconfig:resource:sample:s0:alias"] = SamplingSystem::cfgAlias;
     m_ConfigXMLMap["com5003dconfigresource:sample:s0:avail"] = SamplingSystem::cfgAvail;
 }
 
@@ -33,11 +33,11 @@ void cSamplingSettings::configXMLInfo(QString key)
     {
         switch (m_ConfigXMLMap[key])
         {
-        case SamplingSystem::cfgIdent:
-            m_ChannelSettingsList.at(0)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SamplingSystem::cfgAlias:
+            m_ChannelSettingsList.at(0)->m_sAlias = m_pXMLReader->getValue(key);
             break;
         case SamplingSystem::cfgAvail:
-            m_ChannelSettingsList.at(0)->m_bAvail = m_pXMLReader->getValue(key).toBool();
+            m_ChannelSettingsList.at(0)->m_bAvail = (m_pXMLReader->getValue(key) == "true");
             break;
         }
     }

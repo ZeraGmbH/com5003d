@@ -10,10 +10,11 @@ cSenseSettings::cSenseSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
     SenseSystem::cChannelSettings *settings;
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 6; i++)
     {
         m_ChannelSettingsList.append(settings = new SenseSystem::cChannelSettings);
-        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ident").arg(i)] = SenseSystem::cfg0Ident + i;
+        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:alias1").arg(i)] = SenseSystem::cfg0Alias1 + i;
+        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:alias2").arg(i)] = SenseSystem::cfg0Alias2 + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ctrlchannel").arg(i)] = SenseSystem::cfg0ctrlchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:dspchannel").arg(i)] = SenseSystem::cfg0dspchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:avail").arg(i)] = SenseSystem::cfg0avail + i;
@@ -42,42 +43,44 @@ void cSenseSettings::configXMLInfo(QString key)
     {
         switch (m_ConfigXMLMap[key])
         {
-        case SenseSystem::cfg0Ident:
-            m_ChannelSettingsList.at(0)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg0Alias1:
+            m_ChannelSettingsList.at(0)->m_sAlias[0] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg1Ident:
-            m_ChannelSettingsList.at(1)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg1Alias1:
+            m_ChannelSettingsList.at(1)->m_sAlias[0] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg2Ident:
-            m_ChannelSettingsList.at(2)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg2Alias1:
+            m_ChannelSettingsList.at(2)->m_sAlias[0] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg3Ident:
-            m_ChannelSettingsList.at(3)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg3Alias1:
+            m_ChannelSettingsList.at(3)->m_sAlias[0] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg4Ident:
-            m_ChannelSettingsList.at(4)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg4Alias1:
+            m_ChannelSettingsList.at(4)->m_sAlias[0] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg5Ident:
-            m_ChannelSettingsList.at(5)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg5Alias1:
+            m_ChannelSettingsList.at(5)->m_sAlias[0] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg6Ident:
-            m_ChannelSettingsList.at(6)->m_sIdent = m_pXMLReader->getValue(key).toString();
+
+        case SenseSystem::cfg0Alias2:
+            m_ChannelSettingsList.at(0)->m_sAlias[1] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg7Ident:
-            m_ChannelSettingsList.at(7)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg1Alias2:
+            m_ChannelSettingsList.at(1)->m_sAlias[1] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg8Ident:
-            m_ChannelSettingsList.at(8)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg2Alias2:
+            m_ChannelSettingsList.at(2)->m_sAlias[1] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg9Ident:
-            m_ChannelSettingsList.at(9)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg3Alias2:
+            m_ChannelSettingsList.at(3)->m_sAlias[1] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg10Ident:
-            m_ChannelSettingsList.at(10)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg4Alias2:
+            m_ChannelSettingsList.at(4)->m_sAlias[1] = m_pXMLReader->getValue(key);
             break;
-        case SenseSystem::cfg11Ident:
-            m_ChannelSettingsList.at(11)->m_sIdent = m_pXMLReader->getValue(key).toString();
+        case SenseSystem::cfg5Alias2:
+            m_ChannelSettingsList.at(5)->m_sAlias[1] = m_pXMLReader->getValue(key);
             break;
+
         case SenseSystem::cfg0ctrlchannel:
             m_ChannelSettingsList.at(0)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
             break;
@@ -96,24 +99,7 @@ void cSenseSettings::configXMLInfo(QString key)
         case SenseSystem::cfg5ctrlchannel:
             m_ChannelSettingsList.at(5)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
             break;
-        case SenseSystem::cfg6ctrlchannel:
-            m_ChannelSettingsList.at(6)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg7ctrlchannel:
-            m_ChannelSettingsList.at(7)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg8ctrlchannel:
-            m_ChannelSettingsList.at(8)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg9ctrlchannel:
-            m_ChannelSettingsList.at(9)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg10ctrlchannel:
-            m_ChannelSettingsList.at(10)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg11ctrlchannel:
-            m_ChannelSettingsList.at(11)->m_nCtrlChannel = m_pXMLReader->getValue(key).toInt(&ok);
-            break;
+
         case SenseSystem::cfg0dspchannel:
             m_ChannelSettingsList.at(0)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
             break;
@@ -132,60 +118,26 @@ void cSenseSettings::configXMLInfo(QString key)
         case SenseSystem::cfg5dspchannel:
             m_ChannelSettingsList.at(5)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
             break;
-        case SenseSystem::cfg6dspchannel:
-            m_ChannelSettingsList.at(6)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg7dspchannel:
-            m_ChannelSettingsList.at(7)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg8dspchannel:
-            m_ChannelSettingsList.at(8)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg9dspchannel:
-            m_ChannelSettingsList.at(9)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg10dspchannel:
-            m_ChannelSettingsList.at(10)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case SenseSystem::cfg11dspchannel:
-            m_ChannelSettingsList.at(11)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
+
         case SenseSystem::cfg0avail:
-            m_ChannelSettingsList.at(0)->avail = m_pXMLReader->getValue(key).toBool();
+            m_ChannelSettingsList.at(0)->avail = (m_pXMLReader->getValue(key) == "true");
             break;
         case SenseSystem::cfg1avail:
-            m_ChannelSettingsList.at(1)->avail = m_pXMLReader->getValue(key).toBool();
+            m_ChannelSettingsList.at(1)->avail = (m_pXMLReader->getValue(key) == "true");
             break;
         case SenseSystem::cfg2avail:
-            m_ChannelSettingsList.at(2)->avail = m_pXMLReader->getValue(key).toBool();
+            m_ChannelSettingsList.at(2)->avail = (m_pXMLReader->getValue(key) == "true");
             break;
         case SenseSystem::cfg3avail:
-            m_ChannelSettingsList.at(3)->avail = m_pXMLReader->getValue(key).toBool();
+            m_ChannelSettingsList.at(3)->avail = (m_pXMLReader->getValue(key) == "true");
             break;
         case SenseSystem::cfg4avail:
-            m_ChannelSettingsList.at(4)->avail = m_pXMLReader->getValue(key).toBool();
+            m_ChannelSettingsList.at(4)->avail = (m_pXMLReader->getValue(key) == "true");
             break;
         case SenseSystem::cfg5avail:
-            m_ChannelSettingsList.at(5)->avail = m_pXMLReader->getValue(key).toBool();
+            m_ChannelSettingsList.at(5)->avail = (m_pXMLReader->getValue(key) == "true");
             break;
-        case SenseSystem::cfg6avail:
-            m_ChannelSettingsList.at(6)->avail = m_pXMLReader->getValue(key).toBool();
-            break;
-        case SenseSystem::cfg7avail:
-            m_ChannelSettingsList.at(7)->avail = m_pXMLReader->getValue(key).toBool();
-            break;
-        case SenseSystem::cfg8avail:
-            m_ChannelSettingsList.at(8)->avail = m_pXMLReader->getValue(key).toBool();
-            break;
-        case SenseSystem::cfg9avail:
-            m_ChannelSettingsList.at(9)->avail = m_pXMLReader->getValue(key).toBool();
-            break;
-        case SenseSystem::cfg10avail:
-            m_ChannelSettingsList.at(10)->avail = m_pXMLReader->getValue(key).toBool();
-            break;
-        case SenseSystem::cfg11avail:
-            m_ChannelSettingsList.at(11)->avail = m_pXMLReader->getValue(key).toBool();
-            break;
+
         }
     }
 }

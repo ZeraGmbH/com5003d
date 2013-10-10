@@ -12,7 +12,7 @@ cFPZChannel::cFPZChannel(QString description, quint8 nr, SourceSystem::cChannelS
     :m_sDescription(description)
 {
     m_sName = QString("fo%1").arg(nr);
-    m_sIdent = cSettings->m_sIdent;
+    m_sAlias = cSettings->m_sAlias;
     m_nDspServer = cSettings->m_nDspServerPort;
     m_nDspChannel = cSettings->m_nDspChannel;
     m_nType = 0;
@@ -28,7 +28,7 @@ void cFPZChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"IDENT", SCPI::isQuery, scpiInterface, FPZChannel::cmdIdent);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, FPZChannel::cmdAlias);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, FPZChannel::cmdType);
@@ -53,8 +53,8 @@ void cFPZChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
 {
     switch (cmdCode)
     {
-    case FPZChannel::cmdIdent:
-        sOutput = m_ReadIdent(sInput);
+    case FPZChannel::cmdAlias:
+        sOutput = m_ReadAlias(sInput);
         break;
     case FPZChannel::cmdType:
         sOutput = m_ReadType(sInput);
@@ -82,9 +82,9 @@ QString &cFPZChannel::getName()
 }
 
 
-QString &cFPZChannel::getIdent()
+QString &cFPZChannel::getAlias()
 {
-    return m_sIdent;
+    return m_sAlias;
 }
 
 
@@ -100,12 +100,12 @@ bool cFPZChannel::isAvail()
 }
 
 
-QString cFPZChannel::m_ReadIdent(QString &sInput)
+QString cFPZChannel::m_ReadAlias(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sIdent+";";
+        return m_sAlias+";";
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }

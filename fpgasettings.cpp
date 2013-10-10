@@ -23,6 +23,6 @@ void cFPGASettings::configXMLInfo(QString key)
 {
     if (m_ConfigXMLMap.contains(key))
     {
-        m_sDeviceNode = m_pXMLReader->getValue(key).toString();
+        m_sDeviceNode = m_pXMLReader->getValue(key);
     }
 }

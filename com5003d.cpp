@@ -201,7 +201,7 @@ void cCOM5003dServer::doSetupServer()
 
     scpiConnectionList.append(m_pStatusInterface = new cStatusInterface(m_pAdjHandler));
     scpiConnectionList.append(m_pSystemInterface = new cSystemInterface(this, m_pAdjHandler, m_pSystemInfo));
-    scpiConnectionList.append(m_pSenseInterface = new cSenseInterface(m_pSenseSettings));
+    scpiConnectionList.append(m_pSenseInterface = new cSenseInterface(this, m_pSenseSettings));
     scpiConnectionList.append(m_pSamplingInterface = new cSamplingInterface(m_pSamplingSettings));
     scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(m_pSourceSettings));
 

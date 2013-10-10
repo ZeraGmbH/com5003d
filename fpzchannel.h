@@ -10,7 +10,7 @@ namespace FPZChannel
 {
 enum Commands
 {
-    cmdIdent,
+    cmdAlias,
     cmdType,
     cmdDspServer,
     cmdDspChannel,
@@ -37,7 +37,7 @@ public:
     virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
 
     QString& getName();
-    QString& getIdent();
+    QString& getAlias();
     QString& getDescription();
     bool isAvail();
 
@@ -46,7 +46,7 @@ protected slots:
 
 private:
     QString m_sName; // the channel's name
-    QString m_sIdent;
+    QString m_sAlias;
     QString m_sDescription; // the channel's brief description
     quint16 m_nDspServer; // the dsp servers port
     quint8 m_nDspChannel; // where to find the channel's sampled data
@@ -54,7 +54,7 @@ private:
     double m_fFormFactor;
     bool m_bAvail; // is this channel available ?
 
-    QString m_ReadIdent(QString& sInput);
+    QString m_ReadAlias(QString& sInput);
     QString m_ReadType(QString& sInput);
     QString m_ReadDspServer(QString& sInput);
     QString m_ReadDspChannel(QString& sInput);

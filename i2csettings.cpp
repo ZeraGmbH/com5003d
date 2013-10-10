@@ -55,7 +55,7 @@ void cI2CSettings::configXMLInfo(QString key)
         switch (m_ConfigXMLMap[key])
         {
         case i2cSettings::SetDevNode:
-            m_sDeviceNode = m_pXMLReader->getValue(key).toString();
+            m_sDeviceNode = m_pXMLReader->getValue(key);
             break;
         case i2cSettings::SetMasterAdr:
             m_nMasterAdr = m_pXMLReader->getValue(key).toInt(&ok);
