@@ -188,6 +188,12 @@ void cSenseInterface::executeCommand(int cmdCode, QString &sInput, QString &sOut
     case SenseSystem::cmdVersion:
         sOutput = m_ReadVersion(sInput);
         break;
+    case SenseSystem::cmdMMode:
+        sOutput = m_ReadWriteMModeVersion(sInput);
+        break;
+    case SenseSystem::cmdMModeCat:
+        sOutput = m_ReadMModeCatalog(sInput);
+        break;
     case SenseSystem::cmdChannelCat:
         sOutput = m_ReadSenseChannelCatalog(sInput);
         break;
