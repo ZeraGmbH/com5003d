@@ -34,82 +34,52 @@
 	<resource>
 		<sense>
 			<m0>
-				<ident>UL1</ident>
+				<alias1>UL1</alias1>
+				<alias2>REF1</alias2>
 				<ctrlchannel>1</ctrlchannel>
 				<dspchannel>0</dspchannel>
 				<avail>true</avail>  
 			</m0>
 			<m1>
-				<ident>UL2</ident>
+				<alias1>UL2</alias1>
+				<alias2>REF2</alias2>
 				<ctrlchannel>2</ctrlchannel>
 				<dspchannel>1</dspchannel>
 				<avail>true</avail>  
 			</m1>
 			<m2>
-				<ident>UL3</ident>
+				<alias1>UL3</alias1>
+				<alias2>REF3</alias2>
 				<ctrlchannel>3</ctrlchannel>
 				<dspchannel>2</dspchannel>
 				<avail>true</avail>  
 			</m2>
 			<m3>
-				<ident>IL1</ident>
+				<alias1>IL1</alias1>
+				<alias2>REF4</alias2>
 				<ctrlchannel>4</ctrlchannel>
 				<dspchannel>3</dspchannel>
 				<avail>true</avail>  
 			</m3>
 			<m4>
-				<ident>IL2</ident>
+				<alias1>IL2</alias1>
+				<alias2>REF5</alias2>
 				<ctrlchannel>5</ctrlchannel>
 				<dspchannel>4</dspchannel>
 				<avail>true</avail>  
 			</m4>
 			<m5>
-				<ident>IL3</ident>
+				<alias1>IL3</alias1>
+				<alias2>REF6</alias2>
 				<ctrlchannel>6</ctrlchannel>
 				<dspchannel>5</dspchannel>
 				<avail>true</avail>  
 			</m5>
-			<m6>
-				<ident>REF1</ident>
-				<ctrlchannel>1</ctrlchannel>
-				<dspchannel>0</dspchannel>
-				<avail>true</avail>  
-			</m6>
-			<m7>
-				<ident>REF2</ident>
-				<ctrlchannel>2</ctrlchannel>
-				<dspchannel>1</dspchannel>
-				<avail>true</avail>  
-			</m7>
-			<m8>
-				<ident>REF3</ident>
-				<ctrlchannel>3</ctrlchannel>
-				<dspchannel>2</dspchannel>
-				<avail>true</avail>  
-			</m8>
-			<m9>
-				<ident>REF4</ident>
-				<ctrlchannel>4</ctrlchannel>
-				<dspchannel>3</dspchannel>
-				<avail>true</avail>  
-			</m9>
-			<m10>
-				<ident>REF5</ident>
-				<ctrlchannel>5</ctrlchannel>
-				<dspchannel>4</dspchannel>
-				<avail>true</avail>  
-			</m10>
-			<m11>
-				<ident>REF6</ident>
-				<ctrlchannel>6</ctrlchannel>
-				<dspchannel>5</dspchannel>
-				<avail>true</avail>  
-			</m11>
 		</sense>
 			
 		<sample>
 			<s0>
-				<ident>S0</ident>
+				<alias>S0</alias>
 				<avail>true</avail>
 			</s0>
 		</sample>
@@ -117,25 +87,25 @@
 		<source>	
 			<fpzout>
 				<fo0>
-					<ident>FPZ1</ident>
+					<alias>FPZ1</alias>
 					<dspserver>6310</dspserver>
 					<dspchannel>0</dspchannel>
 					<avail>true</avail>
 				</fo0>
 				<fo1>
-					<ident>FPZ2</ident>
+					<alias>FPZ2</alias>
 					<dspserver>6310</dspserver>
 					<dspchannel>1</dspchannel>
 					<avail>true</avail>
 				</fo1>
 				<fo2>
-					<ident>FPZ3</ident>
+					<alias>FPZ3</alias>
 					<dspserver>6310</dspserver>
 					<dspchannel>2</dspchannel>
 					<avail>true</avail>
 				</fo2>
 				<fo3>
-					<ident>FPZ4</ident>
+					<alias>FPZ4</alias>
 					<dspserver>6310</dspserver> 
 					<dspchannel>3</dspchannel>
 					<avail>true</avail>

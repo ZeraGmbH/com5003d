@@ -516,7 +516,7 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        return SenseSystem::sMMode[m_nMMode];
+        return SenseSystem::sMMode[m_nMMode]+";";
 
     }
     else
