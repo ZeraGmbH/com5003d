@@ -22,8 +22,8 @@ cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cCh
     m_nDspChannel = cSettings->m_nDspChannel;
     m_bAvail = cSettings->avail;
     m_nMMode = SenseChannel::modeAC; // the default
+    pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
 }
-
 
 
 cSenseChannel::~cSenseChannel()
