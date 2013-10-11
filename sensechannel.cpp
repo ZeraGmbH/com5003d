@@ -253,7 +253,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
     quint8 range, mode;
     cSCPICommand cmd = sInput;
 
-    if ( pAtmel->readMeasMode(range) == cmddone )
+    if ( pAtmel->readMeasMode(mode) == cmddone )
     {
         if (cmd.isQuery())
         {
@@ -289,7 +289,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
                 if ( (i < anz) && (m_RangeList.at(i)->getAvail()) )
                 {
                     // we know this range and it's available
-                    if (mode == SenseChannel::modeAC)
+                    if (m_nMMode == SenseChannel::modeAC)
                     {
                         if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
                             return SCPI::scpiAnswer[SCPI::ack]+";";
