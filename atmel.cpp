@@ -212,15 +212,71 @@ atmelRM cATMEL::setSamplingRange(quint8 srange)
 }
 
 
-atmelRM cATMEL::readSamplingMode(quint8& smode)
+atmelRM cATMEL::setMeasMode(quint8 mmode)
 {
+    quint8 PAR[1];
+    PAR[0] = mmode;
+
+    struct hw_cmd CMD = { cmdcode: hwSetMode, device: 0, par: PAR, plen: 1,cmdlen: 0,cmddata: 0, RM:0 };
+
+    if ( (writeCommand(&CMD) == 0) && (CMD.RM == 0) )
+        return cmddone;
+    else
+        return cmdexecfault;
+}
+
+
+atmelRM cATMEL::readMeasMode(quint8 &mmode)
+{
+    quint8 PAR[1];
+    mmode = 0; // default AC
+
+    struct hw_cmd CMD = { cmdcode: hwGetMode, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
+
+
+    if ( (writeCommand(&CMD) == 2) && (CMD.RM == 0))
+    {
+        char answ[2];
+        if (readOutput(answ,2) == 2)
+            mmode = answ[0];
+        return cmddone;
+    }
+
+    return cmdexecfault;
 
 }
 
 
-atmelRM cATMEL::setSamplingMode(quint8 smode)
+atmelRM cATMEL::setPLLChannel(quint8 chn)
 {
+        quint8 PAR[1];
+        PAR[0] = chn;
 
+        struct hw_cmd CMD = { cmdcode: hwSetPLLChannel, device: 0, par: PAR, plen: 1,cmdlen: 0,cmddata: 0, RM:0 };
+
+        if ( (writeCommand(&CMD) == 0) && (CMD.RM == 0) )
+            return cmddone;
+        else
+            return cmdexecfault;
+}
+
+
+atmelRM cATMEL::readPLLChannel(quint8& chn)
+{
+    quint8 PAR[1];
+    chn = 0; // default AC
+
+    struct hw_cmd CMD = { cmdcode: hwGetMode, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
+
+    if ( (writeCommand(&CMD) == 2) && (CMD.RM == 0))
+    {
+        char answ[2];
+        if (readOutput(answ,2) == 2)
+            chn = answ[0];
+                return cmddone;
+    }
+
+    return cmdexecfault;
 }
 
 

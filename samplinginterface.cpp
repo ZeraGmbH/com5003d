@@ -12,6 +12,14 @@ extern cATMEL* pAtmel;
 
 cSamplingInterface::cSamplingInterface(cSamplingSettings *samplingSettings)
 {
+    m_pllChannelList.append("0");
+    m_pllChannelList.append("m0");
+    m_pllChannelList.append("m1");
+    m_pllChannelList.append("m2");
+    m_pllChannelList.append("m3");
+    m_pllChannelList.append("m4");
+    m_pllChannelList.append("m5");
+
     QList<SamplingSystem::cChannelSettings*> mySettings;
 
     mySettings = samplingSettings->getChannelSettings();
@@ -46,9 +54,6 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelType);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"MODE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelMode);
-    m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -58,6 +63,17 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2:RANGE").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelRangeCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+
+    delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"PLL", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, SamplingSystem::cmdPLL);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1SAMPLE:PLL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdPLLCat);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+
+
+
+
 
     for (int i = 0; i < m_SampleRangeList.count(); i++)
         m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName), scpiInterface);
@@ -92,9 +108,6 @@ void cSamplingInterface::executeCommand(int cmdCode, QString &sInput, QString &s
         break;
     case SamplingSystem::cmdChannelType:
         sOutput = m_ReadType(sInput);
-        break;
-    case SamplingSystem::cmdChannelMode:
-        sOutput = m_ReadWriteMode(sInput);
         break;
     case SamplingSystem::cmdChannelStatus:
         sOutput = m_ReadStatus(sInput);
@@ -150,44 +163,6 @@ QString cSamplingInterface::m_ReadType(QString &sInput)
         return QString("%1;").arg(m_nType);
     else
         return SCPI::scpiAnswer[SCPI::nak]+";";
-}
-
-
-QString cSamplingInterface::m_ReadWriteMode(QString &sInput)
-{
-    quint8 sMode;
-    cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-    {
-        if (pAtmel->readSamplingMode(sMode) == cmddone)
-        {
-            return QString("%1;").arg(sMode);
-        }
-        else
-            return SCPI::scpiAnswer[SCPI::errexec]+";";
-    }
-    else
-    {
-        if (cmd.isCommand(1))
-        {
-            bool ok;
-            QString smode = cmd.getParam(0);
-            quint8 mode = smode.toInt(&ok);
-
-            if (ok && ((mode==0) || (mode==1)) )
-            {
-                if (pAtmel->setSamplingMode(mode) == cmddone)
-                    return SCPI::scpiAnswer[SCPI::ack]+";";
-                else
-                    return SCPI::scpiAnswer[SCPI::errexec]+";";
-            }
-            else
-                return SCPI::scpiAnswer[SCPI::nak]+";";
-        }
-        else
-            return SCPI::scpiAnswer[SCPI::nak]+";";
-    }
 }
 
 
@@ -263,6 +238,60 @@ QString cSamplingInterface::m_ReadSamplingRangeCatalog(QString &sInput)
     else
         return SCPI::scpiAnswer[SCPI::nak]+";";
 }
+
+
+QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
+{
+    int i;
+    quint8 pll;
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        if (pAtmel->readPLLChannel(pll) == cmddone)
+        {
+            if (pll < 7) // then everything is ok
+                return m_pllChannelList.at(pll);
+        }
+
+        return SCPI::scpiAnswer[SCPI::errexec]+";";
+    }
+    else
+    {
+        if (cmd.isCommand(1))
+        {
+            QString pllchn = cmd.getParam(0);
+            if ((pll = m_pllChannelList.indexOf(pllchn)) >= 0)
+            {
+                if (pAtmel->setPLLChannel(pll) == cmddone)
+                    return SCPI::scpiAnswer[SCPI::ack]+";";
+                else
+                    return SCPI::scpiAnswer[SCPI::errexec]+";";
+            }
+        }
+
+        return SCPI::scpiAnswer[SCPI::nak]+";";
+    }
+}
+
+
+QString cSamplingInterface::m_ReadPLLCatalog(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        QString s;
+        for (int i = 1; i < m_pllChannelList.count(); i++)
+            s += m_pllChannelList.at(i) + ";";
+
+        return s;
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak]+";";
+}
+
+
 
 
 

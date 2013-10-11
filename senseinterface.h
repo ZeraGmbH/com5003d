@@ -20,7 +20,8 @@ enum Commands
     cmdVersion,
     cmdMMode,
     cmdMModeCat,
-    cmdChannelCat
+    cmdChannelCat,
+    cmdGroupCat
 };
 
 enum MMode
@@ -74,6 +75,7 @@ private:
     QString m_ReadWriteMModeVersion(QString& sInput);
     QString m_ReadMModeCatalog(QString& sInput);
     QString m_ReadSenseChannelCatalog(QString& sInput);
+    QString m_ReadSenseGroupCatalog(QString& sInput);
 };
 
 #endif // SENSEINTERFACE_H

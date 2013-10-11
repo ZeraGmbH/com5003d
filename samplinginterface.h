@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QStringList>
 
 #include "samplerange.h"
 #include "resource.h"
@@ -18,10 +19,11 @@ enum Commands
     cmdChannelCat,
     cmdChannelAlias,
     cmdChannelType,
-    cmdChannelMode,
     cmdChannelStatus,
     cmdChannelRange,
-    cmdChannelRangeCat
+    cmdChannelRangeCat,
+    cmdPLL,
+    cmdPLLCat
 };
 
 }
@@ -52,15 +54,17 @@ private:
     QString m_sDescription; // the samplingsystem's brief description
     bool m_bAvail; // is this sampling system available ?
     QList<cSampleRange*> m_SampleRangeList;
+    QStringList m_pllChannelList;
 
     QString m_ReadVersion(QString& sInput);
     QString m_ReadSamplingChannelCatalog(QString& sInput);
     QString m_ReadAlias(QString&sInput);
     QString m_ReadType(QString&sInput);
-    QString m_ReadWriteMode(QString& sInput);
     QString m_ReadStatus(QString& sInput);
     QString m_ReadWriteSamplingRange(QString& sInput);
     QString m_ReadSamplingRangeCatalog(QString& sInput);
+    QString m_ReadWritePLL(QString& sInput);
+    QString m_ReadPLLCatalog(QString& sInput);
 };
 
 #endif // SAMPLINGINTERFACE_H

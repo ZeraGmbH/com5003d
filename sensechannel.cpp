@@ -250,42 +250,71 @@ QString cSenseChannel::m_ReadChannelStatus(QString &sInput)
 QString cSenseChannel::m_ReadWriteRange(QString &sInput)
 {
     int i;
-    quint8 range;
+    quint8 range, mode;
     cSCPICommand cmd = sInput;
 
-    if (cmd.isQuery())
+    if ( pAtmel->readMeasMode(range) == cmddone )
     {
-        if ( pAtmel->readRange(m_nCtrlChannel, range) == cmddone )
+        if (cmd.isQuery())
         {
-            for (i = 0; i < m_RangeList.count(); i++)
-                if (m_RangeList.at(i)->getSelCode() == range)
-                    break;
-            return m_RangeList.at(i)->getName()+";";
-        }
-        else
-            return SCPI::scpiAnswer[SCPI::errexec]+";";
-    }
-    else
-        if (cmd.isCommand(1))
-        {
-            QString rng = cmd.getParam(0);
-            int anz = m_RangeList.count();
-            for  (i = 0; i < anz; i++)
-                if (m_RangeList.at(i)->getName() == rng)
-                    break;
-            if (i < anz)
+            if (mode == SenseChannel::modeAC) // wir sind im normalberieb
             {
-                if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
-                    return SCPI::scpiAnswer[SCPI::ack]+";";
+                if ( pAtmel->readRange(m_nCtrlChannel, range) == cmddone )
+                {
+                    for (i = 0; i < m_RangeList.count(); i++)
+                        if (m_RangeList.at(i)->getSelCode() == range)
+                            break;
+                    return m_RangeList.at(i)->getName()+";";
+                }
                 else
                     return SCPI::scpiAnswer[SCPI::errexec]+";";
             }
             else
-                return SCPI::scpiAnswer[SCPI::nak]+";";
-
+            {
+                if (mode == 1)
+                    return "R0V;";
+                else
+                    return "R10V;";
+            }
         }
 
-    return SCPI::scpiAnswer[SCPI::nak]+";";
+        else
+            if (cmd.isCommand(1))
+            {
+                QString rng = cmd.getParam(0);
+                int anz = m_RangeList.count();
+                for  (i = 0; i < anz; i++)
+                    if (m_RangeList.at(i)->getName() == rng)
+                        break;
+                if ( (i < anz) && (m_RangeList.at(i)->getAvail()) )
+                {
+                    // we know this range and it's available
+                    if (mode == SenseChannel::modeAC)
+                    {
+                        if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
+                            return SCPI::scpiAnswer[SCPI::ack]+";";
+                        else
+                            return SCPI::scpiAnswer[SCPI::errexec]+";";
+                    }
+                    else
+                    {
+                        if (m_RangeList.at(i)->getName() == "R0V")
+                            pAtmel->setMeasMode(1);
+                        else
+                            pAtmel->setMeasMode(2);
+                    }
+
+                }
+                else
+                    return SCPI::scpiAnswer[SCPI::nak]+";";
+
+            }
+
+    }
+
+    else
+        return SCPI::scpiAnswer[SCPI::errexec]+";";
+
 }
 
 

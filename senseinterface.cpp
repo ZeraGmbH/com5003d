@@ -74,8 +74,8 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
         rngList.append(new cSenseRange("15V" , "15V" , true, 15.0 , 4712563.0, 5655075.0, 4, SenseRange::Phys));
         rngList.append(new cSenseRange("5V"  , "5V"  , true, 5.0  , 4712563.0, 5655075.0, 5, SenseRange::Phys));
 
-        rngList.append(new cSenseRange("0V" , "0V" , false, 10.0, 5005789.0, 6006947.0, 14, SenseRange::Phys));
-        rngList.append(new cSenseRange("10V", "10V", false, 10.0, 5005789.0, 6006947.0, 15, SenseRange::Phys));
+        rngList.append(new cSenseRange("R0V" , "R0V" , false, 10.0, 5005789.0, 6006947.0, 14, SenseRange::Phys));
+        rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 5005789.0, 6006947.0, 15, SenseRange::Phys));
         m_ChannelList.at(i)->setRangeList(rngList);
     }
 
@@ -97,8 +97,8 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
         rngList.append(new cSenseRange("10mA" ,"10mA" , true, 0.01 ,4692928.0, 5631514.0, 12, SenseRange::Phys));
         rngList.append(new cSenseRange("5mA"  ,"5mA"  , true, 0.005,4692928.0, 5631514.0, 13, SenseRange::Phys));
 
-        rngList.append(new cSenseRange("0V" , "0V" , false, 10.0, 5005789.0, 6006947.0, 14, SenseRange::Phys));
-        rngList.append(new cSenseRange("10V", "10V", false, 10.0, 5005789.0, 6006947.0, 15, SenseRange::Phys));
+        rngList.append(new cSenseRange("R0V" , "R0V" , false, 10.0, 5005789.0, 6006947.0, 14, SenseRange::Phys));
+        rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 5005789.0, 6006947.0, 15, SenseRange::Phys));
 
         m_ChannelList.at(i)->setRangeList(rngList);
     }
@@ -150,6 +150,9 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInterf
     delegate = new cSCPIDelegate(QString("%1SENSE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SenseSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1SENSE:GROUP").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SenseSystem::cmdGroupCat);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
 
     for (int i = 0; i < m_ChannelList.count(); i++)
         m_ChannelList.at(i)->initSCPIConnection(QString("%1SENSE").arg(leadingNodes),scpiInterface);
@@ -197,6 +200,10 @@ void cSenseInterface::executeCommand(int cmdCode, QString &sInput, QString &sOut
     case SenseSystem::cmdChannelCat:
         sOutput = m_ReadSenseChannelCatalog(sInput);
         break;
+    case SenseSystem::cmdGroupCat:
+        sOutput = m_ReadSenseGroupCatalog(sInput);
+        break;
+
     }
 }
 
@@ -579,6 +586,25 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
         QString s;
         for (int i = 0; i < m_ChannelList.count(); i++ )
             s += m_ChannelList.at(i)->getName() + ";";
+        return s;
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak]+";";
+}
+
+
+QString cSenseInterface::m_ReadSenseGroupCatalog(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        QString s;
+        if ( m_nMMode == SenseSystem::modeAC )
+            s = ";";
+        else
+            s = "m0,m1,m2,m3,m4,m5;";
+
         return s;
     }
     else

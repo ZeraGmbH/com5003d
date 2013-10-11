@@ -25,6 +25,8 @@ enum hw_cmdcode
 
     hwSetSeqMask = 0x1000,
     hwGetSeqMask = 0x1001,
+    hwSetPLLChannel = 0x1002,
+    hwGetPLLChannel = 0x1003,
     hwSetMode = 0x1004,
     hwGetMode = 0x1005,
     hwSetFrequency = 0x1006,
@@ -117,8 +119,10 @@ public:
     atmelRM getEEPROMAccessEnable(bool& enable);
     atmelRM readSamplingRange(quint8& srange);
     atmelRM setSamplingRange(quint8 srange);
-    atmelRM readSamplingMode(quint8& smode);
-    atmelRM setSamplingMode(quint8 smode);
+    atmelRM setMeasMode(quint8 mmode);
+    atmelRM readMeasMode(quint8& mmode);
+    atmelRM setPLLChannel(quint8 chn);
+    atmelRM readPLLChannel(quint8& chn);
 
 private:
     atmelRM mGetText(hw_cmdcode hwcmd,QString& answer);

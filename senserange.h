@@ -26,6 +26,8 @@ enum Commands
 };
 }
 
+class cATMEL;
+
 class cSenseRange:public cSCPIConnection
 {
     Q_OBJECT
@@ -42,10 +44,13 @@ public:
     bool getAvail();
     void setAvail(bool b);
 
+
 protected slots:
     virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
 
+
 private:
+    cATMEL* m_pATMEL;
     QString m_sName; // the range name
     QString m_sAlias; // the range alias name
     bool m_bAvail; // range io avail or not
