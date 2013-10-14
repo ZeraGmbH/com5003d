@@ -19,12 +19,15 @@
 #include "adjflash.h"
 
 
+extern cATMEL* pAtmel;
+
 cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseSettings)
     :m_pMyServer(server)
 {
     int i;
 
     m_nMMode = SenseSystem::modeAC; // default ac measurement
+    pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
 
     QList<SenseSystem::cChannelSettings*> mySettings;
 
@@ -240,6 +243,8 @@ void cSenseInterface::ChangeSenseMode()
             m_ChannelList.at(i)->setUnit(s = "V");
         }
     }
+
+    pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
 
     // here we do the rest of reconfiguring
     for (i = 0; i < m_ChannelList.count(); i++) // for each channel

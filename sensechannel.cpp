@@ -22,7 +22,6 @@ cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cCh
     m_nDspChannel = cSettings->m_nDspChannel;
     m_bAvail = cSettings->avail;
     m_nMMode = SenseChannel::modeAC; // the default
-    pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
 }
 
 
@@ -279,6 +278,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
         }
 
         else
+        {
             if (cmd.isCommand(1))
             {
                 QString rng = cmd.getParam(0);
@@ -302,14 +302,16 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
                             pAtmel->setMeasMode(1);
                         else
                             pAtmel->setMeasMode(2);
+
+                        return SCPI::scpiAnswer[SCPI::ack]+";";
                     }
 
                 }
-                else
-                    return SCPI::scpiAnswer[SCPI::nak]+";";
 
             }
 
+            return SCPI::scpiAnswer[SCPI::nak]+";";
+        }
     }
 
     else
