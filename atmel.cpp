@@ -202,13 +202,14 @@ atmelRM cATMEL::getEEPROMAccessEnable(bool &enable)
 
 atmelRM cATMEL::readSamplingRange(quint8 &srange)
 {
-
+    srange = 0;
+    return cmddone;
 }
 
 
 atmelRM cATMEL::setSamplingRange(quint8 srange)
 {
-
+    return cmddone;
 }
 
 
