@@ -96,7 +96,7 @@ private:
       @b A pointer to the server's scpi interface.
       */
     cSCPI *m_pSCPInterface;
-    QString m_sInput, m_sOutput, m_sParam;
+    QString m_sInput, m_sOutput;
     QTcpSocket* resourceManagerSocket;
 
 private slots:

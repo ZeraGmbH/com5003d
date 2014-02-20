@@ -9,6 +9,7 @@
 #include <scpi.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <netmessages.pb.h>
 
 #include "resource.h"
 #include "scpiconnection.h"
@@ -59,42 +60,62 @@ void cPCBServer::establishNewConnection(Zera::Net::cClient *newClient)
 
 void cPCBServer::executeCommand(const QByteArray cmd)
 {
+    ProtobufMessage::NetMessage protobufCommand;
     cSCPIObject* scpiObject;
+    QByteArray block;
     QString dummy;
- //   quint32 sigStart;
 
     Zera::Net::cClient* client = qobject_cast<Zera::Net::cClient*>(sender());
-    m_sInput = QString::fromUtf8(cmd.data(),cmd.size());
-/*
-    int nFPGAfd = open("/dev/zFPGA1reg",O_RDWR);
-    lseek(nFPGAfd,0x0,0);
-    sigStart = 0;
-    write(nFPGAfd,(char*) &sigStart, 4);
-    sigStart = 1;
-    write(nFPGAfd,(char*) &sigStart, 4);
-*/
-    if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+    if (protobufCommand.ParseFromArray(cmd, cmd.count()))
     {
-        /*
-        sigStart = 2;
-        write(nFPGAfd,(char*) &sigStart, 4);
-        */
-        m_sOutput = QString("nyet;"); // only gets output in case of program error
-        if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
+        QByteArray clientId;
+        quint32 messageNr;
+        clientId = QByteArray(protobufCommand.clientid().c_str(), protobufCommand.clientid().size());
+        messageNr = protobufCommand.messagenr();
+        ProtobufMessage::NetMessage::ScpiCommand scpiCmd = protobufCommand.scpi();
+
+        m_sInput = QString::fromStdString(scpiCmd.command()) +  " " + QString::fromStdString(scpiCmd.parameter());
+
+        if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+        {
+            if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
                 m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+        }
+        else
+            m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+
+        ProtobufMessage::NetMessage protobufAnswer;
+        ProtobufMessage::NetMessage::NetReply *Answer = protobufAnswer.mutable_reply();
+        Answer->set_body(m_sOutput.toStdString());
+        if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::nak]))
+            Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_NACK);
+        else
+            Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
+        protobufAnswer.set_clientid(clientId, clientId.count());
+        protobufAnswer.set_messagenr(messageNr);
+
+        if (client)
+        {
+            block = client->translatePB2ByteArray(Answer);
+            client->writeClient(block);
+        }
     }
     else
-        m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+    {
+        m_sInput = QString::fromUtf8(cmd.data(),cmd.size());
+        if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+        {
+            m_sOutput = QString("nyet;"); // only becomes output in case of program error
+            if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
+                m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+        }
+        else
+            m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
 
-    /*
-    close(nFPGAfd);
-    */
-
-    QByteArray block;
-    block = m_sOutput.toUtf8();
-    //emit sendAnswer(block);
-    if (client)
-        client->writeClient(block);
+        block = m_sOutput.toUtf8();
+        if (client)
+            client->writeClient(block);
+    }
 }
 
 
