@@ -244,7 +244,6 @@ QString cSamplingInterface::m_ReadSamplingRangeCatalog(QString &sInput)
 
 QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
 {
-    int i;
     quint8 pll;
     cSCPICommand cmd = sInput;
 
