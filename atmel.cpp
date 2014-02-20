@@ -207,7 +207,7 @@ atmelRM cATMEL::readSamplingRange(quint8 &srange)
 }
 
 
-atmelRM cATMEL::setSamplingRange(quint8 srange)
+atmelRM cATMEL::setSamplingRange(quint8)
 {
     return cmddone;
 }

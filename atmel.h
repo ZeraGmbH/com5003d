@@ -118,7 +118,7 @@ public:
     atmelRM setRange(quint8 channel, quint8 range);
     atmelRM getEEPROMAccessEnable(bool& enable);
     atmelRM readSamplingRange(quint8& srange);
-    atmelRM setSamplingRange(quint8 srange);
+    atmelRM setSamplingRange(quint8 );
     atmelRM setMeasMode(quint8 mmode);
     atmelRM readMeasMode(quint8& mmode);
     atmelRM setPLLChannel(quint8 chn);
