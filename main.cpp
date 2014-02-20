@@ -14,7 +14,7 @@
 
 int main( int argc, char *argv[] )
 {
-    pid_t pid;
+
     openlog(ServerName, LOG_PID, LOG_DAEMON); // open connection to syslogd
 
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
@@ -25,6 +25,7 @@ int main( int argc, char *argv[] )
     int r;
 
 #ifndef COM5003DDEBUG
+    pid_t pid;
     if ( (pid=fork() ) < 0 ) // we generate a child process
     {
         syslog(LOG_EMERG,"fork() failed\n") ; // error message to syslogd if not
@@ -57,6 +58,8 @@ int main( int argc, char *argv[] )
         syslog(LOG_EMERG,"Abort, xml file error\n") ;
     if (r == atmelError)
         syslog(LOG_EMERG,"Abort, atmel not running\n") ;
+    if (r == rmConnectionError)
+        syslog(LOG_EMERG,"Abort, resourcemanager connection error\n") ;
 
     syslog(LOG_INFO,"com5003d server child process terminated ret = %d\n", r);
     delete com5003d;
