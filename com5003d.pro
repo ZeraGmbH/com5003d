@@ -5,10 +5,8 @@ include(com5003d.user.pri)
 
 QMAKE_CXXFLAGS += -O0
 
-
 LIBS +=  -lSCPI
-LIBS +=  -lzeranet
-LIBS +=  -lzeranetclient
+LIBS +=  -lproto-net-qt
 LIBS +=  -lzerai2c
 LIBS +=  -lzeramisc
 LIBS +=  -lzeraxmlconfig
@@ -17,9 +15,7 @@ LIBS +=  -lzeradev
 LIBS +=  -lprotobuf
 LIBS +=  -lzera-resourcemanager-protobuf
 
-
 CONFIG	+= qt debug
-
 
 HEADERS	+= \
 	zeraglobal.h \
@@ -56,7 +52,8 @@ HEADERS	+= \
     adjxml.h \
     adjustment.h \
     systeminfo.h \
-    rmconnection.h
+    rmconnection.h \
+    com5003dprotobufwrapper.h
 
 SOURCES	+= \
 	main.cpp \
@@ -88,7 +85,8 @@ SOURCES	+= \
     adjustment.cpp \
     systeminfo.cpp \
     resource.cpp \
-    rmconnection.cpp
+    rmconnection.cpp \
+    com5003dprotobufwrapper.cpp
 
 unix {
   UI_DIR = .ui

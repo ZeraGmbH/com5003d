@@ -3,9 +3,10 @@
 #include <QTextCodec>
 #include <QList>
 #include <QString>
-#include <zeraserver.h>
+#include <QTcpSocket>
+#include <protonetpeer.h>
 #include <xmlconfigreader.h>
-#include <zeraclient.h>
+#include <protonetserver.h>
 #include <scpi.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -46,75 +47,90 @@ cSCPI *cPCBServer::getSCPIInterface()
 void cPCBServer::setupServer()
 {
     m_pSCPInterface = new cSCPI(m_sServerName); // our scpi interface
-    myServer = Zera::Net::cServer::getInstance(); // our working (talking) horse
-    connect(myServer,SIGNAL(newClientAvailable(Zera::Net::cClient*)),this,SLOT(establishNewConnection(Zera::Net::cClient*)));
+    myServer = new ProtoNetServer(this); // our working (talking) horse
+    myServer->setDefaultWrapper(&m_ProtobufWrapper);
+    connect(myServer,SIGNAL(sigClientConnected(ProtoNetPeer*)),this,SLOT(establishNewConnection(ProtoNetPeer*)));
 }
 
 
-void cPCBServer::establishNewConnection(Zera::Net::cClient *newClient)
+void cPCBServer::establishNewConnection(ProtoNetPeer *newClient)
 {
-    connect(newClient,SIGNAL(messageReceived(QByteArray)),this,SLOT(executeCommand(QByteArray)));
-//    connect(this, SIGNAL(sendAnswer(QByteArray)),newClient,SLOT(writeClient(QByteArray)));
+    connect(newClient,SIGNAL(sigMessageReceived(google::protobuf::Message*)),this,SLOT(executeCommand(google::protobuf::Message*)));
+    // later ... connect(newClient,SIGNAL(sigMessageReceived(QByteArray*)),this,SLOT(executeCommand(QByteArray*)));
 }
 
 
-void cPCBServer::executeCommand(const QByteArray cmd)
+void cPCBServer::executeCommand(google::protobuf::Message* cmd)
 {
-    ProtobufMessage::NetMessage protobufCommand;
+    ProtobufMessage::NetMessage *protobufCommand;
     cSCPIObject* scpiObject;
-    QByteArray block;
     QString dummy;
 
-    Zera::Net::cClient* client = qobject_cast<Zera::Net::cClient*>(sender());
-    if (protobufCommand.ParseFromArray(cmd, cmd.count()))
+    ProtoNetPeer* client = qobject_cast<ProtoNetPeer*>(sender());
+    protobufCommand = static_cast<ProtobufMessage::NetMessage*>(cmd);
+
+    if ( (protobufCommand != 0) && (client != 0))
     {
-        QByteArray clientId;
-        quint32 messageNr;
-        clientId = QByteArray(protobufCommand.clientid().c_str(), protobufCommand.clientid().size());
-        messageNr = protobufCommand.messagenr();
-        ProtobufMessage::NetMessage::ScpiCommand scpiCmd = protobufCommand.scpi();
-
-        m_sInput = QString::fromStdString(scpiCmd.command()) +  " " + QString::fromStdString(scpiCmd.parameter());
-
-        if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+        if (protobufCommand->has_clientid() && protobufCommand->has_messagenr())
         {
-            if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
+            QByteArray clientId;
+            quint32 messageNr;
+            clientId = QByteArray(protobufCommand->clientid().c_str(), protobufCommand->clientid().size());
+            messageNr = protobufCommand->messagenr();
+            ProtobufMessage::NetMessage::ScpiCommand scpiCmd = protobufCommand->scpi();
+
+            m_sInput = QString::fromStdString(scpiCmd.command()) +  " " + QString::fromStdString(scpiCmd.parameter());
+
+            if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+            {
+                if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
+                    m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+            }
+            else
                 m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+
+            ProtobufMessage::NetMessage protobufAnswer;
+            ProtobufMessage::NetMessage::NetReply *Answer = protobufAnswer.mutable_reply();
+
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::nak]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_NACK);
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::ack]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
+            else
+                Answer->set_body(m_sOutput.toStdString());
+
+            protobufAnswer.set_clientid(clientId, clientId.count());
+            protobufAnswer.set_messagenr(messageNr);
+
+            client->sendMessage(&protobufAnswer);
         }
         else
-            m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
-
-        ProtobufMessage::NetMessage protobufAnswer;
-        ProtobufMessage::NetMessage::NetReply *Answer = protobufAnswer.mutable_reply();
-        Answer->set_body(m_sOutput.toStdString());
-        if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::nak]))
-            Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_NACK);
-        else
-            Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
-        protobufAnswer.set_clientid(clientId, clientId.count());
-        protobufAnswer.set_messagenr(messageNr);
-
-        if (client)
         {
-            block = client->translatePB2ByteArray(Answer);
-            client->writeClient(block);
-        }
-    }
-    else
-    {
-        m_sInput = QString::fromUtf8(cmd.data(),cmd.size());
-        if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
-        {
-            m_sOutput = QString("nyet;"); // only becomes output in case of program error
-            if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
+            m_sInput =  QString::fromStdString(protobufCommand->scpi().command());
+
+            if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+            {
+                m_sOutput = QString("nyet;"); // only becomes output in case of program error
+                if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
+                    m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+                else
                 m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
-        }
-        else
-            m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+            }
+            else
+                m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
 
-        block = m_sOutput.toUtf8();
-        if (client)
-            client->writeClient(block);
+            QByteArray block;
+
+            QDataStream out(&block, QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_4_0);
+            out << (qint32)0;
+
+            out << m_sOutput.toUtf8();
+            out.device()->seek(0);
+            out << (qint32)(block.size() - sizeof(qint32));
+
+            client->getTcpSocket()->write(block);
+        }
     }
 }
 

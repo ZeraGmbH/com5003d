@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <xmlconfigreader.h>
 #include <QCoreApplication>
-#include <zeraserver.h>
+#include <protonetserver.h>
 #include <unistd.h>
 #include <fcntl.h>
 

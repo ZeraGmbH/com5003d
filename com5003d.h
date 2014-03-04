@@ -4,7 +4,6 @@
 #ifndef COM5003D_H
 #define COM5003D_H
 
-#include <QAbstractSocket>
 #include "pcbserver.h"
 
 class QStateMachine;

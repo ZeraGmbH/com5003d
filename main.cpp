@@ -17,8 +17,6 @@ int main( int argc, char *argv[] )
 
     openlog(ServerName, LOG_PID, LOG_DAEMON); // open connection to syslogd
 
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-
     QCoreApplication* app = new QCoreApplication (argc, argv);
     cCOM5003dServer* com5003d=new cCOM5003dServer(); // this is our server
 

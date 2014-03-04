@@ -9,6 +9,8 @@
 
 #include <QObject>
 #include <QList>
+
+#include "com5003dprotobufwrapper.h"
 #include "scpiconnection.h"
 
 class QTcpSocket;
@@ -17,16 +19,24 @@ class cResource;
 
 namespace Zera
 {
-    namespace Net
-    {
-        class cServer;
-        class cClient;
-    }
     namespace XMLConfig
     {
         class cReader;
     }
 }
+
+
+namespace google
+{
+namespace protobuf
+{
+class Message;
+}
+}
+
+
+class ProtoNetServer;
+class ProtoNetPeer;
 class cSCPI;
 class cStatusInterface;  // forward
 
@@ -75,7 +85,8 @@ signals:
 
 protected:
     void initSCPIConnections();
-    Zera::Net::cServer* myServer; // the real server that does the communication job
+    ProtoNetServer* myServer; // the real server that does the communication job
+    cCom5003dProtobufWrapper m_ProtobufWrapper;
     Zera::XMLConfig::cReader* myXMLConfigReader; // the xml configurator
     QString m_sConfigurationPath;
     QList<cSCPIConnection*> scpiConnectionList; // a list of all scpi connections
@@ -100,8 +111,8 @@ private:
     QTcpSocket* resourceManagerSocket;
 
 private slots:
-    virtual void establishNewConnection(Zera::Net::cClient* newClient);
-    virtual void executeCommand(const QByteArray cmd);
+    virtual void establishNewConnection(ProtoNetPeer* newClient);
+    virtual void executeCommand(google::protobuf::Message *cmd);
 
 };
 
