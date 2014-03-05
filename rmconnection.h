@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QAbstractSocket>
 
+#include "com5003dprotobufwrapper.h"
 
 namespace google {
 namespace protobuf {
@@ -14,7 +15,6 @@ class Message;
 
 class QString;
 class ProtoNetPeer;
-
 
 class cRMConnection: public QObject
 {
@@ -34,6 +34,7 @@ private:
     quint8 m_nDebugLevel;
     QString m_sCommand;
     ProtoNetPeer* m_pResourceManagerClient;
+    cCom5003dProtobufWrapper m_ProtobufWrapper;
 
 private slots:
     void tcpErrorHandler(QAbstractSocket::SocketError errorCode);
