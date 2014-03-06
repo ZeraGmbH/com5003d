@@ -2,6 +2,7 @@
 #include <QString>
 #include <protonetpeer.h>
 #include <netmessages.pb.h>
+#include <QtDebug>
 
 #include "com5003dglobal.h"
 #include "rmconnection.h"
@@ -21,6 +22,7 @@ void cRMConnection::connect2RM()
     connect(m_pResourceManagerClient, SIGNAL(sigConnectionEstablished()), this, SIGNAL(connected()));
     connect(m_pResourceManagerClient, SIGNAL(sigConnectionClosed()), this, SIGNAL(connectionRMError()));
     connect(m_pResourceManagerClient, SIGNAL(sigMessageReceived(google::protobuf::Message*)), this, SLOT(responseHandler(google::protobuf::Message*)));
+    // qDebug() << "IP=" << m_sIPAdr << " PORT=" << m_nPort;
     m_pResourceManagerClient->startConnection(m_sIPAdr, m_nPort);
 }
 
