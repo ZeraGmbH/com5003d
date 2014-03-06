@@ -121,7 +121,6 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
                 else
                 {
                     qDebug() << "3";
-                    m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
                 }
 
             }
