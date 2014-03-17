@@ -43,7 +43,6 @@ void cAtmelWatcher::doAtmelTest()
     if ( (ret = (fd = open(ba.data(),O_RDWR))) < 0 )
     {
         if (DEBUG1)  syslog(LOG_ERR,"error %d opening fpga device: '%s'\n", ret, ba.data());
-        emit timeout(); // if we cannot read the device node we are ready
     }
     else
     {
