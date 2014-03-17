@@ -76,7 +76,7 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
         {
             QByteArray clientId;
             quint32 messageNr;
-            clientId = QByteArray(protobufCommand->clientid().c_str(), protobufCommand->clientid().size());
+            clientId = QByteArray(protobufCommand->clientid().data(), protobufCommand->clientid().size());
             messageNr = protobufCommand->messagenr();
             ProtobufMessage::NetMessage::ScpiCommand scpiCmd = protobufCommand->scpi();
 
@@ -98,7 +98,10 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
             if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::ack]))
                 Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
             else
+            {
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
                 Answer->set_body(m_sOutput.toStdString());
+            }
 
             protobufAnswer.set_clientid(clientId, clientId.count());
             protobufAnswer.set_messagenr(messageNr);
