@@ -67,7 +67,7 @@ void cSourceInterface::registerResource(cRMConnection *rmConnection, quint16 por
     for (int i = 0; i < 4; i++)
     {
         pChannel = m_ChannelList.at(i);
-        register1Resource(rmConnection, QString("SOURCE;%1;;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
+        register1Resource(rmConnection, QString("SOURCE;%1;1;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
     }
 }
 

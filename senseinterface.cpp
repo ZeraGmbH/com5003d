@@ -491,7 +491,7 @@ void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port
     for (int i = 0; i < 6; i++)
     {
         pChannel = m_ChannelList.at(i);
-        register1Resource(rmConnection, QString("SENSE;%1;;%2;%3;")
+        register1Resource(rmConnection, QString("SENSE;%1;1;%2;%3;")
                          .arg(pChannel->getName())
                          .arg(pChannel->getDescription())
                          .arg(port));
