@@ -27,8 +27,19 @@ cAtmelWatcher::~cAtmelWatcher()
 
 void cAtmelWatcher::start()
 {
+    m_TimerTO.start();
+    m_TimerPeriod.start();
+    connect(&m_TimerPeriod, SIGNAL(timeout()), this, SLOT(doAtmelTest()));
+}
+
+
+void cAtmelWatcher::doAtmelTest()
+{
+
+    long pcbTestReg;
     int ret;
     QByteArray ba = m_sDeviceNode.toLatin1();
+
     if ( (ret = (fd = open(ba.data(),O_RDWR))) < 0 )
     {
         if (DEBUG1)  syslog(LOG_ERR,"error %d opening fpga device: '%s'\n", ret, ba.data());
@@ -36,43 +47,33 @@ void cAtmelWatcher::start()
     }
     else
     {
-        m_TimerTO.start();
-        m_TimerPeriod.start();
-        connect(&m_TimerPeriod, SIGNAL(timeout()), this, SLOT(doAtmelTest()));
-    }
-}
-
-
-void cAtmelWatcher::doAtmelTest()
-{
-    ulong pcbTestReg;
-    int r;
-    QByteArray ba = m_sDeviceNode.toLatin1();
-    if (lseek(fd,0xffc,0) < 0 )
-    {
-        if  (DEBUG1)  syslog(LOG_ERR,"error positioning fpga device: %s\n", ba.data());
-    }
-    else
-    {
-        r = read(fd,(char*) &pcbTestReg,4);
-
-        if (DEBUG2)
-            syslog(LOG_ERR,"reading fpga adr 0xffc =  %ld\n", pcbTestReg);
-
-        if (r < 0 )
+        if (lseek(fd,0xffc,0) < 0 )
         {
-            if (DEBUG1)  syslog(LOG_ERR,"error reading fpga device: %s\n",ba.data());
+            close(fd);
+            if  (DEBUG1)  syslog(LOG_ERR,"error positioning fpga device: %s\n", ba.data());
         }
         else
         {
-            if ((pcbTestReg & 1) > 0)
+            ret = read(fd,(char*) &pcbTestReg,4);
+            close(fd);
+
+            if (DEBUG2)
+                syslog(LOG_ERR,"reading fpga adr 0xffc =  %ld\n", pcbTestReg);
+
+            if (ret < 0 )
             {
-                m_TimerTO.disconnect(SIGNAL(timeout()));
-                m_TimerPeriod.disconnect(SIGNAL(timeout()));
-                m_TimerTO.stop();
-                m_TimerPeriod.stop();
-                close(fd);
-                emit running();
+                if (DEBUG1)  syslog(LOG_ERR,"error reading fpga device: %s\n",ba.data());
+            }
+            else
+            {
+                if ((pcbTestReg & 1) > 0)
+                {
+                    m_TimerTO.disconnect(SIGNAL(timeout()));
+                    m_TimerPeriod.disconnect(SIGNAL(timeout()));
+                    m_TimerTO.stop();
+                    m_TimerPeriod.stop();
+                    emit running();
+                }
             }
         }
     }
@@ -83,6 +84,5 @@ void cAtmelWatcher::doTimeout()
 {
     m_TimerPeriod.disconnect(SIGNAL(timeout()));
     m_TimerPeriod.stop();
-    close(fd);
     emit timeout();
 }
