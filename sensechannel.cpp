@@ -183,12 +183,12 @@ QString cSenseChannel::m_ReadAlias(QString &sInput)
     if (cmd.isQuery())
     {
         if (m_nMMode == 0)
-            return m_sAlias[0]+";";
+            return m_sAlias[0];
         else
-            return m_sAlias[1]+";";
+            return m_sAlias[1];
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -197,9 +197,9 @@ QString cSenseChannel::m_ReadType(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("0;");
+        return QString("0");
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -208,9 +208,9 @@ QString cSenseChannel::m_ReadUnit(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sUnit+";";
+        return m_sUnit;
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -219,9 +219,9 @@ QString cSenseChannel::m_ReadDspChannel(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_nDspChannel);
+        return QString("%1").arg(m_nDspChannel);
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -236,13 +236,13 @@ QString cSenseChannel::m_ReadChannelStatus(QString &sInput)
         {
             quint32 r;
             r = ((m_bAvail) ? 0 : 2 << 31) || status;
-            return QString("%1;").arg(r);
+            return QString("%1").arg(r);
         }
         else
-            return SCPI::scpiAnswer[SCPI::errexec]+";";
+            return SCPI::scpiAnswer[SCPI::errexec];
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -263,17 +263,17 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
                     for (i = 0; i < m_RangeList.count(); i++)
                         if (m_RangeList.at(i)->getSelCode() == range)
                             break;
-                    return m_RangeList.at(i)->getName()+";";
+                    return m_RangeList.at(i)->getName();
                 }
                 else
-                    return SCPI::scpiAnswer[SCPI::errexec]+";";
+                    return SCPI::scpiAnswer[SCPI::errexec];
             }
             else
             {
                 if (mode == 1)
-                    return "R0V;";
+                    return "R0V";
                 else
-                    return "R10V;";
+                    return "R10V";
             }
         }
 
@@ -292,9 +292,9 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
                     if (m_nMMode == SenseChannel::modeAC)
                     {
                         if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
-                            return SCPI::scpiAnswer[SCPI::ack]+";";
+                            return SCPI::scpiAnswer[SCPI::ack];
                         else
-                            return SCPI::scpiAnswer[SCPI::errexec]+";";
+                            return SCPI::scpiAnswer[SCPI::errexec];
                     }
                     else
                     {
@@ -303,19 +303,19 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
                         else
                             pAtmel->setMeasMode(2);
 
-                        return SCPI::scpiAnswer[SCPI::ack]+";";
+                        return SCPI::scpiAnswer[SCPI::ack];
                     }
 
                 }
 
             }
 
-            return SCPI::scpiAnswer[SCPI::nak]+";";
+            return SCPI::scpiAnswer[SCPI::nak];
         }
     }
 
     else
-        return SCPI::scpiAnswer[SCPI::errexec]+";";
+        return SCPI::scpiAnswer[SCPI::errexec];
 
 }
 
@@ -326,12 +326,14 @@ QString cSenseChannel::m_ReadRangeCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
+        int i;
         QString s;
-        for (int i = 0; i < m_RangeList.count(); i++)
+        for (i = 0; i < m_RangeList.count()-1; i++)
             s += (m_RangeList.at(i)->getName() + ";");
+        s += m_RangeList.at(i)->getName();
 
         return s; // phs. or virt.
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }

@@ -37,10 +37,10 @@ void cStatusInterface::executeCommand(int cmdCode, QString &sInput, QString &sOu
         switch (cmdCode)
         {
         case StatusSystem::cmdDevice:
-            sOutput = QString("%1;").arg(getDeviceStatus());
+            sOutput = QString("%1").arg(getDeviceStatus());
             break; // StatusDevice
         case StatusSystem::cmdAdjustment:
-            sOutput = QString("%1;").arg(m_pAdjHandler->getAdjustmentStatus());
+            sOutput = QString("%1").arg(m_pAdjHandler->getAdjustmentStatus());
             break; // StatusAdjustment
         }
     }

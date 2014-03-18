@@ -103,7 +103,7 @@ QString cSourceInterface::m_ReadVersion(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sVersion+";";
+        return m_sVersion;
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -114,9 +114,12 @@ QString cSourceInterface::m_ReadSourceChannelCatalog(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-    {   QString s;
-        for (int i = 0; i < m_ChannelList.count(); i++ )
+    {
+        int i;
+        QString s;
+        for (i = 0; i < m_ChannelList.count()-1; i++ )
             s += m_ChannelList.at(i)->getName() + ";";
+        s += m_ChannelList.at(i)->getName();
 
         return s;
     }

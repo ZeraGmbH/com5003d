@@ -129,9 +129,9 @@ QString cSamplingInterface::m_ReadVersion(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sVersion+";";
+        return m_sVersion;
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -140,9 +140,9 @@ QString cSamplingInterface::m_ReadSamplingChannelCatalog(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sName+";"; // we only have 1 channel
+        return m_sName; // we only have 1 channel
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -151,9 +151,9 @@ QString cSamplingInterface::m_ReadAlias(QString &sInput)
      cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_sAlias);
+        return QString("%1").arg(m_sAlias);
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -162,9 +162,9 @@ QString cSamplingInterface::m_ReadType(QString &sInput)
      cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_nType);
+        return QString("%1").arg(m_nType);
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -176,10 +176,10 @@ QString cSamplingInterface::m_ReadStatus(QString &sInput)
     {
         quint32 r;
         r = (m_bAvail) ? 0 : 2 << 31;
-        return QString("%1;").arg(r);
+        return QString("%1").arg(r);
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -197,10 +197,10 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
             for (i = 0; i < m_SampleRangeList.count(); i++)
                 if (m_SampleRangeList.at(i)->getSelCode() == sRange)
                     break;
-            return m_SampleRangeList.at(i)->getName()+";";
+            return m_SampleRangeList.at(i)->getName();
         }
         else
-            return SCPI::scpiAnswer[SCPI::errexec]+";";
+            return SCPI::scpiAnswer[SCPI::errexec];
     }
     else
     {
@@ -212,15 +212,15 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
                     break;
             if (i < m_SampleRangeList.count())
                 if ( pAtmel->setSamplingRange(m_SampleRangeList.at(i)->getSelCode()) == cmddone)
-                    return SCPI::scpiAnswer[SCPI::ack]+";";
+                    return SCPI::scpiAnswer[SCPI::ack];
                 else
-                    return SCPI::scpiAnswer[SCPI::errexec]+";";
+                    return SCPI::scpiAnswer[SCPI::errexec];
             else
-                return SCPI::scpiAnswer[SCPI::nak]+";";
+                return SCPI::scpiAnswer[SCPI::nak];
 
         }
         else
-            return SCPI::scpiAnswer[SCPI::nak]+";";
+            return SCPI::scpiAnswer[SCPI::nak];
     }
 }
 
@@ -231,14 +231,16 @@ QString cSamplingInterface::m_ReadSamplingRangeCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
+        int i;
         QString s;
-        for (int i = 0; i < m_SampleRangeList.count(); i++)
+        for (i = 0; i < m_SampleRangeList.count(); i++)
             s += m_SampleRangeList.at(i)->getName() + ";";
+        s += m_SampleRangeList.at(i)->getName();
 
         return s;
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -255,7 +257,7 @@ QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
                 return m_pllChannelList.at(pll);
         }
 
-        return SCPI::scpiAnswer[SCPI::errexec]+";";
+        return SCPI::scpiAnswer[SCPI::errexec];
     }
     else
     {
@@ -265,13 +267,13 @@ QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
             if ((pll = m_pllChannelList.indexOf(pllchn)) >= 0)
             {
                 if (pAtmel->setPLLChannel(pll) == cmddone)
-                    return SCPI::scpiAnswer[SCPI::ack]+";";
+                    return SCPI::scpiAnswer[SCPI::ack];
                 else
-                    return SCPI::scpiAnswer[SCPI::errexec]+";";
+                    return SCPI::scpiAnswer[SCPI::errexec];
             }
         }
 
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
     }
 }
 
@@ -282,14 +284,16 @@ QString cSamplingInterface::m_ReadPLLCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
+        int i;
         QString s;
-        for (int i = 1; i < m_pllChannelList.count(); i++)
+        for (i = 1; i < m_pllChannelList.count(); i++)
             s += m_pllChannelList.at(i) + ";";
+        s += m_pllChannelList.at(i);
 
         return s;
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 

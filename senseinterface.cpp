@@ -516,9 +516,9 @@ QString cSenseInterface::m_ReadVersion(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sVersion+";";
+        return m_sVersion;
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -528,7 +528,7 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        return SenseSystem::sMMode[m_nMMode]+";";
+        return SenseSystem::sMMode[m_nMMode];
 
     }
     else
@@ -544,7 +544,7 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
                 m_nMMode = 0;
                 if (oldMode != m_nMMode)
                     ChangeSenseMode();
-                return SCPI::scpiAnswer[SCPI::ack]+";";
+                return SCPI::scpiAnswer[SCPI::ack];
 
             }
 
@@ -553,14 +553,14 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
                 m_nMMode = 1;
                 if (oldMode != m_nMMode)
                     ChangeSenseMode();
-                return SCPI::scpiAnswer[SCPI::ack]+";";
+                return SCPI::scpiAnswer[SCPI::ack];
             }
 
-            return SCPI::scpiAnswer[SCPI::nak]+";";
+            return SCPI::scpiAnswer[SCPI::nak];
         }
     }
 
-    return SCPI::scpiAnswer[SCPI::nak]+";";
+    return SCPI::scpiAnswer[SCPI::nak];
 
 }
 
@@ -571,13 +571,15 @@ QString cSenseInterface::m_ReadMModeCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
+        int i;
         QString s;
-        for (int i = 0; i < SenseSystem::modeAnz; i++ )
+        for (i = 0; i < SenseSystem::modeAnz-1; i++ )
             s += SenseSystem::sMMode[i] + ";";
+        s += SenseSystem::sMMode[i];
         return s;
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 
 }
 
@@ -588,13 +590,15 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
+        int i;
         QString s;
-        for (int i = 0; i < m_ChannelList.count(); i++ )
+        for (int i = 0; i < m_ChannelList.count()-1; i++ )
             s += m_ChannelList.at(i)->getName() + ";";
+        s += m_ChannelList.at(i)->getName();
         return s;
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -608,12 +612,12 @@ QString cSenseInterface::m_ReadSenseGroupCatalog(QString &sInput)
         if ( m_nMMode == SenseSystem::modeAC )
             s = ";";
         else
-            s = "m0,m1,m2,m3,m4,m5;";
+            s = "m0,m1,m2;m3,m4,m5;";
 
         return s;
     }
     else
-        return SCPI::scpiAnswer[SCPI::nak]+";";
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 

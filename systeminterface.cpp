@@ -128,8 +128,6 @@ void cSystemInterface::executeCommand(int cmdCode, QString &sInput, QString &sOu
         sOutput = m_InterfaceRead(sInput);
         break;
     }
-
-    sOutput += ";";
 }
 
 
