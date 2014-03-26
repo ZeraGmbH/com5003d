@@ -93,15 +93,46 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
             ProtobufMessage::NetMessage protobufAnswer;
             ProtobufMessage::NetMessage::NetReply *Answer = protobufAnswer.mutable_reply();
 
-            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::nak]))
-                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_NACK);
+            // dependent on rtype caller can se ack, nak, error
+            // in case of error the body has to be analysed for details
+
             if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::ack]))
                 Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
             else
-            {
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::nak]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_NACK);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::busy]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::errcon]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::erraut]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::errval]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::errxml]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::errmmem]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::errpath]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::errexec]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
+            if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::errtimo]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+            else
                 Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
-                Answer->set_body(m_sOutput.toStdString());
-            }
+
+            Answer->set_body(m_sOutput.toStdString()); // in any case we set the body
+
 
             protobufAnswer.set_clientid(clientId, clientId.count());
             protobufAnswer.set_messagenr(messageNr);
