@@ -16,9 +16,9 @@ enum com5003JustCommands
 };
 
 
-const int GainCorrOrder = 4;
-const int PhaseCorrOrder  = 4;
-const int OffsetCorrOrder = 4;
+const int GainCorrOrder = 3; // ax^3 + bx^2 + cx + d
+const int PhaseCorrOrder  = 3;
+const int OffsetCorrOrder = 3;
 
 
 class QDataStream;
