@@ -44,28 +44,28 @@
 				<alias1>UL2</alias1>
 				<alias2>REF2</alias2>
 				<ctrlchannel>2</ctrlchannel>
-				<dspchannel>1</dspchannel>
+                                <dspchannel>2</dspchannel>
 				<avail>true</avail>  
 			</m1>
 			<m2>
 				<alias1>UL3</alias1>
 				<alias2>REF3</alias2>
 				<ctrlchannel>3</ctrlchannel>
-				<dspchannel>2</dspchannel>
+                                <dspchannel>4</dspchannel>
 				<avail>true</avail>  
 			</m2>
 			<m3>
 				<alias1>IL1</alias1>
 				<alias2>REF4</alias2>
 				<ctrlchannel>4</ctrlchannel>
-				<dspchannel>3</dspchannel>
+                                <dspchannel>1</dspchannel>
 				<avail>true</avail>  
 			</m3>
 			<m4>
 				<alias1>IL2</alias1>
 				<alias2>REF5</alias2>
 				<ctrlchannel>5</ctrlchannel>
-				<dspchannel>4</dspchannel>
+                                <dspchannel>3</dspchannel>
 				<avail>true</avail>  
 			</m4>
 			<m5>
