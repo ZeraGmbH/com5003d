@@ -148,6 +148,39 @@ atmelRM cATMEL::readChannelStatus(quint8 channel, quint8 &stat)
 }
 
 
+atmelRM cATMEL::readCriticalStatus(quint16 &stat)
+{
+    quint8 PAR[1];
+    char answ[3];
+
+    struct hw_cmd CMD = { cmdcode: hwGetCritStat, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
+
+    if  ( (writeCommand(&CMD) == 2) && (CMD.RM == 0) &&  (readOutput(answ,3) == 3) )
+    {
+         stat = (answ[0] << 8) + answ[1];
+         return cmddone;
+    }
+    else
+         return cmdexecfault;
+}
+
+
+atmelRM cATMEL::resetCriticalStatus(quint16 stat)
+{
+    quint8 PAR[2];
+
+    PAR[0] = (stat >> 8) & 255;
+    PAR[1] = stat & 255;
+
+    struct hw_cmd CMD = { cmdcode: hwResetCritStat, device: 0, par: PAR, plen: 2,cmdlen: 0,cmddata: 0, RM:0 };
+
+    if  ( (writeCommand(&CMD) == 0) && (CMD.RM == 0) )
+        return cmddone;
+    else
+        return cmdexecfault;
+}
+
+
 atmelRM cATMEL::readRange(quint8 channel, quint8 &range)
 {
     quint8 PAR[1];
