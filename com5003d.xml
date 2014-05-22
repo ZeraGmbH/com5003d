@@ -7,7 +7,7 @@
 		<debuglevel>0</debuglevel>
 		<ethernet>
 			<ipadress>
-				<resourcemanager>192.168.6.124</resourcemanager>
+                                <resourcemanager>127.0.0.1</resourcemanager>
 			</ipadress>	
 			<port>
 				<server>6307</server>
