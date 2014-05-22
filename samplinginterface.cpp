@@ -264,13 +264,12 @@ QString cSamplingInterface::m_ReadWritePLL(QString &sInput)
         if (cmd.isCommand(1))
         {
             QString pllchn = cmd.getParam(0);
-            if ((pll = m_pllChannelList.indexOf(pllchn)) >= 0)
-            {
-                if (pAtmel->setPLLChannel(pll) == cmddone)
-                    return SCPI::scpiAnswer[SCPI::ack];
-                else
-                    return SCPI::scpiAnswer[SCPI::errexec];
-            }
+            pll = m_pllChannelList.indexOf(pllchn);
+
+            if (pAtmel->setPLLChannel(pll) == cmddone)
+                return SCPI::scpiAnswer[SCPI::ack];
+            else
+                return SCPI::scpiAnswer[SCPI::errexec];
         }
 
         return SCPI::scpiAnswer[SCPI::nak];
