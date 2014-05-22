@@ -38,7 +38,7 @@
 				<alias2>REF1</alias2>
 				<ctrlchannel>1</ctrlchannel>
 				<dspchannel>0</dspchannel>
-                                <overloadbitbit>3</overloadbit>
+                                <overloadbit>3</overloadbit>
 				<avail>true</avail>  
 			</m0>
 			<m1>
