@@ -52,6 +52,14 @@
 	</xs:simpleType>
 
 
+        <xs:simpleType name="overloadbittype">
+                <xs:restriction base="xs:integer">
+                        <xs:maxInclusive value='15'/>
+                        <xs:minInclusive value='0'/>
+                </xs:restriction>
+        </xs:simpleType>
+
+
 	<xs:simpleType name="dspfpzchanneltype">
 		<xs:restriction base="xs:integer">
 			<xs:maxInclusive value='3'/>
@@ -132,6 +140,7 @@
 			<xs:element name="alias2" type="xs:string"/>
 			<xs:element name="ctrlchannel" type="ctrlchanneltype"/>
 			<xs:element name="dspchannel" type="dspinputchanneltype"/>
+                        <xs:element name="overloadbit" type="overloadbittype"/>
 			<xs:element name="avail" type="xs:boolean"/>
 		</xs:sequence>	
 	</xs:complexType>

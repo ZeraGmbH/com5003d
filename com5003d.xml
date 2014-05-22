@@ -38,6 +38,7 @@
 				<alias2>REF1</alias2>
 				<ctrlchannel>1</ctrlchannel>
 				<dspchannel>0</dspchannel>
+                                <overloadbitbit>3</overloadbit>
 				<avail>true</avail>  
 			</m0>
 			<m1>
@@ -45,6 +46,7 @@
 				<alias2>REF2</alias2>
 				<ctrlchannel>2</ctrlchannel>
                                 <dspchannel>2</dspchannel>
+                                <overloadbit>4</overloadbit>
 				<avail>true</avail>  
 			</m1>
 			<m2>
@@ -52,6 +54,7 @@
 				<alias2>REF3</alias2>
 				<ctrlchannel>3</ctrlchannel>
                                 <dspchannel>4</dspchannel>
+                                <overloadbit>5</overloadbit>
 				<avail>true</avail>  
 			</m2>
 			<m3>
@@ -59,6 +62,7 @@
 				<alias2>REF4</alias2>
 				<ctrlchannel>4</ctrlchannel>
                                 <dspchannel>1</dspchannel>
+                                <overloadbit>0</overloadbit>
 				<avail>true</avail>  
 			</m3>
 			<m4>
@@ -66,6 +70,7 @@
 				<alias2>REF5</alias2>
 				<ctrlchannel>5</ctrlchannel>
                                 <dspchannel>3</dspchannel>
+                                <overloadbit>1</overloadbit>
 				<avail>true</avail>  
 			</m4>
 			<m5>
@@ -73,6 +78,7 @@
 				<alias2>REF6</alias2>
 				<ctrlchannel>6</ctrlchannel>
 				<dspchannel>5</dspchannel>
+                                <overloadbit>2</overloadbit>
 				<avail>true</avail>  
 			</m5>
 		</sense>
