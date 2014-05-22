@@ -243,7 +243,7 @@ QString cSenseChannel::m_ReadChannelStatus(QString &sInput)
         {
             quint32 r;
             r = ((m_bAvail) ? 0 : 1 << 31);
-            if ((status & m_nOverloadBit) > 0)
+            if ( (status & (1 << m_nOverloadBit) ) > 0)
                 r |= 1;
             return QString("%1").arg(r);
         }
@@ -261,7 +261,7 @@ QString cSenseChannel::m_StatusReset(QString &sInput)
 
     if (cmd.isCommand(0))
     {
-        if ( pAtmel->resetCriticalStatus((quint16)m_nOverloadBit) == cmddone )
+        if ( pAtmel->resetCriticalStatus((quint16)(1 << m_nOverloadBit)) == cmddone )
             return SCPI::scpiAnswer[SCPI::ack];
         else
             return SCPI::scpiAnswer[SCPI::errexec];
