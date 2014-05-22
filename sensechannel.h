@@ -16,6 +16,7 @@ enum Commands
     cmdUnit,
     cmdDspChannel,
     cmdStatus,
+    cmdStatusReset,
     cmdRange,
     cmdRangeCat
 };
@@ -65,6 +66,7 @@ private:
     QString m_sUnit; // the channel's measured unit
     quint8 m_nCtrlChannel; // where to control the channel
     quint8 m_nDspChannel; // where to find the channel's sampled data
+    quint8 m_nOverloadBit;
     bool m_bAvail; // is this channel available ?
     QList<cSenseRange*> m_RangeList;
     quint8 m_nMMode;
@@ -74,6 +76,7 @@ private:
     QString m_ReadUnit(QString& sInput);
     QString m_ReadDspChannel(QString& sInput);
     QString m_ReadChannelStatus(QString& sInput);
+    QString m_StatusReset(QString& sInput);
     QString m_ReadWriteRange(QString& sInput);
     QString m_ReadRangeCatalog(QString& sInput);
 };

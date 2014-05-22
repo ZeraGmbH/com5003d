@@ -20,6 +20,7 @@ cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cCh
     m_sAlias[1] = cSettings->m_sAlias[1];
     m_nCtrlChannel = cSettings->m_nCtrlChannel;
     m_nDspChannel = cSettings->m_nDspChannel;
+    m_nOverloadBit = cSettings->m_nOverloadBit;
     m_bAvail = cSettings->avail;
     m_nMMode = SenseChannel::modeAC; // the default
 }
@@ -54,6 +55,9 @@ void cSenseChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterfac
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SenseChannel::cmdStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS:RESET", SCPI::isCmd, scpiInterface, SenseChannel::cmdStatusReset);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"RANGE", SCPI::isQuery | SCPI::isCmdwP, scpiInterface, SenseChannel::cmdRange);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -84,6 +88,9 @@ void cSenseChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutpu
         break;
     case SenseChannel::cmdStatus:
         sOutput = m_ReadChannelStatus(sInput);
+        break;
+    case SenseChannel::cmdStatusReset:
+        sOutput = m_StatusReset(sInput);
         break;
     case SenseChannel::cmdRange:
         sOutput = m_ReadWriteRange(sInput);
@@ -227,15 +234,17 @@ QString cSenseChannel::m_ReadDspChannel(QString &sInput)
 
 QString cSenseChannel::m_ReadChannelStatus(QString &sInput)
 {
-    quint8 status;
+    quint16 status;
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
     {
-        if ( pAtmel->readChannelStatus(m_nCtrlChannel, status) == cmddone )
+        if ( pAtmel->readCriticalStatus(status) == cmddone )
         {
             quint32 r;
-            r = ((m_bAvail) ? 0 : 2 << 31) || status;
+            r = ((m_bAvail) ? 0 : 1 << 31);
+            if ((status & m_nOverloadBit) > 0)
+                r |= 1;
             return QString("%1").arg(r);
         }
         else
@@ -243,6 +252,22 @@ QString cSenseChannel::m_ReadChannelStatus(QString &sInput)
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSenseChannel::m_StatusReset(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(0))
+    {
+        if ( pAtmel->resetCriticalStatus((quint16)m_nOverloadBit) == cmddone )
+            return SCPI::scpiAnswer[SCPI::ack];
+        else
+            return SCPI::scpiAnswer[SCPI::errexec];
+    }
+
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
