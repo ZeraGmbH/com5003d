@@ -398,12 +398,12 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
 
     QDomNodeList nl=node.childNodes(); // we have a list our channels entries now
 
-    for (quint32 i = 0; i < nl.length(); i++)
+    for (qint32 i = 0; i < nl.length(); i++)
     {
         QDomNode chnNode = nl.item(i); // we iterate over all channels from xml file
 
         QDomNodeList nl2 = chnNode.childNodes();
-        for (quint32 j = 0; j < nl2.length(); j++)
+        for (qint32 j = 0; j < nl2.length(); j++)
         {
             cSenseChannel* chnPtr;
             cSenseRange* rngPtr;
@@ -427,7 +427,7 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
                 {
                     QDomNodeList nl3 = ChannelJustNode.childNodes();
 
-                    for (quint32 k = 0; k < nl3.length(); k++)
+                    for (qint32 k = 0; k < nl3.length(); k++)
                     {
                         QDomNode RangeJustNode = nl3.item(k);
 
