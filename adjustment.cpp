@@ -342,7 +342,7 @@ bool cAdjustment::importJDataXML(QString &file)
     bool DateOK=false;
     bool TimeOK=false;
 
-    for (uint i=0; i<nl.length() ; i++)
+    for (int i=0; i<nl.length() ; i++)
     {
         QDomNode n = nl.item(i);
         QDomElement e = n.toElement();
@@ -402,7 +402,7 @@ bool cAdjustment::importJDataXML(QString &file)
             {
                 //QDomNodeList nl2=e.elementsByTagName ("Adjustment") ;
                 QDomNodeList nl2=e.childNodes();
-                for (quint32 j=0;j<nl2.length();j++)
+                for (qint32 j=0;j<nl2.length();j++)
                 {
                     bool done;
 
