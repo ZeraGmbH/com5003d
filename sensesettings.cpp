@@ -17,6 +17,8 @@ cSenseSettings::cSenseSettings(Zera::XMLConfig::cReader *xmlread)
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:alias2").arg(i)] = SenseSystem::cfg0Alias2 + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:ctrlchannel").arg(i)] = SenseSystem::cfg0ctrlchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:dspchannel").arg(i)] = SenseSystem::cfg0dspchannel + i;
+        m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:overloadbit").arg(i)] = SenseSystem::cfg0overloadbit + i;
+
         m_ConfigXMLMap[QString("com5003dconfig:resource:sense:m%1:avail").arg(i)] = SenseSystem::cfg0avail + i;
     }
 }
@@ -117,6 +119,25 @@ void cSenseSettings::configXMLInfo(QString key)
             break;
         case SenseSystem::cfg5dspchannel:
             m_ChannelSettingsList.at(5)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+
+        case SenseSystem::cfg0overloadbit:
+            m_ChannelSettingsList.at(0)->m_nOverloadBit  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SenseSystem::cfg1overloadbit:
+            m_ChannelSettingsList.at(1)->m_nOverloadBit  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SenseSystem::cfg2overloadbit:
+            m_ChannelSettingsList.at(2)->m_nOverloadBit  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SenseSystem::cfg3overloadbit:
+            m_ChannelSettingsList.at(3)->m_nOverloadBit  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SenseSystem::cfg4overloadbit:
+            m_ChannelSettingsList.at(4)->m_nOverloadBit  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SenseSystem::cfg5overloadbit:
+            m_ChannelSettingsList.at(5)->m_nOverloadBit  =  m_pXMLReader->getValue(key).toInt(&ok);
             break;
 
         case SenseSystem::cfg0avail:
