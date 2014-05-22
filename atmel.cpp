@@ -155,7 +155,7 @@ atmelRM cATMEL::readCriticalStatus(quint16 &stat)
 
     struct hw_cmd CMD = { cmdcode: hwGetCritStat, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
 
-    if  ( (writeCommand(&CMD) == 2) && (CMD.RM == 0) &&  (readOutput(answ,3) == 3) )
+    if  ( (writeCommand(&CMD) == 3) && (CMD.RM == 0) &&  (readOutput(answ,3) == 3) )
     {
          stat = (answ[0] << 8) + answ[1];
          return cmddone;
