@@ -281,7 +281,7 @@ QString cSystemInterface::m_StartControlerBootloader(QString& sInput)
     int ret = cmdfault;
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         ret = pAtmel->startBootLoader();
     }
@@ -296,7 +296,7 @@ QString cSystemInterface::m_StartControlerProgram(QString &sInput)
     int ret = cmdfault;
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         ret = pAtmel->startProgram();
     }
@@ -355,7 +355,7 @@ QString cSystemInterface::m_AdjFlashWrite(QString &sInput)
     int ret = cmdfault;
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         if (m_pAdjHandler->exportJDataFlash())
             ret = cmddone;
@@ -371,7 +371,7 @@ QString cSystemInterface::m_AdjFlashRead(QString &sInput)
     int ret = cmdfault;
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         if (m_pAdjHandler->importJDataFlash())
             ret = cmddone;
