@@ -55,7 +55,7 @@
         <xs:simpleType name="overloadbittype">
                 <xs:restriction base="xs:integer">
                         <xs:maxInclusive value='15'/>
-                        <xs:minInclusive value='0'/>
+                        <xs:minInclusive value='-1'/>
                 </xs:restriction>
         </xs:simpleType>
 
