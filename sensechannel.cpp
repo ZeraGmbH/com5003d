@@ -259,7 +259,7 @@ QString cSenseChannel::m_StatusReset(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         if ( pAtmel->resetCriticalStatus((quint16)(1 << m_nOverloadBit)) == cmddone )
             return SCPI::scpiAnswer[SCPI::ack];
