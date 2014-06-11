@@ -284,7 +284,7 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
 
 void cPCBServer::establishNewNotifier(cNotificationString *notifier)
 {
-    if (notifierRegisterList.count() > 0) // if we're waiting for notifier
+    if (notifierRegisterNext.count() > 0) // if we're waiting for notifier
     {
         cNotificationData notData = notifierRegisterNext.takeFirst(); // we pick the notification data
         notData.notString = notifier;
