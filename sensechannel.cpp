@@ -106,6 +106,7 @@ void cSenseChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutpu
 void cSenseChannel::setRangeList(QList<cSenseRange*> &list)
 {
     m_RangeList = list;
+    setNotifierSenseChannelRangeCat();
 }
 
 
@@ -356,14 +357,21 @@ QString cSenseChannel::m_ReadRangeCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
-        int i;
-        QString s;
-        for (i = 0; i < m_RangeList.count()-1; i++)
-            s += (m_RangeList.at(i)->getName() + ";");
-        s += m_RangeList.at(i)->getName();
 
-        return s; // phs. or virt.
+        return notifierSenseChannelRangeCat.getString();
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+void cSenseChannel::setNotifierSenseChannelRangeCat()
+{
+    int i;
+    QString s;
+    for (i = 0; i < m_RangeList.count()-1; i++)
+        s += (m_RangeList.at(i)->getName() + ";");
+    s += m_RangeList.at(i)->getName();
+
+    notifierSenseChannelRangeCat = s; // phs. or virt.
 }

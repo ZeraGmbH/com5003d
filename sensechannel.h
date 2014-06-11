@@ -6,6 +6,7 @@
 
 #include "senserange.h"
 #include "sensesettings.h"
+#include "notificationstring.h"
 
 namespace SenseChannel
 {
@@ -79,6 +80,11 @@ private:
     QString m_StatusReset(QString& sInput);
     QString m_ReadWriteRange(QString& sInput);
     QString m_ReadRangeCatalog(QString& sInput);
+
+    cNotificationString notifierSenseChannelRangeCat;
+
+    void setNotifierSenseChannelRangeCat();
+
 };
 
 #endif // SENSECHANNEL_H
