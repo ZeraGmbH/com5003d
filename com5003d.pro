@@ -53,7 +53,9 @@ HEADERS	+= \
     adjustment.h \
     systeminfo.h \
     rmconnection.h \
-    com5003dprotobufwrapper.h
+    com5003dprotobufwrapper.h \
+    notificationstring.h \
+    notificationdata.h
 
 SOURCES	+= \
 	main.cpp \
@@ -86,7 +88,8 @@ SOURCES	+= \
     systeminfo.cpp \
     resource.cpp \
     rmconnection.cpp \
-    com5003dprotobufwrapper.cpp
+    com5003dprotobufwrapper.cpp \
+    notificationstring.cpp
 
 unix {
   UI_DIR = .ui
