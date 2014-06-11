@@ -9,6 +9,7 @@
 #include "resource.h"
 #include "scpiconnection.h"
 #include "sensechannel.h"
+#include "notificationstring.h"
 
 namespace SenseSystem
 {
@@ -76,6 +77,13 @@ private:
     QString m_ReadMModeCatalog(QString& sInput);
     QString m_ReadSenseChannelCatalog(QString& sInput);
     QString m_ReadSenseGroupCatalog(QString& sInput);
+
+    cNotificationString notifierSenseMMode;
+    cNotificationString notifierSenseChannelCat;
+
+    void setNotifierSenseMMode();
+    void setNotifierSenseChannelCat();
+
 };
 
 #endif // SENSEINTERFACE_H

@@ -28,6 +28,8 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
 
     m_nMMode = SenseSystem::modeAC; // default ac measurement
     pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
+    setNotifierSenseMMode();
+
 
     QList<SenseSystem::cChannelSettings*> mySettings;
 
@@ -119,6 +121,7 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
     }
     */
 
+    setNotifierSenseChannelCat(); // only prepared for !!! since we don't have hot plug for measuring channels yet
     m_sVersion = SenseSystem::Version;
 }
 
@@ -530,8 +533,8 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        return SenseSystem::sMMode[m_nMMode];
-
+        //return SenseSystem::sMMode[m_nMMode];
+        return notifierSenseMMode.getString();
     }
     else
     {
@@ -543,7 +546,8 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
 
             if (mode == SenseSystem::sMMode[SenseSystem::modeAC] )
             {
-                m_nMMode = 0;
+                m_nMMode = SenseSystem::modeAC;
+                setNotifierSenseMMode();
                 if (oldMode != m_nMMode)
                     ChangeSenseMode();
                 return SCPI::scpiAnswer[SCPI::ack];
@@ -552,7 +556,8 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
 
             if (mode == SenseSystem::sMMode[SenseSystem::modeREF] )
             {
-                m_nMMode = 1;
+                m_nMMode = SenseSystem::modeREF;
+                setNotifierSenseMMode();
                 if (oldMode != m_nMMode)
                     ChangeSenseMode();
                 return SCPI::scpiAnswer[SCPI::ack];
@@ -592,12 +597,8 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
-        int i;
-        QString s;
-        for (i = 0; i < m_ChannelList.count()-1; i++ )
-            s += m_ChannelList.at(i)->getName() + ";";
-        s += m_ChannelList.at(i)->getName();
-        return s;
+
+        return notifierSenseChannelCat.getString();
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
@@ -620,6 +621,23 @@ QString cSenseInterface::m_ReadSenseGroupCatalog(QString &sInput)
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+void cSenseInterface::setNotifierSenseMMode()
+{
+    notifierSenseMMode = SenseSystem::sMMode[m_nMMode];
+}
+
+
+void cSenseInterface::setNotifierSenseChannelCat()
+{
+    int i;
+    QString s;
+    for (i = 0; i < m_ChannelList.count()-1; i++ )
+        s += m_ChannelList.at(i)->getName() + ";";
+    s += m_ChannelList.at(i)->getName();
+    notifierSenseChannelCat = s;
 }
 
 
