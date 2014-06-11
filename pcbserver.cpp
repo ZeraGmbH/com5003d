@@ -34,10 +34,10 @@ void cPCBServer::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes),"REGISTER",SCPI::isCmdwP,scpiInterface, PCBServer::cmdRegister);
+    delegate = new cSCPIDelegate(QString("%1SERVER").arg(leadingNodes),"REGISTER",SCPI::isCmdwP,scpiInterface, PCBServer::cmdRegister);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes),"UNREGISTER",SCPI::isQuery | SCPI::isCmd ,scpiInterface, PCBServer::cmdUnregister);
+    delegate = new cSCPIDelegate(QString("%1SERVER").arg(leadingNodes),"UNREGISTER",SCPI::isQuery | SCPI::isCmd ,scpiInterface, PCBServer::cmdUnregister);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
 
