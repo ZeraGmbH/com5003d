@@ -358,6 +358,7 @@ QString cSenseChannel::m_ReadRangeCatalog(QString &sInput)
     if (cmd.isQuery())
     {
 
+        emit notifier(&notifierSenseChannelRangeCat);
         return notifierSenseChannelRangeCat.getString();
     }
     else

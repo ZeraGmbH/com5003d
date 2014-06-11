@@ -191,6 +191,7 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
 
     if (cmd.isQuery())
     {
+        emit notifier(&notifierSampleChannelRange);
         return notifierSampleChannelRange.getString();
     }
     else

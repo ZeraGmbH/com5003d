@@ -534,6 +534,7 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
     if (cmd.isQuery())
     {
         //return SenseSystem::sMMode[m_nMMode];
+        emit notifier(&notifierSenseMMode);
         return notifierSenseMMode.getString();
     }
     else
@@ -598,6 +599,7 @@ QString cSenseInterface::m_ReadSenseChannelCatalog(QString &sInput)
     if (cmd.isQuery())
     {
 
+        emit notifier(&notifierSenseChannelCat);
         return notifierSenseChannelCat.getString();
     }
     else
