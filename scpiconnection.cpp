@@ -2,7 +2,8 @@
 #include "scpidelegate.h"
 
 
-cSCPIConnection::cSCPIConnection()
+cSCPIConnection::cSCPIConnection(QObject *parent)
+    : QObject(parent)
 {
 }
 
