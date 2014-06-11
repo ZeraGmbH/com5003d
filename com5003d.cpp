@@ -199,6 +199,7 @@ void cCOM5003dServer::doSetupServer()
 
     cPCBServer::setupServer(); // here our scpi interface gets instanciated, we need this for further steps
 
+    scpiConnectionList.append(this); // the server itself has some commands
     scpiConnectionList.append(m_pStatusInterface = new cStatusInterface(m_pAdjHandler));
     scpiConnectionList.append(m_pSystemInterface = new cSystemInterface(this, m_pAdjHandler, m_pSystemInfo));
     scpiConnectionList.append(m_pSenseInterface = new cSenseInterface(this, m_pSenseSettings));
