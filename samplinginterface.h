@@ -7,6 +7,7 @@
 
 #include "samplerange.h"
 #include "resource.h"
+#include "notificationstring.h"
 
 namespace SamplingSystem
 {
@@ -65,6 +66,11 @@ private:
     QString m_ReadSamplingRangeCatalog(QString& sInput);
     QString m_ReadWritePLL(QString& sInput);
     QString m_ReadPLLCatalog(QString& sInput);
+
+    cNotificationString notifierSampleChannelRange;
+
+    void setNotifierSampleChannelRange();
+
 };
 
 #endif // SAMPLINGINTERFACE_H

@@ -187,20 +187,11 @@ QString cSamplingInterface::m_ReadStatus(QString &sInput)
 QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
 {
     int i;
-    quint8 sRange;
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
     {
-        if (pAtmel->readSamplingRange(sRange) == cmddone)
-        {
-            for (i = 0; i < m_SampleRangeList.count(); i++)
-                if (m_SampleRangeList.at(i)->getSelCode() == sRange)
-                    break;
-            return m_SampleRangeList.at(i)->getName();
-        }
-        else
-            return SCPI::scpiAnswer[SCPI::errexec];
+        return notifierSampleChannelRange.getString();
     }
     else
     {
@@ -212,7 +203,10 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
                     break;
             if (i < m_SampleRangeList.count())
                 if ( pAtmel->setSamplingRange(m_SampleRangeList.at(i)->getSelCode()) == cmddone)
+                {
+                    setNotifierSampleChannelRange();
                     return SCPI::scpiAnswer[SCPI::ack];
+                }
                 else
                     return SCPI::scpiAnswer[SCPI::errexec];
             else
@@ -293,6 +287,23 @@ QString cSamplingInterface::m_ReadPLLCatalog(QString &sInput)
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+void cSamplingInterface::setNotifierSampleChannelRange()
+{
+    int i;
+    quint8 sRange;
+
+    if (pAtmel->readSamplingRange(sRange) == cmddone)
+    {
+        for (i = 0; i < m_SampleRangeList.count(); i++)
+            if (m_SampleRangeList.at(i)->getSelCode() == sRange)
+                break;
+        notifierSampleChannelRange = m_SampleRangeList.at(i)->getName();
+    }
+    else
+        notifierSampleChannelRange = m_SampleRangeList.at(0)->getName();
 }
 
 
