@@ -104,11 +104,11 @@ QString cPCBServer::m_RegisterNotifier(QString &sInput)
             notData.clientID = clientId;
             notData.notifier = cmd.getParam(1).toInt(&ok);
 
-            notifierRegisterList.append(notData); // we wait for a notifier signal
+            notifierRegisterNext.append(notData); // we wait for a notifier signal
             if (!scpiObject->executeSCPI(query, m_sOutput))
             {
                 m_sOutput = SCPI::scpiAnswer[SCPI::nak];
-                notifierRegisterList.pop_back();
+                notifierRegisterNext.pop_back();
             }
             else
                 m_sOutput = SCPI::scpiAnswer[SCPI::ack]; // we overwrite the query's output here
@@ -128,9 +128,23 @@ QString cPCBServer::m_UnregisterNotifier(QString &sInput)
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == "") )
     {
-        // we have to remove all notifiers for this clientId
-        // todo todo
-        // notifierHashtable.remove(clientId); // we remove all notifiers from list
+        QList<int> posList;
+        // we have to remove all notifiers for this client and or clientId
+        for (int i = 0; i < notifierRegisterList.count(); i++)
+        {
+            cNotificationData notData = notifierRegisterList.at(i);
+            if (client == notData.netClient)
+            { // we found the client
+                if (notData.clientID.isEmpty() or (notData.clientID == clientId))
+                {
+                     posList.append(i);
+                }
+            }
+        }
+
+        for (int i = 0; i < posList.count(); i++)
+            notifierRegisterList.removeAt(posList.at(i));
+
         m_sOutput = SCPI::scpiAnswer[SCPI::ack];
     }
     else
@@ -228,6 +242,7 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
         }
         else
         {
+            clientId = QByteArray(); // we set an empty byte array
             m_sInput =  QString::fromStdString(protobufCommand->scpi().command());
             qDebug() << m_sInput;
             if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
@@ -271,8 +286,9 @@ void cPCBServer::establishNewNotifier(cNotificationString *notifier)
 {
     if (notifierRegisterList.count() > 0) // if we're waiting for notifier
     {
-        cNotificationData notData = notifierRegisterList.takeFirst(); // we pick the notification data
-        notifierHashtable.insertMulti(notifier, notData); //
+        cNotificationData notData = notifierRegisterNext.takeFirst(); // we pick the notification data
+        notData.notString = notifier;
+        notifierRegisterList.append(notData); //
         connect(notifier, SIGNAL(valueChanged()), this, SLOT(asyncHandler()));
     }
 }
@@ -282,23 +298,42 @@ void cPCBServer::asyncHandler()
 {
     cNotificationString* notifier = qobject_cast<cNotificationString*>(sender());
 
-    QList<cNotificationData> notList = notifierHashtable.values(notifier);
-    if (notList.count() > 0)
+    if (notifierRegisterList.count() > 0)
     {
         ProtobufMessage::NetMessage protobufIntMessage;
 
-        for (int i = 0; i < notList.count(); i++)
+        for (int i = 0; i < notifierRegisterList.count(); i++)
         {
-            ProtobufMessage::NetMessage::NetReply *intMessage = protobufIntMessage.mutable_reply();
-            cNotificationData notData = notList.at(i);
-            QString s = QString("Notify:%1").arg(notData.notifier);
-            intMessage->set_body(s.toStdString());
-            intMessage->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
-            QByteArray id = notData.clientID;
-            protobufIntMessage.set_clientid(id, id.count());
-            protobufIntMessage.set_messagenr(0); // interrupt
+            cNotificationData notData = notifierRegisterList.at(i);
+            if (notData.notString == notifier)
+            {
+                ProtobufMessage::NetMessage::NetReply *intMessage = protobufIntMessage.mutable_reply();
+                QString s = QString("Notify:%1").arg(notData.notifier);
+                if (notData.clientID.isEmpty()) // old style communication
+                {
+                    QByteArray block;
 
-            notData.netClient->sendMessage(&protobufIntMessage);
+                    QDataStream out(&block, QIODevice::WriteOnly);
+                    out.setVersion(QDataStream::Qt_4_0);
+                    out << (qint32)0;
+
+                    out << s.toUtf8();
+                    out.device()->seek(0);
+                    out << (qint32)(block.size() - sizeof(qint32));
+
+                    notData.netClient->getTcpSocket()->write(block);
+                }
+                else
+                {
+                    intMessage->set_body(s.toStdString());
+                    intMessage->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
+                    QByteArray id = notData.clientID;
+                    protobufIntMessage.set_clientid(id, id.count());
+                    protobufIntMessage.set_messagenr(0); // interrupt
+
+                    notData.netClient->sendMessage(&protobufIntMessage);
+                }
+            }
         }
     }
 }

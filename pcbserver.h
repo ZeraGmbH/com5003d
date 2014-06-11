@@ -129,8 +129,9 @@ private:
 
     QString m_RegisterNotifier(QString& sInput); // registeres 1 notifier per command
     QString m_UnregisterNotifier(QString& sInput); // unregisters all notifiers
+    QList<cNotificationData> notifierRegisterNext;
     QList<cNotificationData> notifierRegisterList;
-    QHash<cNotificationString*, cNotificationData> notifierHashtable;
+
 
 private slots:
     virtual void establishNewConnection(ProtoNetPeer* newClient);
