@@ -19,11 +19,28 @@
 #include "com5003dglobal.h"
 
 cPCBServer::cPCBServer(QObject *parent)
-    : QObject(parent)
+    : cSCPIConnection(parent)
 {
     m_sServerName = ServerName;
     m_sServerVersion = ServerVersion;
     myXMLConfigReader = new Zera::XMLConfig::cReader();
+}
+
+
+void cPCBServer::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+{
+    cSCPIDelegate* delegate;
+
+    if (leadingNodes != "")
+        leadingNodes += ":";
+
+    delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes),"REGISTER",SCPI::isCmdwP,scpiInterface, PCBServer::cmdRegister);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes),"UNREGISTER",SCPI::isQuery | SCPI::isCmd ,scpiInterface, PCBServer::cmdUnregister);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+
 }
 
 
@@ -54,6 +71,75 @@ void cPCBServer::setupServer()
 }
 
 
+void cPCBServer::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+{
+    switch (cmdCode)
+    {
+    case PCBServer::cmdRegister:
+        sOutput = m_RegisterNotifier(sInput);
+        break;
+    case PCBServer::cmdUnregister:
+        sOutput = m_UnregisterNotifier(sInput);
+        break;
+    }
+}
+
+
+QString cPCBServer::m_RegisterNotifier(QString &sInput)
+{
+    bool ok;
+    QString dummy;
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(2))
+    {
+        cSCPIObject* scpiObject;
+        QString query = cmd.getParam(0);
+
+        if ( (scpiObject =  m_pSCPInterface->getSCPIObject(query, dummy)) != 0)
+        {
+            cNotificationData notData;
+
+            notData.netClient = client;
+            notData.clientID = clientId;
+            notData.notifier = cmd.getParam(1).toInt(&ok);
+
+            notifierRegisterList.append(notData); // we wait for a notifier signal
+            if (!scpiObject->executeSCPI(query, m_sOutput))
+            {
+                m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+                notifierRegisterList.pop_back();
+            }
+            else
+                m_sOutput = SCPI::scpiAnswer[SCPI::ack]; // we overwrite the query's output here
+        }
+        else
+            m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+
+    }
+
+    return m_sOutput;
+}
+
+
+QString cPCBServer::m_UnregisterNotifier(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(1) && (cmd.getParam(0) == "") )
+    {
+        // we have to remove all notifiers for this clientId
+        // todo todo
+        // notifierHashtable.remove(clientId); // we remove all notifiers from list
+        m_sOutput = SCPI::scpiAnswer[SCPI::ack];
+    }
+    else
+        m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+
+    return m_sOutput;
+}
+
+
 void cPCBServer::establishNewConnection(ProtoNetPeer *newClient)
 {
     connect(newClient,SIGNAL(sigMessageReceived(google::protobuf::Message*)),this,SLOT(executeCommand(google::protobuf::Message*)));
@@ -67,14 +153,15 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
     cSCPIObject* scpiObject;
     QString dummy;
 
-    ProtoNetPeer* client = qobject_cast<ProtoNetPeer*>(sender());
+    //ProtoNetPeer* client = qobject_cast<ProtoNetPeer*>(sender());
+
+    client = qobject_cast<ProtoNetPeer*>(sender());
     protobufCommand = static_cast<ProtobufMessage::NetMessage*>(cmd);
 
     if ( (protobufCommand != 0) && (client != 0))
     {
         if (protobufCommand->has_clientid() && protobufCommand->has_messagenr())
         {
-            QByteArray clientId;
             quint32 messageNr;
             clientId = QByteArray(protobufCommand->clientid().data(), protobufCommand->clientid().size());
             messageNr = protobufCommand->messagenr();
@@ -94,7 +181,7 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
             ProtobufMessage::NetMessage::NetReply *Answer = protobufAnswer.mutable_reply();
 
             // dependent on rtype caller can se ack, nak, error
-            // in case of error the body has to be analysed for details
+            // in case of error the body has to be analyzed for details
 
             if (m_sOutput.contains(SCPI::scpiAnswer[SCPI::ack]))
                 Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
@@ -180,10 +267,50 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
 }
 
 
+void cPCBServer::establishNewNotifier(cNotificationString *notifier)
+{
+    if (notifierRegisterList.count() > 0) // if we're waiting for notifier
+    {
+        cNotificationData notData = notifierRegisterList.takeFirst(); // we pick the notification data
+        notifierHashtable.insertMulti(notifier, notData); //
+        connect(notifier, SIGNAL(valueChanged()), this, SLOT(asyncHandler()));
+    }
+}
+
+
+void cPCBServer::asyncHandler()
+{
+    cNotificationString* notifier = qobject_cast<cNotificationString*>(sender());
+
+    QList<cNotificationData> notList = notifierHashtable.values(notifier);
+    if (notList.count() > 0)
+    {
+        ProtobufMessage::NetMessage protobufIntMessage;
+
+        for (int i = 0; i < notList.count(); i++)
+        {
+            ProtobufMessage::NetMessage::NetReply *intMessage = protobufIntMessage.mutable_reply();
+            cNotificationData notData = notList.at(i);
+            QString s = QString("Notify:%1").arg(notData.notifier);
+            intMessage->set_body(s.toStdString());
+            intMessage->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
+            QByteArray id = notData.clientID;
+            protobufIntMessage.set_clientid(id, id.count());
+            protobufIntMessage.set_messagenr(0); // interrupt
+
+            notData.netClient->sendMessage(&protobufIntMessage);
+        }
+    }
+}
+
+
 void cPCBServer::initSCPIConnections()
 {
     for (int i = 0; i < scpiConnectionList.count(); i++)
+    {
         scpiConnectionList.at(i)->initSCPIConnection("",m_pSCPInterface); // we have our interface
+        connect(scpiConnectionList.at(i), SIGNAL(notifier(cNotificationString*)), this, SLOT(establishNewNotifier(cNotificationString*)));
+    }
 }
 
 

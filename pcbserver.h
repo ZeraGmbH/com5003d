@@ -12,6 +12,8 @@
 
 #include "com5003dprotobufwrapper.h"
 #include "scpiconnection.h"
+#include "notificationstring.h"
+#include "notificationdata.h"
 
 class QTcpSocket;
 class QByteArray;
@@ -34,6 +36,15 @@ class Message;
 }
 }
 
+
+namespace PCBServer
+{
+enum commands
+{
+    cmdRegister,
+    cmdUnregister
+};
+}
 
 class ProtoNetServer;
 class ProtoNetPeer;
@@ -59,7 +70,7 @@ class cStatusInterface;  // forward
   */
 
 
-class cPCBServer: public QObject
+class cPCBServer: public cSCPIConnection
 {
     Q_OBJECT
 
@@ -69,12 +80,14 @@ public:
       @param the servers name
       */
     explicit cPCBServer(QObject* parent=0);
+    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
     /**
       @b reads out the server's name
       */
     QString& getName();
     QString& getVersion();
     cSCPI* getSCPIInterface();
+
 
     cStatusInterface* m_pStatusInterface;
 
@@ -95,6 +108,7 @@ protected:
 protected slots:
     virtual void doConfiguration() = 0; // all servers must configure
     virtual void setupServer(); // all servers must setup
+    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
 
 private:
     /**
@@ -110,10 +124,19 @@ private:
     QString m_sInput, m_sOutput;
     QTcpSocket* resourceManagerSocket;
 
+    QByteArray clientId;
+    ProtoNetPeer *client;
+
+    QString m_RegisterNotifier(QString& sInput); // registeres 1 notifier per command
+    QString m_UnregisterNotifier(QString& sInput); // unregisters all notifiers
+    QList<cNotificationData> notifierRegisterList;
+    QHash<cNotificationString*, cNotificationData> notifierHashtable;
+
 private slots:
     virtual void establishNewConnection(ProtoNetPeer* newClient);
     virtual void executeCommand(google::protobuf::Message *cmd);
-
+    virtual void establishNewNotifier(cNotificationString* notifier);
+    virtual void asyncHandler();
 };
 
 #endif // PCBSERVER_H
