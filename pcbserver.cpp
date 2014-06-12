@@ -244,25 +244,25 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
         {
             clientId = QByteArray(); // we set an empty byte array
             m_sInput =  QString::fromStdString(protobufCommand->scpi().command());
-            qDebug() << m_sInput;
+            //qDebug() << m_sInput;
             if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
             {
-                qDebug() << "1";
+                //qDebug() << "1";
                 m_sOutput = QString("nyet;"); // only becomes output in case of program error
                 if (!scpiObject->executeSCPI(m_sInput, m_sOutput))
                 {
-                    qDebug() << "2";
+                    //qDebug() << "2";
                     m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
                 }
                 else
                 {
-                    qDebug() << "3";
+                    //qDebug() << "3";
                 }
 
             }
             else
             {
-                qDebug() << "4";
+                //qDebug() << "4";
                 m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
             }
 
