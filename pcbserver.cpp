@@ -105,7 +105,7 @@ QString cPCBServer::m_RegisterNotifier(QString &sInput)
             notData.notifier = cmd.getParam(1).toInt(&ok);
 
             notifierRegisterNext.append(notData); // we wait for a notifier signal
-            if (!scpiObject->executeSCPI(query, m_sOutput))
+            if (!scpiObject->executeSCPI(query, dummy))
             {
                 m_sOutput = SCPI::scpiAnswer[SCPI::nak];
                 notifierRegisterNext.pop_back();
