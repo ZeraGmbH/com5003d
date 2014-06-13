@@ -548,9 +548,9 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
             if (mode == SenseSystem::sMMode[SenseSystem::modeAC] )
             {
                 m_nMMode = SenseSystem::modeAC;
-                setNotifierSenseMMode();
                 if (oldMode != m_nMMode)
                     ChangeSenseMode();
+                setNotifierSenseMMode();
                 return SCPI::scpiAnswer[SCPI::ack];
 
             }
@@ -558,9 +558,9 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
             if (mode == SenseSystem::sMMode[SenseSystem::modeREF] )
             {
                 m_nMMode = SenseSystem::modeREF;
-                setNotifierSenseMMode();
                 if (oldMode != m_nMMode)
                     ChangeSenseMode();
+                setNotifierSenseMMode();
                 return SCPI::scpiAnswer[SCPI::ack];
             }
 
