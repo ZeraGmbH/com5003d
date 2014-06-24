@@ -286,6 +286,7 @@ void cPCBServer::establishNewNotifier(cNotificationString *notifier)
 {
     if (notifierRegisterNext.count() > 0) // if we're waiting for notifier
     {
+        disconnect(notifier, 0, 0, 0); // we disconnect first because we only want 1 signal
         cNotificationData notData = notifierRegisterNext.takeFirst(); // we pick the notification data
         notData.notString = notifier;
         notifierRegisterList.append(notData); //
@@ -302,39 +303,40 @@ void cPCBServer::asyncHandler()
     {
         ProtobufMessage::NetMessage protobufIntMessage;
 
-        for (int i = 0; i < notifierRegisterList.count(); i++)
-        {
-            cNotificationData notData = notifierRegisterList.at(i);
-            if (notData.notString == notifier)
+        if (notifierRegisterList.count() > 0)
+            for (int i = 0; i < notifierRegisterList.count(); i++)
             {
-                ProtobufMessage::NetMessage::NetReply *intMessage = protobufIntMessage.mutable_reply();
-                QString s = QString("Notify:%1").arg(notData.notifier);
-                if (notData.clientID.isEmpty()) // old style communication
+                cNotificationData notData = notifierRegisterList.at(i);
+                if (notData.notString == notifier)
                 {
-                    QByteArray block;
+                    ProtobufMessage::NetMessage::NetReply *intMessage = protobufIntMessage.mutable_reply();
+                    QString s = QString("Notify:%1").arg(notData.notifier);
+                    if (notData.clientID.isEmpty()) // old style communication
+                    {
+                        QByteArray block;
 
-                    QDataStream out(&block, QIODevice::WriteOnly);
-                    out.setVersion(QDataStream::Qt_4_0);
-                    out << (qint32)0;
+                        QDataStream out(&block, QIODevice::WriteOnly);
+                        out.setVersion(QDataStream::Qt_4_0);
+                        out << (qint32)0;
 
-                    out << s.toUtf8();
-                    out.device()->seek(0);
-                    out << (qint32)(block.size() - sizeof(qint32));
+                        out << s.toUtf8();
+                        out.device()->seek(0);
+                        out << (qint32)(block.size() - sizeof(qint32));
 
-                    notData.netClient->getTcpSocket()->write(block);
-                }
-                else
-                {
-                    intMessage->set_body(s.toStdString());
-                    intMessage->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
-                    QByteArray id = notData.clientID;
-                    protobufIntMessage.set_clientid(id, id.count());
-                    protobufIntMessage.set_messagenr(0); // interrupt
+                        notData.netClient->getTcpSocket()->write(block);
+                    }
+                    else
+                    {
+                        intMessage->set_body(s.toStdString());
+                        intMessage->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
+                        QByteArray id = notData.clientID;
+                        protobufIntMessage.set_clientid(id, id.count());
+                        protobufIntMessage.set_messagenr(0); // interrupt
 
-                    notData.netClient->sendMessage(&protobufIntMessage);
+                        notData.netClient->sendMessage(&protobufIntMessage);
+                    }
                 }
             }
-        }
     }
 }
 
