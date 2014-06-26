@@ -104,7 +104,7 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
         rngList.append(new cSenseRange("10mA" ,"10mA" , true, 0.01 ,4692928.0, 5631514.0,13, SenseRange::Phys));
         rngList.append(new cSenseRange("5mA"  ,"5mA"  , true, 0.005,4692928.0, 5631514.0,14, SenseRange::Phys));
 
-        rngList.append(new cSenseRange("R0V" , "R0V" , false, 10.0, 5005789.0, 6006947.0,15, SenseRange::Phys));
+        rngList.append(new cSenseRange("R0V" , "R0V" , false,  9.0, 4505210.1, 6006947.0,15, SenseRange::Phys));
         rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 5005789.0, 6006947.0,16, SenseRange::Phys));
 
         m_ChannelList.at(i)->setRangeList(rngList);
