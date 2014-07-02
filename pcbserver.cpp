@@ -128,6 +128,20 @@ QString cPCBServer::m_UnregisterNotifier(QString &sInput)
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == "") )
     {
+        doUnregisterNotifier();
+        m_sOutput = SCPI::scpiAnswer[SCPI::ack];
+    }
+    else
+        m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+
+    return m_sOutput;
+}
+
+
+void cPCBServer::doUnregisterNotifier()
+{
+    if (notifierRegisterList.count() > 0)
+    {
         QList<int> posList;
         // we have to remove all notifiers for this client and or clientId
         for (int i = 0; i < notifierRegisterList.count(); i++)
@@ -137,22 +151,18 @@ QString cPCBServer::m_UnregisterNotifier(QString &sInput)
             { // we found the client
                 if (notData.clientID.isEmpty() or (notData.clientID == clientId))
                 {
-                     posList.append(i);
+                    posList.append(i);
                 }
             }
         }
 
-        for (int i = 0; i < posList.count(); i++)
-            notifierRegisterList.removeAt(posList.at(i));
-
-        m_sOutput = SCPI::scpiAnswer[SCPI::ack];
+        if (posList.count() > 0)
+        {
+            for (int i = 0; i < posList.count(); i++)
+                notifierRegisterList.removeAt(posList.at(i));
+        }
     }
-    else
-        m_sOutput = SCPI::scpiAnswer[SCPI::nak];
-
-    return m_sOutput;
 }
-
 
 void cPCBServer::establishNewConnection(ProtoNetPeer *newClient)
 {
@@ -174,6 +184,14 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
 
     if ( (protobufCommand != 0) && (client != 0))
     {
+        if (protobufCommand->has_netcommand() && protobufCommand->has_clientid())
+        {
+            // in case of "lost" clients we delete registration for notification
+            clientId = QByteArray(protobufCommand->clientid().data(), protobufCommand->clientid().size());
+            doUnregisterNotifier();
+        }
+
+        else
         if (protobufCommand->has_clientid() && protobufCommand->has_messagenr())
         {
             quint32 messageNr;

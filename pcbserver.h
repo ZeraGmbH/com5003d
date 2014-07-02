@@ -132,6 +132,8 @@ private:
     QList<cNotificationData> notifierRegisterNext;
     QList<cNotificationData> notifierRegisterList;
 
+    void doUnregisterNotifier();
+
 
 private slots:
     virtual void establishNewConnection(ProtoNetPeer* newClient);
