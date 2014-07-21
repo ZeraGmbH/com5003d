@@ -4,14 +4,15 @@
 #include "xmlsettings.h"
 #include "scpiconnection.h"
 #include "resource.h"
-
+#include "com5003d.h"
 #include "sourcesettings.h"
 #include "sourceinterface.h"
 #include "fpzchannel.h"
 
 
-cSourceInterface::cSourceInterface(cSourceSettings *sourceSettings)
+cSourceInterface::cSourceInterface(cCOM5003dServer *server, cSourceSettings *sourceSettings)
 {
+    m_pMyServer = server;
     QList<SourceSystem::cChannelSettings*> mySettings;
 
     mySettings = sourceSettings->getChannelSettings();
@@ -67,7 +68,7 @@ void cSourceInterface::registerResource(cRMConnection *rmConnection, quint16 por
     for (int i = 0; i < 4; i++)
     {
         pChannel = m_ChannelList.at(i);
-        register1Resource(rmConnection, QString("SOURCE;%1;1;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
+        register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SOURCE;%1;1;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
     }
 }
 
@@ -78,7 +79,7 @@ void cSourceInterface::unregisterResource(cRMConnection *rmConnection)
     for (int i = 0; i < 4; i++)
     {
         pChannel = m_ChannelList.at(i);
-        unregister1Resource(rmConnection, QString("SOURCE;%1;").arg(pChannel->getName()));
+        unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SOURCE;%1;").arg(pChannel->getName()));
     }
 }
 

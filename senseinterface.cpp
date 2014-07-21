@@ -22,10 +22,10 @@
 extern cATMEL* pAtmel;
 
 cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseSettings)
-    :m_pMyServer(server)
 {
     int i;
 
+    m_pMyServer = server;
     m_nMMode = SenseSystem::modeAC; // default ac measurement
     pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
     setNotifierSenseMMode();
@@ -123,6 +123,20 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
 
     setNotifierSenseChannelCat(); // only prepared for !!! since we don't have hot plug for measuring channels yet
     m_sVersion = SenseSystem::Version;
+
+    // we set up our statemachine for changing sense mode
+    // we must use a statemachine because we have to synchronize sending of notifier
+    // otherwise moduls using this notifier will crash because resources are not registered properly
+
+    m_UnregisterSenseState.addTransition(this, SIGNAL(registerRdy()), &m_RegisterSenseState);
+    m_RegisterSenseState.addTransition(this, SIGNAL(registerRdy()), &m_NotifySenseState);
+    m_ChangeSenseModeMachine.addState(&m_UnregisterSenseState);
+    m_ChangeSenseModeMachine.addState(&m_RegisterSenseState);
+    m_ChangeSenseModeMachine.addState(&m_NotifySenseState);
+    m_ChangeSenseModeMachine.setInitialState(&m_UnregisterSenseState);
+    connect(&m_UnregisterSenseState, SIGNAL(entered()), this, SLOT(unregisterSense()));
+    connect(&m_RegisterSenseState, SIGNAL(entered()), this, SLOT(registerSense()));
+    connect(&m_NotifySenseState, SIGNAL(entered()), this, SLOT(notifySense()));
 }
 
 
@@ -213,55 +227,6 @@ void cSenseInterface::executeCommand(int cmdCode, QString &sInput, QString &sOut
         break;
 
     }
-}
-
-
-void cSenseInterface::ChangeSenseMode()
-{
-    int i;
-    QString s;
-
-    unregisterResource(m_pMyServer->m_pRMConnection);
-
-    // first we change the channels units and descriptions
-    if (m_nMMode == SenseSystem::modeAC)
-    {
-        m_ChannelList.at(0)->setDescription(SenseSystem::sVoltageChannelDescription);
-        m_ChannelList.at(0)->setUnit(s = "V");
-        m_ChannelList.at(1)->setDescription(SenseSystem::sVoltageChannelDescription);
-        m_ChannelList.at(1)->setUnit(s = "V");
-        m_ChannelList.at(2)->setDescription(SenseSystem::sVoltageChannelDescription);
-        m_ChannelList.at(2)->setUnit(s = "V");
-
-        m_ChannelList.at(3)->setDescription(SenseSystem::sCurrentChannelDescription);
-        m_ChannelList.at(3)->setUnit(s = "A");
-        m_ChannelList.at(4)->setDescription(SenseSystem::sCurrentChannelDescription);
-        m_ChannelList.at(4)->setUnit(s = "A");
-        m_ChannelList.at(5)->setDescription(SenseSystem::sCurrentChannelDescription);
-        m_ChannelList.at(5)->setUnit(s = "A");
-    }
-    else
-    {
-        for (i = 0; i < m_ChannelList.count(); i++) // for each channel
-        {
-            m_ChannelList.at(i)->setDescription(SenseSystem::sReferenceChannelDescription);
-            m_ChannelList.at(i)->setUnit(s = "V");
-        }
-    }
-
-    pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
-
-    // here we do the rest of reconfiguring
-    for (i = 0; i < m_ChannelList.count(); i++) // for each channel
-    {
-        m_ChannelList.at(i)->setMMode(m_nMMode); // this indirectly changes the channnels alias
-        QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
-        for (int j = 0; j < list.count(); j++ )
-            list.at(j)->setAvail( !list.at(j)->getAvail()); // we only toggle the ranges avail
-
-    }
-
-    registerResource(m_pMyServer->m_pRMConnection, m_pMyServer->m_pETHSettings->getPort(server));
 }
 
 
@@ -493,10 +458,11 @@ bool cSenseInterface::importAdjData(QDomNode& node) // n steht auf einem element
 void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     cSenseChannel* pChannel;
+    msgNrList.clear();
     for (int i = 0; i < 6; i++)
     {
         pChannel = m_ChannelList.at(i);
-        register1Resource(rmConnection, QString("SENSE;%1;1;%2;%3;")
+        register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;%1;1;%2;%3;")
                          .arg(pChannel->getName())
                          .arg(pChannel->getDescription())
                          .arg(port));
@@ -507,10 +473,11 @@ void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port
 void cSenseInterface::unregisterResource(cRMConnection *rmConnection)
 {
     cSenseChannel* pChannel;
+    msgNrList.clear();
     for (int i = 0; i < 6; i++)
     {
         pChannel = m_ChannelList.at(i);
-        unregister1Resource(rmConnection, QString("SENSE;%1;")
+        unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;%1;")
                          .arg(pChannel->getName()));
     }
 }
@@ -549,8 +516,7 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
             {
                 m_nMMode = SenseSystem::modeAC;
                 if (oldMode != m_nMMode)
-                    ChangeSenseMode();
-                setNotifierSenseMMode();
+                    m_ChangeSenseModeMachine.start();
                 return SCPI::scpiAnswer[SCPI::ack];
 
             }
@@ -559,8 +525,7 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
             {
                 m_nMMode = SenseSystem::modeREF;
                 if (oldMode != m_nMMode)
-                    ChangeSenseMode();
-                setNotifierSenseMMode();
+                    m_ChangeSenseModeMachine.start();
                 return SCPI::scpiAnswer[SCPI::ack];
             }
 
@@ -640,6 +605,66 @@ void cSenseInterface::setNotifierSenseChannelCat()
         s += m_ChannelList.at(i)->getName() + ";";
     s += m_ChannelList.at(i)->getName();
     notifierSenseChannelCat = s;
+}
+
+
+void cSenseInterface::unregisterSense()
+{
+    unregisterResource(m_pMyServer->m_pRMConnection);
+}
+
+
+void cSenseInterface::registerSense()
+{
+    QString s;
+    qint32 i;
+
+    // first we change the channels units and descriptions
+    if (m_nMMode == SenseSystem::modeAC)
+    {
+        m_ChannelList.at(0)->setDescription(SenseSystem::sVoltageChannelDescription);
+        m_ChannelList.at(0)->setUnit(s = "V");
+        m_ChannelList.at(1)->setDescription(SenseSystem::sVoltageChannelDescription);
+        m_ChannelList.at(1)->setUnit(s = "V");
+        m_ChannelList.at(2)->setDescription(SenseSystem::sVoltageChannelDescription);
+        m_ChannelList.at(2)->setUnit(s = "V");
+
+        m_ChannelList.at(3)->setDescription(SenseSystem::sCurrentChannelDescription);
+        m_ChannelList.at(3)->setUnit(s = "A");
+        m_ChannelList.at(4)->setDescription(SenseSystem::sCurrentChannelDescription);
+        m_ChannelList.at(4)->setUnit(s = "A");
+        m_ChannelList.at(5)->setDescription(SenseSystem::sCurrentChannelDescription);
+        m_ChannelList.at(5)->setUnit(s = "A");
+    }
+    else
+    {
+        for (i = 0; i < m_ChannelList.count(); i++) // for each channel
+        {
+            m_ChannelList.at(i)->setDescription(SenseSystem::sReferenceChannelDescription);
+            m_ChannelList.at(i)->setUnit(s = "V");
+        }
+    }
+
+    pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
+
+    // here we do the rest of reconfiguring
+    for (i = 0; i < m_ChannelList.count(); i++) // for each channel
+    {
+        m_ChannelList.at(i)->setMMode(m_nMMode); // this indirectly changes the channnels alias
+        QList<cSenseRange*> list = m_ChannelList.at(i)->getRangeList();
+        for (int j = 0; j < list.count(); j++ )
+            list.at(j)->setAvail( !list.at(j)->getAvail()); // we only toggle the ranges avail
+
+    }
+
+    registerResource(m_pMyServer->m_pRMConnection, m_pMyServer->m_pETHSettings->getPort(server));
+
+}
+
+
+void cSenseInterface::notifySense()
+{
+    setNotifierSenseMMode(); // we set the notifier synchron after all resources are registered again
 }
 
 

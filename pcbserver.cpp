@@ -21,6 +21,7 @@
 cPCBServer::cPCBServer(QObject *parent)
     : cSCPIConnection(parent)
 {
+    m_nMsgNr = 0;
     m_sServerName = ServerName;
     m_sServerVersion = ServerVersion;
     myXMLConfigReader = new Zera::XMLConfig::cReader();
@@ -41,6 +42,15 @@ void cPCBServer::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
 
+}
+
+
+quint32 cPCBServer::getMsgNr()
+{
+    m_nMsgNr++;
+    if (m_nMsgNr == 0)
+        m_nMsgNr++;
+    return m_nMsgNr;
 }
 
 

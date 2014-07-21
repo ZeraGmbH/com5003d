@@ -81,6 +81,8 @@ public:
       */
     explicit cPCBServer(QObject* parent=0);
     virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    quint32 getMsgNr();
+
     /**
       @b reads out the server's name
       */
@@ -133,7 +135,7 @@ private:
     QList<cNotificationData> notifierRegisterList;
 
     void doUnregisterNotifier();
-
+    quint32 m_nMsgNr;
 
 private slots:
     virtual void establishNewConnection(ProtoNetPeer* newClient);

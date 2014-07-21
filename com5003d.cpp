@@ -203,8 +203,8 @@ void cCOM5003dServer::doSetupServer()
     scpiConnectionList.append(m_pStatusInterface = new cStatusInterface(m_pAdjHandler));
     scpiConnectionList.append(m_pSystemInterface = new cSystemInterface(this, m_pAdjHandler, m_pSystemInfo));
     scpiConnectionList.append(m_pSenseInterface = new cSenseInterface(this, m_pSenseSettings));
-    scpiConnectionList.append(m_pSamplingInterface = new cSamplingInterface(m_pSamplingSettings));
-    scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(m_pSourceSettings));
+    scpiConnectionList.append(m_pSamplingInterface = new cSamplingInterface(this, m_pSamplingSettings));
+    scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(this, m_pSourceSettings));
 
     resourceList.append(m_pSenseInterface); // all our resources
     resourceList.append(m_pSamplingInterface);
@@ -247,7 +247,11 @@ void cCOM5003dServer::doIdentAndRegister()
     m_pRMConnection->SendIdent(getName());
 
     for (int i = 0; i < resourceList.count(); i++)
-        resourceList.at(i)->registerResource(m_pRMConnection, m_pETHSettings->getPort(server));
+    {
+        cResource *res = resourceList.at(i);
+        connect(m_pRMConnection, SIGNAL(rmAck(quint32)), res, SLOT(resourceManagerAck(quint32)) );
+        res->registerResource(m_pRMConnection, m_pETHSettings->getPort(server));
+    }
 }
 
 

@@ -23,14 +23,14 @@ enum Commands
 
 class cSourceSettings;
 class QDataStream;
+class cCOM5003dServer;
 
-
-class cSourceInterface : public cSCPIConnection, public cResource
+class cSourceInterface : public cResource
 {
     Q_OBJECT
 
 public:
-    cSourceInterface(cSourceSettings* sourceSettings);
+    cSourceInterface(cCOM5003dServer* server, cSourceSettings* sourceSettings);
     ~cSourceInterface();
     virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);

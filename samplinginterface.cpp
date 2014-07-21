@@ -7,11 +7,14 @@
 #include "samplingsettings.h"
 #include "samplinginterface.h"
 #include "atmel.h"
+#include "com5003d.h"
 
 extern cATMEL* pAtmel;
 
-cSamplingInterface::cSamplingInterface(cSamplingSettings *samplingSettings)
+cSamplingInterface::cSamplingInterface(cCOM5003dServer *server, cSamplingSettings *samplingSettings)
 {
+    m_pMyServer = server;
+
     m_pllChannelList.append("0");
     m_pllChannelList.append("m0");
     m_pllChannelList.append("m1");
@@ -78,13 +81,13 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
 
 void cSamplingInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
-    register1Resource(rmConnection, QString("SAMPLE;%1;1;%2;%3;").arg(m_sName).arg(m_sDescription).arg(port));
+    register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SAMPLE;%1;1;%2;%3;").arg(m_sName).arg(m_sDescription).arg(port));
 }
 
 
 void cSamplingInterface::unregisterResource(cRMConnection *rmConnection)
 {
-    unregister1Resource(rmConnection, QString("SAMPLE;%1;").arg(m_sName));
+    unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SAMPLE;%1;").arg(m_sName));
 }
 
 

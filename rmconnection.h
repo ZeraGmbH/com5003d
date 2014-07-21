@@ -26,7 +26,7 @@ public:
     void SendIdent(QString ident);
 
 public slots:
-    void SendCommand(QString& cmd, QString &par);
+    void SendCommand(QString& cmd, QString &par, quint32 msgnr);
 
 private:
     QString m_sIPAdr;
@@ -43,6 +43,7 @@ private slots:
 signals:
     void connectionRMError();
     void connected();
+    void rmAck(quint32);
 };
 
 #endif // RMCONNECTION_H

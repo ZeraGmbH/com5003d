@@ -27,15 +27,16 @@ void cRMConnection::connect2RM()
 }
 
 
-void cRMConnection::SendCommand(QString &cmd, QString &par)
+void cRMConnection::SendCommand(QString &cmd, QString &par, quint32 msgnr)
 {
     m_sCommand = cmd;
-    ProtobufMessage::NetMessage envelope;
-    ProtobufMessage::NetMessage::ScpiCommand* message = envelope.mutable_scpi();
-    message->set_command(cmd.toStdString());
-    message->set_parameter(par.toStdString());
+    ProtobufMessage::NetMessage message;
+    ProtobufMessage::NetMessage::ScpiCommand* scpiCmd = message.mutable_scpi();
+    scpiCmd->set_command(cmd.toStdString());
+    scpiCmd->set_parameter(par.toStdString());
+    message.set_messagenr(msgnr);
 
-    m_pResourceManagerClient->sendMessage(&envelope);
+    m_pResourceManagerClient->sendMessage(&message);
 }
 
 
@@ -60,6 +61,11 @@ void cRMConnection::responseHandler(google::protobuf::Message *response)
                 syslog(LOG_ERR,"command: %s, was not acknowledged\n", ba.data() );
             }
             emit connectionRMError();
+        }
+
+        else
+        {
+            emit rmAck(answer->messagenr());
         }
     }
     else

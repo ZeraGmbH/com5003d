@@ -4,8 +4,9 @@
 #include "rmconnection.h"
 
 
-cResource::cResource()
+cResource::cResource(QObject *parent)
 {
+    setParent(parent);
 }
 
 
@@ -14,16 +15,29 @@ cResource::~cResource()
 }
 
 
-void cResource::register1Resource(cRMConnection *rmConnection, QString registerParameter)
+void cResource::register1Resource(cRMConnection *rmConnection, quint32 msgnr, QString registerParameter)
 {
     QString cmd = QString("RESOURCE:ADD");
-    rmConnection->SendCommand(cmd, registerParameter);
+    msgNrList.append(msgnr);
+    rmConnection->SendCommand(cmd, registerParameter, msgnr);
 }
 
 
-void cResource::unregister1Resource(cRMConnection *rmConnection, QString unregisterParameter)
+void cResource::unregister1Resource(cRMConnection *rmConnection, quint32 msgnr, QString unregisterParameter)
 {
     QString cmd = QString("RESOURCE:REMOVE");
-    rmConnection->SendCommand(cmd, unregisterParameter);
+    msgNrList.append(msgnr);
+    rmConnection->SendCommand(cmd, unregisterParameter, msgnr);
+}
+
+
+void cResource::resourceManagerAck(quint32 msgnr)
+{
+    if (msgNrList.contains(msgnr))
+    {
+        msgNrList.removeOne(msgnr);
+        if (msgNrList.isEmpty())
+            emit registerRdy();
+    }
 }
 

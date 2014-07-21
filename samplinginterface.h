@@ -33,13 +33,15 @@ class QString;
 class cSCPIConnection;
 class cSamplingSettings;
 class cClientNetBase;
+class cCOM5003dServer;
 
-class cSamplingInterface:public cSCPIConnection, public cResource
+
+class cSamplingInterface: public cResource
 {
     Q_OBJECT
 
 public:
-    cSamplingInterface(cSamplingSettings* samplingSettings);
+    cSamplingInterface(cCOM5003dServer* server, cSamplingSettings* samplingSettings);
     virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);

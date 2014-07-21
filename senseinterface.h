@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QList>
+#include <QStateMachine>
+#include <QState>
+#include <QFinalState>
 
 #include "adjflash.h"
 #include "adjxml.h"
@@ -44,7 +47,7 @@ class QDataStream;
 class cClientNetBase;
 
 
-class cSenseInterface : public cSCPIConnection, public cAdjFlash, public cAdjXML, public cResource
+class cSenseInterface : public cResource, public cAdjFlash, public cAdjXML
 {
     Q_OBJECT
 
@@ -70,7 +73,10 @@ private:
     QString m_sVersion;
     quint8 m_nMMode;
 
-    void ChangeSenseMode();
+    QStateMachine m_ChangeSenseModeMachine;
+    QState m_UnregisterSenseState;
+    QState m_RegisterSenseState;
+    QFinalState m_NotifySenseState;
 
     QString m_ReadVersion(QString& sInput);
     QString m_ReadWriteMModeVersion(QString& sInput);
@@ -83,6 +89,12 @@ private:
 
     void setNotifierSenseMMode();
     void setNotifierSenseChannelCat();
+
+private slots:
+    void unregisterSense();
+    void registerSense();
+    void notifySense();
+
 
 };
 
