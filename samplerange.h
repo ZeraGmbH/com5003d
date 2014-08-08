@@ -24,6 +24,7 @@ public:
     virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
     QString &getName();
     quint8 getSelCode();
+    quint16 getSRate();
 
 protected slots:
     virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
