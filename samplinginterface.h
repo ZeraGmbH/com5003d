@@ -17,6 +17,7 @@ const QString Version = "V1.00";
 enum Commands
 {
     cmdVersion,
+    cmdSampleRate,
     cmdChannelCat,
     cmdChannelAlias,
     cmdChannelType,
@@ -60,6 +61,7 @@ private:
     QStringList m_pllChannelList;
 
     QString m_ReadVersion(QString& sInput);
+    QString m_ReadSampleRate(QString& sInput);
     QString m_ReadSamplingChannelCatalog(QString& sInput);
     QString m_ReadAlias(QString&sInput);
     QString m_ReadType(QString&sInput);

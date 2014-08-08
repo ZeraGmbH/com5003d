@@ -48,6 +48,15 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"VERSION", SCPI::isQuery, scpiInterface, SamplingSystem::cmdVersion);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+
+    delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"SRATE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdSampleRate);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+
+
+
+
+
     delegate = new cSCPIDelegate(QString("%1SAMPLE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -98,6 +107,9 @@ void cSamplingInterface::executeCommand(int cmdCode, QString &sInput, QString &s
     case SamplingSystem::cmdVersion:
         sOutput = m_ReadVersion(sInput);
         break;
+    case SamplingSystem::cmdSampleRate:
+        sOutput = m_ReadSampleRate(sInput);
+        break;
     case SamplingSystem::cmdChannelCat:
         sOutput = m_ReadSamplingChannelCatalog(sInput);
         break;
@@ -133,6 +145,25 @@ QString cSamplingInterface::m_ReadVersion(QString &sInput)
 
     if (cmd.isQuery())
         return m_sVersion;
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSamplingInterface::m_ReadSampleRate(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        int i;
+        QString s;
+        s = notifierSampleChannelRange.getString(); // our actual sample channels range
+        for  (i = 0; i < m_SampleRangeList.count(); i++)
+            if (m_SampleRangeList.at(i)->getName() == s)
+                break;
+        return QString("%1").arg(m_SampleRangeList.at(i)->getSRate());
+    }
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
