@@ -33,8 +33,11 @@ cSamplingInterface::cSamplingInterface(cCOM5003dServer *server, cSamplingSetting
     m_sVersion = SamplingSystem::Version;
     m_nType = 0;
 
-    m_SampleRangeList.append(new cSampleRange("F20Hz", 720, 0));
-    m_SampleRangeList.append(new cSampleRange("F50Hz", 504, 1));
+    m_SampleRangeList.append(new cSampleRange("F50Hz", 504, 0));
+    m_SampleRangeList.append(new cSampleRange("F20Hz", 720, 1));
+
+    pAtmel->setSamplingRange(0); // default we set 50Hz 504 samples
+    setNotifierSampleChannelRange(); // we must intialize our setting (notifier)
 }
 
 
@@ -69,7 +72,7 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-    delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"RANGE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelRange);
+    delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"RANGE", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, SamplingSystem::cmdChannelRange);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2:RANGE").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelRangeCat);
@@ -225,7 +228,7 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
 
     if (cmd.isQuery())
     {
-        emit notifier(&notifierSampleChannelRange);
+        emit notifier(&notifierSampleChannelRange); // we need this in case that the client wants notification
         return notifierSampleChannelRange.getString();
     }
     else
