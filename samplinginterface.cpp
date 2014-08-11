@@ -51,15 +51,9 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
     delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"VERSION", SCPI::isQuery, scpiInterface, SamplingSystem::cmdVersion);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-
     delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"SRATE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdSampleRate);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
-
-
-
-
-
     delegate = new cSCPIDelegate(QString("%1SAMPLE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -317,7 +311,7 @@ QString cSamplingInterface::m_ReadPLLCatalog(QString &sInput)
     {
         int i;
         QString s;
-        for (i = 1; i < m_pllChannelList.count(); i++)
+        for (i = 1; i < m_pllChannelList.count()-1; i++)
             s += m_pllChannelList.at(i) + ";";
         s += m_pllChannelList.at(i);
 
