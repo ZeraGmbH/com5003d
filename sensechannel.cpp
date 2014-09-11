@@ -23,6 +23,7 @@ cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cCh
     m_nOverloadBit = cSettings->m_nOverloadBit;
     m_bAvail = cSettings->avail;
     m_nMMode = SenseChannel::modeAC; // the default
+    m_ReadRange(); // we read the
 }
 
 
@@ -61,6 +62,9 @@ void cSenseChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterfac
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"RANGE", SCPI::isQuery | SCPI::isCmdwP, scpiInterface, SenseChannel::cmdRange);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"URVALUE", SCPI::isQuery, scpiInterface, SenseChannel::cmdUrvalue);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
     delegate = new cSCPIDelegate(QString("%1%2:RANGE").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SenseChannel::cmdRangeCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
@@ -94,6 +98,9 @@ void cSenseChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutpu
         break;
     case SenseChannel::cmdRange:
         sOutput = m_ReadWriteRange(sInput);
+        break;
+    case SenseChannel::cmdUrvalue:
+        sOutput = m_ReadUrvalue(sInput);
         break;
     case SenseChannel::cmdRangeCat:
         sOutput = m_ReadRangeCatalog(sInput);
@@ -272,6 +279,36 @@ QString cSenseChannel::m_StatusReset(QString &sInput)
 }
 
 
+void cSenseChannel::m_ReadRange()
+{
+    quint8 mode, range;
+
+    if ( pAtmel->readMeasMode(mode) == cmddone )
+    {
+        if (mode == SenseChannel::modeAC) // wir sind im normalberieb
+        {
+            if ( pAtmel->readRange(m_nCtrlChannel, range) == cmddone )
+            {
+                int i;
+                for (i = 0; i < m_RangeList.count(); i++)
+                    if (m_RangeList.at(i)->getSelCode() == range)
+                        break;
+                notifierSenseChannelRange = m_RangeList.at(i)->getName();
+            }
+        }
+        else
+        {
+            if (mode == 1)
+                notifierSenseChannelRange = "R0V";
+            else
+                notifierSenseChannelRange = "R10V";
+        }
+    }
+    else
+        notifierSenseChannelRange = m_RangeList.at(0)->getName();
+}
+
+
 QString cSenseChannel::m_ReadWriteRange(QString &sInput)
 {
     int i;
@@ -282,25 +319,8 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
     {
         if (cmd.isQuery())
         {
-            if (mode == SenseChannel::modeAC) // wir sind im normalberieb
-            {
-                if ( pAtmel->readRange(m_nCtrlChannel, range) == cmddone )
-                {
-                    for (i = 0; i < m_RangeList.count(); i++)
-                        if (m_RangeList.at(i)->getSelCode() == range)
-                            break;
-                    return m_RangeList.at(i)->getName();
-                }
-                else
-                    return SCPI::scpiAnswer[SCPI::errexec];
-            }
-            else
-            {
-                if (mode == 1)
-                    return "R0V";
-                else
-                    return "R10V";
-            }
+            emit notifier(&notifierSenseChannelRange); // we only return the already known range name
+            return notifierSenseChannelRange.getString();
         }
 
         else
@@ -318,16 +338,25 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
                     if (m_nMMode == SenseChannel::modeAC)
                     {
                         if ( pAtmel->setRange(m_nCtrlChannel, m_RangeList.at(i)->getSelCode()) == cmddone)
+                        {
+                            notifierSenseChannelRange = rng;
                             return SCPI::scpiAnswer[SCPI::ack];
+                        }
                         else
                             return SCPI::scpiAnswer[SCPI::errexec];
                     }
                     else
                     {
                         if (m_RangeList.at(i)->getName() == "R0V")
+                        {
+                            notifierSenseChannelRange = "R0V";
                             pAtmel->setMeasMode(1);
+                        }
                         else
+                        {
+                            notifierSenseChannelRange = "R10V";
                             pAtmel->setMeasMode(2);
+                        }
 
                         return SCPI::scpiAnswer[SCPI::ack];
                     }
@@ -343,6 +372,24 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
     else
         return SCPI::scpiAnswer[SCPI::errexec];
 
+}
+
+
+QString cSenseChannel::m_ReadUrvalue(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        int i;
+        for (i = 0; i < m_RangeList.count(); i++)
+            if (m_RangeList.at(i)->getName() == notifierSenseChannelRange.getString())
+                break;
+        return QString("%1").arg(m_RangeList.at(i)->getUrvalue());
+    }
+
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
