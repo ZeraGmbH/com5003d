@@ -39,6 +39,7 @@ public:
     quint8 getAdjustmentStatus();
 
     QString& getName();
+    double getUrvalue();
     quint8 getSelCode();
     cCOM5003JustData* getJustData();
     bool getAvail();

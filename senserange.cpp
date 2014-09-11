@@ -59,6 +59,12 @@ QString &cSenseRange::getName()
 }
 
 
+double cSenseRange::getUrvalue()
+{
+    return m_fRValue;
+}
+
+
 quint8 cSenseRange::getSelCode()
 {
     return m_nSelCode;
