@@ -19,7 +19,7 @@ enum Commands
 };
 
 
-const double FormFactor = 21e6;
+const double FormFactor = 5.6294995e6; // fout = (Pact/Pnenn) * FPZnenn * FormFactor
 }
 
 
