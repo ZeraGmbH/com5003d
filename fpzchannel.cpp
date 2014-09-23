@@ -105,7 +105,7 @@ QString cFPZChannel::m_ReadAlias(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return m_sAlias+";";
+        return m_sAlias;
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -116,7 +116,7 @@ QString cFPZChannel::m_ReadType(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_nType);
+        return QString("%1").arg(m_nType);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -127,7 +127,7 @@ QString cFPZChannel::m_ReadDspServer(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_nDspServer);
+        return QString("%1").arg(m_nDspServer);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -138,7 +138,7 @@ QString cFPZChannel::m_ReadDspChannel(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_nDspChannel);
+        return QString("%1").arg(m_nDspChannel);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -152,7 +152,7 @@ QString cFPZChannel::m_ReadChannelStatus(QString &sInput)
     {
         quint32 r;
         r = ((m_bAvail) ? 0 : 2 << 31);
-            return QString("%1;").arg(r);
+            return QString("%1").arg(r);
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
@@ -164,7 +164,7 @@ QString cFPZChannel::m_ReadFFactor(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1;").arg(m_fFormFactor);
+        return QString("%1").arg(m_fFormFactor);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
