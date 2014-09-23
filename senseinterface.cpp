@@ -137,6 +137,12 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
     connect(&m_UnregisterSenseState, SIGNAL(entered()), this, SLOT(unregisterSense()));
     connect(&m_RegisterSenseState, SIGNAL(entered()), this, SLOT(registerSense()));
     connect(&m_NotifySenseState, SIGNAL(entered()), this, SLOT(notifySense()));
+
+    // we must connect the signals for notification
+    for (i = 0; i < m_ChannelList.count(); i++)
+    {
+        connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
+    }
 }
 
 
