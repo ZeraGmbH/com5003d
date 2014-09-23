@@ -79,7 +79,7 @@ private:
     QString m_ReadDspChannel(QString& sInput);
     QString m_ReadChannelStatus(QString& sInput);
     QString m_StatusReset(QString& sInput);
-    void m_ReadRange(); // read channels range from atmel
+
     QString m_ReadWriteRange(QString& sInput);
     QString m_ReadUrvalue(QString& sInput);
     QString m_ReadRangeCatalog(QString& sInput);
@@ -88,6 +88,7 @@ private:
     cNotificationString notifierSenseChannelRange;
 
     void setNotifierSenseChannelRangeCat();
+    void setNotifierSenseChannelRange();
 
 };
 

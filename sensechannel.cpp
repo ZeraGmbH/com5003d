@@ -23,7 +23,6 @@ cSenseChannel::cSenseChannel(QString description, QString unit, SenseSystem::cCh
     m_nOverloadBit = cSettings->m_nOverloadBit;
     m_bAvail = cSettings->avail;
     m_nMMode = SenseChannel::modeAC; // the default
-    m_ReadRange(); // we read the
 }
 
 
@@ -114,6 +113,7 @@ void cSenseChannel::setRangeList(QList<cSenseRange*> &list)
 {
     m_RangeList = list;
     setNotifierSenseChannelRangeCat();
+    setNotifierSenseChannelRange();
 }
 
 
@@ -279,7 +279,7 @@ QString cSenseChannel::m_StatusReset(QString &sInput)
 }
 
 
-void cSenseChannel::m_ReadRange()
+void cSenseChannel::setNotifierSenseChannelRange()
 {
     quint8 mode, range;
 
