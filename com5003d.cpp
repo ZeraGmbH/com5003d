@@ -62,6 +62,7 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QState* statewait4Atmel = new QState(stateCONF); // we snchronize on atmel running
     QState* statesetupServer = new QState(stateCONF); // we setup our server now
     stateconnect2RM = new QState(stateCONF); // we connect to resource manager
+    stateconnect2RMError = new QState(stateCONF);
     stateSendRMIdentandRegister = new QState(stateCONF); // we send ident. to rm and register our resources
 
     stateCONF->setInitialState(statexmlConfiguration);
@@ -79,6 +80,7 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     QObject::connect(statewait4Atmel, SIGNAL(entered()), this, SLOT(doWait4Atmel()));
     QObject::connect(statesetupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
     QObject::connect(stateconnect2RM, SIGNAL(entered()), this, SLOT(doConnect2RM()));
+    QObject::connect(stateconnect2RMError, SIGNAL(entered()), this, SLOT(connect2RMError()));
     QObject::connect(stateSendRMIdentandRegister, SIGNAL(entered()), this, SLOT(doIdentAndRegister()));
     QObject::connect(stateFINISH, SIGNAL(entered()), this, SLOT(doCloseServer()));
 
@@ -220,10 +222,15 @@ void cCOM5003dServer::doSetupServer()
 
     // our resource mananager connection must be opened after configuration is done
     m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
-    connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
+    //connect(m_pRMConnection, SIGNAL(connectionRMError()), this, SIGNAL(abortInit()));
     // so we must complete our state machine here
-    stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
+    m_nRetryRMConnect = 100;
+    m_retryTimer.setSingleShot(true);
+    connect(&m_retryTimer, SIGNAL(timeout()), this, SIGNAL(serverSetup()));
 
+    stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connected()), stateSendRMIdentandRegister);
+    stateconnect2RM->addTransition(m_pRMConnection, SIGNAL(connectionRMError()), stateconnect2RMError);
+    stateconnect2RMError->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
 
     emit serverSetup(); // so we enter state machine's next state
 }
@@ -239,6 +246,16 @@ void cCOM5003dServer::doConnect2RM()
 {
     m_nerror = rmConnectionError; // preset error condition
     m_pRMConnection->connect2RM();
+}
+
+
+void cCOM5003dServer::connect2RMError()
+{
+    m_nRetryRMConnect--;
+    if (m_nRetryRMConnect == 0)
+        emit abortInit();
+    else
+        m_retryTimer.start(200);
 }
 
 
