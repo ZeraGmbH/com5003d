@@ -4,6 +4,8 @@
 #ifndef COM5003D_H
 #define COM5003D_H
 
+#include <QTimer>
+
 #include "pcbserver.h"
 
 class QStateMachine;
@@ -62,10 +64,13 @@ signals:
 private:
     QStateMachine* m_pInitializationMachine;
     QState* stateconnect2RM;
+    QState* stateconnect2RMError;
     QState* stateSendRMIdentandRegister;
     cAtmelWatcher* m_pAtmelWatcher;
     quint8 m_nerror;
     int m_nFPGAfd;
+    int m_nRetryRMConnect;
+    QTimer m_retryTimer;
 
 private slots:
     void doConfiguration();
@@ -73,6 +78,7 @@ private slots:
     void doSetupServer();
     void doCloseServer();
     void doConnect2RM();
+    void connect2RMError();
     void doIdentAndRegister();
 };
 
