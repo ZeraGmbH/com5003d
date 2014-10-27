@@ -11,11 +11,6 @@
 cRMConnection::cRMConnection(QString ipadr, quint16 port, quint8 dlevel)
     :m_sIPAdr(ipadr), m_nPort(port), m_nDebugLevel(dlevel)
 {
-}
-
-
-void cRMConnection::connect2RM()
-{
     m_pResourceManagerClient = new ProtoNetPeer(this);
     m_pResourceManagerClient->setWrapper(&m_ProtobufWrapper);
     connect(m_pResourceManagerClient, SIGNAL(sigSocketError(QAbstractSocket::SocketError)), this, SLOT(tcpErrorHandler(QAbstractSocket::SocketError)));
@@ -23,6 +18,11 @@ void cRMConnection::connect2RM()
     connect(m_pResourceManagerClient, SIGNAL(sigConnectionClosed()), this, SIGNAL(connectionRMError()));
     connect(m_pResourceManagerClient, SIGNAL(sigMessageReceived(google::protobuf::Message*)), this, SLOT(responseHandler(google::protobuf::Message*)));
     // qDebug() << "IP=" << m_sIPAdr << " PORT=" << m_nPort;
+}
+
+
+void cRMConnection::connect2RM()
+{
     m_pResourceManagerClient->startConnection(m_sIPAdr, m_nPort);
 }
 
