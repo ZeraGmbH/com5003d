@@ -23,13 +23,6 @@ cCOM5003JustData::~cCOM5003JustData()
     delete m_pGainCorrection; 
     delete m_pPhaseCorrection;
     delete m_pOffsetCorrection;
-
-    cSCPIDelegate* ptr;
-    for (int i = 0; i < m_DelegateList.count(); i++)
-    {
-        ptr = m_DelegateList.at(i);
-        delete ptr;
-    }
 }
 
 
