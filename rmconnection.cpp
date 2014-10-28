@@ -11,18 +11,21 @@
 cRMConnection::cRMConnection(QString ipadr, quint16 port, quint8 dlevel)
     :m_sIPAdr(ipadr), m_nPort(port), m_nDebugLevel(dlevel)
 {
-    m_pResourceManagerClient = new ProtoNetPeer(this);
-    m_pResourceManagerClient->setWrapper(&m_ProtobufWrapper);
-    connect(m_pResourceManagerClient, SIGNAL(sigSocketError(QAbstractSocket::SocketError)), this, SLOT(tcpErrorHandler(QAbstractSocket::SocketError)));
-    connect(m_pResourceManagerClient, SIGNAL(sigConnectionEstablished()), this, SIGNAL(connected()));
-    connect(m_pResourceManagerClient, SIGNAL(sigConnectionClosed()), this, SIGNAL(connectionRMError()));
-    connect(m_pResourceManagerClient, SIGNAL(sigMessageReceived(google::protobuf::Message*)), this, SLOT(responseHandler(google::protobuf::Message*)));
+    m_pResourceManagerClient = 0;
     // qDebug() << "IP=" << m_sIPAdr << " PORT=" << m_nPort;
 }
 
 
 void cRMConnection::connect2RM()
 {
+    if (m_pResourceManagerClient) // in case we try to
+        delete m_pResourceManagerClient;
+    m_pResourceManagerClient = new ProtoNetPeer(this);
+    m_pResourceManagerClient->setWrapper(&m_ProtobufWrapper);
+    connect(m_pResourceManagerClient, SIGNAL(sigSocketError(QAbstractSocket::SocketError)), this, SLOT(tcpErrorHandler(QAbstractSocket::SocketError)));
+    connect(m_pResourceManagerClient, SIGNAL(sigConnectionEstablished()), this, SIGNAL(connected()));
+    connect(m_pResourceManagerClient, SIGNAL(sigConnectionClosed()), this, SIGNAL(connectionRMError()));
+    connect(m_pResourceManagerClient, SIGNAL(sigMessageReceived(google::protobuf::Message*)), this, SLOT(responseHandler(google::protobuf::Message*)));
     m_pResourceManagerClient->startConnection(m_sIPAdr, m_nPort);
 }
 
