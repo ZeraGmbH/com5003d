@@ -257,11 +257,15 @@ QString cSamplingInterface::m_ReadSamplingRangeCatalog(QString &sInput)
 
     if (cmd.isQuery())
     {
-        int i;
+        int i, n;
         QString s;
-        for (i = 0; i < m_SampleRangeList.count(); i++)
-            s += m_SampleRangeList.at(i)->getName() + ";";
-        s += m_SampleRangeList.at(i)->getName();
+
+        n = m_SampleRangeList.count();
+        s = m_SampleRangeList.at(0)->getName();
+
+        if (n > 1)
+            for (i = 1; i < n; i++)
+                s = s + ";" + m_SampleRangeList.at(i)->getName();
 
         return s;
     }
