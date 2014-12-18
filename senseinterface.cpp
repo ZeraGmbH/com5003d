@@ -475,7 +475,7 @@ void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port
     }
 
     // additional we register measuring mode switch as resource
-    register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;MMODE;1;%1;%2")
+    register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;MMODE;1;%1;%2;")
                       .arg(SenseSystem::sMeasuringModeDescription)
                       .arg(port));
 
