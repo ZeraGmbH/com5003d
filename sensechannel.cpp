@@ -312,7 +312,7 @@ void cSenseChannel::setNotifierSenseChannelRange()
 QString cSenseChannel::m_ReadWriteRange(QString &sInput)
 {
     int i;
-    quint8 range, mode;
+    quint8 mode;
     cSCPICommand cmd = sInput;
 
     if ( pAtmel->readMeasMode(mode) == cmddone )
