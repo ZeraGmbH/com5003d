@@ -79,7 +79,7 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
         rngList.append(new cSenseRange("15V" , "15V" , true, 15.0 , 4712563.0, 5655075.0, 4, SenseRange::Phys));
         rngList.append(new cSenseRange("5V"  , "5V"  , true, 5.0  , 4712563.0, 5655075.0, 5, SenseRange::Phys));
 
-        rngList.append(new cSenseRange("R0V" , "R0V" , false, 10.0, 5005789.0, 6006947.0, 14, SenseRange::Phys));
+        rngList.append(new cSenseRange("R0V" , "R0V" , false,  9.0, 4505210.1, 6006947.0, 14, SenseRange::Phys));
         rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 5005789.0, 6006947.0, 15, SenseRange::Phys));
         m_ChannelList.at(i)->setRangeList(rngList);
     }
@@ -473,6 +473,12 @@ void cSenseInterface::registerResource(cRMConnection *rmConnection, quint16 port
                          .arg(pChannel->getDescription())
                          .arg(port));
     }
+
+    // additional we register measuring mode switch as resource
+    register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SENSE;MMODE;1;%1;%2")
+                      .arg(SenseSystem::sMeasuringModeDescription)
+                      .arg(port));
+
 }
 
 
