@@ -85,7 +85,7 @@
 			
 		<sample>
 			<s0>
-				<alias>S0</alias>
+                                <alias>S1</alias>
 				<avail>true</avail>
 			</s0>
 		</sample>
