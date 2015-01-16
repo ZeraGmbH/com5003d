@@ -46,6 +46,7 @@ enum commands
 };
 }
 
+class cProtonetCommand;
 class ProtoNetServer;
 class ProtoNetPeer;
 class cSCPI;
@@ -110,7 +111,8 @@ protected:
 protected slots:
     virtual void doConfiguration() = 0; // all servers must configure
     virtual void setupServer(); // all servers must setup
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
+    virtual void sendAnswer(cProtonetCommand* protoCmd);
 
 private:
     /**
@@ -126,15 +128,12 @@ private:
     QString m_sInput, m_sOutput;
     QTcpSocket* resourceManagerSocket;
 
-    QByteArray clientId;
-    ProtoNetPeer *client;
-
-    QString m_RegisterNotifier(QString& sInput); // registeres 1 notifier per command
-    QString m_UnregisterNotifier(QString& sInput); // unregisters all notifiers
+    void m_RegisterNotifier(cProtonetCommand* protoCmd); // registeres 1 notifier per command
+    void m_UnregisterNotifier(cProtonetCommand *protoCmd); // unregisters all notifiers
     QList<cNotificationData> notifierRegisterNext;
     QList<cNotificationData> notifierRegisterList;
 
-    void doUnregisterNotifier();
+    void doUnregisterNotifier(cProtonetCommand *protoCmd);
     quint32 m_nMsgNr;
 
 private slots:
