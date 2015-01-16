@@ -20,3 +20,10 @@ bool cSCPIDelegate::executeSCPI(const QString &sInput, QString &sOutput)
 }
 
 
+bool cSCPIDelegate::executeSCPI(cProtonetCommand *protoCmd)
+{
+    emit execute(m_nCmdCode, protoCmd);
+    return true;
+}
+
+
