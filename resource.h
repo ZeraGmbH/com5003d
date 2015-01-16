@@ -33,7 +33,6 @@ protected:
     void unregister1Resource(cRMConnection *rmConnection, quint32 msgnr, QString unregisterParameter);
 
 protected slots:
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput) = 0;
     void resourceManagerAck(quint32 msgnr);
 
 };
