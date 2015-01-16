@@ -55,7 +55,8 @@ HEADERS	+= \
     rmconnection.h \
     com5003dprotobufwrapper.h \
     notificationstring.h \
-    notificationdata.h
+    notificationdata.h \
+    protonetcommand.h
 
 SOURCES	+= \
 	main.cpp \
@@ -89,7 +90,8 @@ SOURCES	+= \
     resource.cpp \
     rmconnection.cpp \
     com5003dprotobufwrapper.cpp \
-    notificationstring.cpp
+    notificationstring.cpp \
+    protonetcommand.cpp
 
 unix {
   UI_DIR = .ui
