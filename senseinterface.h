@@ -66,7 +66,7 @@ public:
     virtual void unregisterResource(cRMConnection *rmConnection);
 
 protected slots:
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
     cCOM5003dServer* m_pMyServer;
@@ -78,9 +78,10 @@ private:
     QState m_UnregisterSenseState;
     QState m_RegisterSenseState;
     QFinalState m_NotifySenseState;
+    QList<cProtonetCommand*> sensemodeProtonetCmdList;
 
     QString m_ReadVersion(QString& sInput);
-    QString m_ReadWriteMModeVersion(QString& sInput);
+    void m_ReadWriteMModeVersion(cProtonetCommand* protoCmd);
     QString m_ReadMModeCatalog(QString& sInput);
     QString m_ReadSenseChannelCatalog(QString& sInput);
     QString m_ReadSenseGroupCatalog(QString& sInput);

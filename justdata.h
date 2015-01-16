@@ -48,7 +48,7 @@ public:
     quint8 getStatus();
 
 protected slots:
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
     quint8 m_nStatus;

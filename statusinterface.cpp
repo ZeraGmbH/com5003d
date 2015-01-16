@@ -1,7 +1,7 @@
 #include "atmel.h"
 #include "adjustment.h"
 #include "statusinterface.h"
-
+#include "protonetcommand.h"
 
 extern cATMEL* pAtmel;
 
@@ -21,31 +21,34 @@ void cStatusInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
 
     delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"DEVICE",SCPI::isQuery,scpiInterface, StatusSystem::cmdDevice);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"ADJUSTMENT", SCPI::isQuery, scpiInterface, StatusSystem::cmdAdjustment);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
-void cStatusInterface::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cStatusInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = protoCmd->m_sInput;
 
     if (cmd.isQuery())
     {
         switch (cmdCode)
         {
         case StatusSystem::cmdDevice:
-            sOutput = QString("%1").arg(getDeviceStatus());
+            protoCmd->m_sOutput = QString("%1").arg(getDeviceStatus());
             break; // StatusDevice
         case StatusSystem::cmdAdjustment:
-            sOutput = QString("%1").arg(m_pAdjHandler->getAdjustmentStatus());
+            protoCmd->m_sOutput = QString("%1").arg(m_pAdjHandler->getAdjustmentStatus());
             break; // StatusAdjustment
         }
     }
     else
-        sOutput = SCPI::scpiAnswer[SCPI::nak];
+        protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

@@ -2,6 +2,7 @@
 #include <QList>
 #include <scpi.h>
 
+#include "protonetcommand.h"
 #include "scpiconnection.h"
 #include "samplerange.h"
 #include "samplingsettings.h"
@@ -50,37 +51,40 @@ void cSamplingInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInt
 
     delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"VERSION", SCPI::isQuery, scpiInterface, SamplingSystem::cmdVersion);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE").arg(leadingNodes),"SRATE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdSampleRate);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelAlias);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelType);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelStatus);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"RANGE", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, SamplingSystem::cmdChannelRange);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2:RANGE").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdChannelRangeCat);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName),"PLL", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, SamplingSystem::cmdPLL);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SAMPLE:%2:PLL").arg(leadingNodes).arg(m_sName),"CATALOG", SCPI::isQuery, scpiInterface, SamplingSystem::cmdPLLCat);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     for (int i = 0; i < m_SampleRangeList.count(); i++)
+    {
+        connect(m_SampleRangeList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
         m_SampleRangeList.at(i)->initSCPIConnection(QString("%1SAMPLE:%2").arg(leadingNodes).arg(m_sName), scpiInterface);
+    }
 
 }
 
@@ -97,42 +101,44 @@ void cSamplingInterface::unregisterResource(cRMConnection *rmConnection)
 }
 
 
-void cSamplingInterface::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cSamplingInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case SamplingSystem::cmdVersion:
-        sOutput = m_ReadVersion(sInput);
+        protoCmd->m_sOutput = m_ReadVersion(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdSampleRate:
-        sOutput = m_ReadSampleRate(sInput);
+        protoCmd->m_sOutput = m_ReadSampleRate(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdChannelCat:
-        sOutput = m_ReadSamplingChannelCatalog(sInput);
+        protoCmd->m_sOutput = m_ReadSamplingChannelCatalog(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdChannelAlias:
-        sOutput = m_ReadAlias(sInput);
+        protoCmd->m_sOutput = m_ReadAlias(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdChannelType:
-        sOutput = m_ReadType(sInput);
+        protoCmd->m_sOutput = m_ReadType(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdChannelStatus:
-        sOutput = m_ReadStatus(sInput);
+        protoCmd->m_sOutput = m_ReadStatus(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdChannelRange:
-        sOutput = m_ReadWriteSamplingRange(sInput);
+        protoCmd->m_sOutput = m_ReadWriteSamplingRange(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdChannelRangeCat:
-        sOutput = m_ReadSamplingRangeCatalog(sInput);
+        protoCmd->m_sOutput = m_ReadSamplingRangeCatalog(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdPLL:
-        sOutput = m_ReadWritePLL(sInput);
+        protoCmd->m_sOutput = m_ReadWritePLL(protoCmd->m_sInput);
         break;
     case SamplingSystem::cmdPLLCat:
-        sOutput = m_ReadPLLCatalog(sInput);
+        protoCmd->m_sOutput = m_ReadPLLCatalog(protoCmd->m_sInput);
         break;
-
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

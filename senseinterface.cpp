@@ -17,6 +17,7 @@
 #include "senserange.h"
 #include "atmel.h"
 #include "adjflash.h"
+#include "protonetcommand.h"
 
 
 extern cATMEL* pAtmel;
@@ -137,12 +138,6 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
     connect(&m_UnregisterSenseState, SIGNAL(entered()), this, SLOT(unregisterSense()));
     connect(&m_RegisterSenseState, SIGNAL(entered()), this, SLOT(registerSense()));
     connect(&m_NotifySenseState, SIGNAL(entered()), this, SLOT(notifySense()));
-
-    // we must connect the signals for notification
-    for (i = 0; i < m_ChannelList.count(); i++)
-    {
-        connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
-    }
 }
 
 
@@ -168,22 +163,28 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInterf
 
     delegate = new cSCPIDelegate(QString("%1SENSE").arg(leadingNodes),"VERSION",SCPI::isQuery,scpiInterface, SenseSystem::cmdVersion);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SENSE").arg(leadingNodes),"MMODE",SCPI::isQuery | SCPI::isCmdwP ,scpiInterface, SenseSystem::cmdMMode);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SENSE:MMODE").arg(leadingNodes),"CATALOG",SCPI::isQuery,scpiInterface, SenseSystem::cmdMModeCat );
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SENSE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SenseSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SENSE:GROUP").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SenseSystem::cmdGroupCat);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     for (int i = 0; i < m_ChannelList.count(); i++)
+    {
+        // we also must connect the signals for notification and for output
+        connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
+        connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
+
         m_ChannelList.at(i)->initSCPIConnection(QString("%1SENSE").arg(leadingNodes),scpiInterface);
+    }
 }
 
 
@@ -212,27 +213,39 @@ quint8 cSenseInterface::getAdjustmentStatus()
 }
 
 
-void cSenseInterface::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cSenseInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case SenseSystem::cmdVersion:
-        sOutput = m_ReadVersion(sInput);
+        protoCmd->m_sOutput = m_ReadVersion(protoCmd->m_sInput);
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
         break;
     case SenseSystem::cmdMMode:
-        sOutput = m_ReadWriteMModeVersion(sInput);
+        m_ReadWriteMModeVersion(protoCmd);
+        // we have to start statemachine when setting
         break;
     case SenseSystem::cmdMModeCat:
-        sOutput = m_ReadMModeCatalog(sInput);
+        protoCmd->m_sOutput = m_ReadMModeCatalog(protoCmd->m_sInput);
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
         break;
     case SenseSystem::cmdChannelCat:
-        sOutput = m_ReadSenseChannelCatalog(sInput);
+        protoCmd->m_sOutput = m_ReadSenseChannelCatalog(protoCmd->m_sInput);
+        if (protoCmd->m_bwithOutput)
+            if (protoCmd->m_bwithOutput)
+                emit cmdExecutionDone(protoCmd);
         break;
     case SenseSystem::cmdGroupCat:
-        sOutput = m_ReadSenseGroupCatalog(sInput);
+        protoCmd->m_sOutput = m_ReadSenseGroupCatalog(protoCmd->m_sInput);
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
         break;
 
     }
+
+
 }
 
 
@@ -254,6 +267,7 @@ bool cSenseInterface::importAdjData(QString &s, QDataStream &stream)
                 return true;
             }
         }
+
         cCOM5003JustData dummy; // if the data was for SENSE but we didn't find channel or range
         dummy.Deserialize(stream); // we read the data from stream to keep it in flow
         return true;
@@ -506,15 +520,17 @@ QString cSenseInterface::m_ReadVersion(QString &sInput)
 }
 
 
-QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
+void cSenseInterface::m_ReadWriteMModeVersion(cProtonetCommand *protoCmd)
 {
-    cSCPICommand cmd = sInput;
+    cSCPICommand cmd = protoCmd->m_sInput;
 
     if (cmd.isQuery())
     {
         //return SenseSystem::sMMode[m_nMMode];
         emit notifier(&notifierSenseMMode);
-        return notifierSenseMMode.getString();
+        protoCmd->m_sOutput  = notifierSenseMMode.getString();
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
     }
     else
     {
@@ -528,25 +544,41 @@ QString cSenseInterface::m_ReadWriteMModeVersion(QString &sInput)
             {
                 m_nMMode = SenseSystem::modeAC;
                 if (oldMode != m_nMMode)
-                    m_ChangeSenseModeMachine.start();
-                return SCPI::scpiAnswer[SCPI::ack];
-
+                {
+                    protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
+                    sensemodeProtonetCmdList.append(protoCmd);
+                    m_ChangeSenseModeMachine.start(); // we emit cmdExecutionDone when statemachine is finished
+                }
             }
+
+            else
 
             if (mode == SenseSystem::sMMode[SenseSystem::modeREF] )
             {
                 m_nMMode = SenseSystem::modeREF;
                 if (oldMode != m_nMMode)
+                {
+                    protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
+                    sensemodeProtonetCmdList.append(protoCmd);
                     m_ChangeSenseModeMachine.start();
-                return SCPI::scpiAnswer[SCPI::ack];
+                }
             }
 
-            return SCPI::scpiAnswer[SCPI::nak];
+            else
+            {
+                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+                if (protoCmd->m_bwithOutput)
+                    emit cmdExecutionDone(protoCmd);
+            }
+        }
+
+        else
+        {
+            protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+            if (protoCmd->m_bwithOutput)
+                emit cmdExecutionDone(protoCmd);
         }
     }
-
-    return SCPI::scpiAnswer[SCPI::nak];
-
 }
 
 
@@ -677,6 +709,10 @@ void cSenseInterface::registerSense()
 void cSenseInterface::notifySense()
 {
     setNotifierSenseMMode(); // we set the notifier synchron after all resources are registered again
+    cProtonetCommand *protoCmd;
+    protoCmd = sensemodeProtonetCmdList.takeFirst();
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

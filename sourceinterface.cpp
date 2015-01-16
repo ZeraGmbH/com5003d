@@ -8,6 +8,7 @@
 #include "sourcesettings.h"
 #include "sourceinterface.h"
 #include "fpzchannel.h"
+#include "protonetcommand.h"
 
 
 cSourceInterface::cSourceInterface(cCOM5003dServer *server, cSourceSettings *sourceSettings)
@@ -52,13 +53,16 @@ void cSourceInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInter
 
     delegate = new cSCPIDelegate(QString("%1SOURCE").arg(leadingNodes),"VERSION",SCPI::isQuery,scpiInterface, SourceSystem::cmdVersion);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SOURCE:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SourceSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     for (int i = 0; i < m_ChannelList.count(); i++)
+    {
+        connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
         m_ChannelList.at(i)->initSCPIConnection(QString("%1SOURCE").arg(leadingNodes),scpiInterface);
+    }
 }
 
 
@@ -84,18 +88,20 @@ void cSourceInterface::unregisterResource(cRMConnection *rmConnection)
 }
 
 
-
-void cSourceInterface::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cSourceInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case SourceSystem::cmdVersion:
-        sOutput = m_ReadVersion(sInput);
+        protoCmd->m_sOutput = m_ReadVersion(protoCmd->m_sInput);
         break;
     case SourceSystem::cmdChannelCat:
-        sOutput = m_ReadSourceChannelCatalog(sInput);
+        protoCmd->m_sOutput = m_ReadSourceChannelCatalog(protoCmd->m_sInput);
         break;
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

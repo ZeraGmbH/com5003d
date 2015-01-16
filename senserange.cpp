@@ -2,6 +2,7 @@
 
 #include "senserange.h"
 #include "scpidelegate.h"
+#include "protonetcommand.h"
 
 
 cSenseRange::cSenseRange(QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec)
@@ -26,23 +27,24 @@ void cSenseRange::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
 
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"TYPE",SCPI::isQuery,scpiInterface, SenseRange::cmdType);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS",SCPI::isQuery,scpiInterface, SenseRange::cmdAlias);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"AVAIL",SCPI::isQuery,scpiInterface, SenseRange::cmdAvail);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"URVALUE",SCPI::isQuery,scpiInterface, SenseRange::cmdValue);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"REJECTION",SCPI::isQuery,scpiInterface, SenseRange::cmdRejection);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"OVREJECTION",SCPI::isQuery,scpiInterface, SenseRange::cmdOVRejection);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
+    connect(m_pJustdata, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
     m_pJustdata->initSCPIConnection(QString("%1%2").arg(leadingNodes).arg(m_sName), scpiInterface);
 }
 
@@ -89,29 +91,32 @@ void cSenseRange::setAvail(bool b)
 }
 
 
-void cSenseRange::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cSenseRange::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case SenseRange::cmdType:
-        sOutput = m_ReadRangeType(sInput);
+        protoCmd->m_sOutput = m_ReadRangeType(protoCmd->m_sInput);
         break;
     case SenseRange::cmdAlias:
-        sOutput = m_ReadRangeAlias(sInput);
+        protoCmd->m_sOutput = m_ReadRangeAlias(protoCmd->m_sInput);
         break;
     case SenseRange::cmdAvail:
-        sOutput = m_ReadRangeAvail(sInput);
+        protoCmd->m_sOutput = m_ReadRangeAvail(protoCmd->m_sInput);
         break;
     case SenseRange::cmdValue:
-        sOutput = m_ReadRangeValue(sInput);
+        protoCmd->m_sOutput = m_ReadRangeValue(protoCmd->m_sInput);
         break;
     case SenseRange::cmdRejection:
-        sOutput = m_ReadRangeRejection(sInput);
+        protoCmd->m_sOutput = m_ReadRangeRejection(protoCmd->m_sInput);
         break;
     case SenseRange::cmdOVRejection:
-        sOutput = m_ReadRangeOVRejection(sInput);
+        protoCmd->m_sOutput = m_ReadRangeOVRejection(protoCmd->m_sInput);
         break;
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

@@ -47,8 +47,7 @@ public:
 
 
 protected slots:
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
-
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
     cATMEL* m_pATMEL;

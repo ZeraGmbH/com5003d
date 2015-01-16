@@ -3,6 +3,7 @@
 #include <qdatastream.h>
 #include <scpi.h>
 
+#include "protonetcommand.h"
 #include "atmel.h"
 #include "justdata.h"
 #include "scpidelegate.h"
@@ -35,46 +36,52 @@ void cCOM5003JustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
 
     delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "GAIN", SCPI::CmdwP , scpiInterface, com5003JustGain);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "PHASE", SCPI::isCmdwP, scpiInterface, com5003JustPhase);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "OFFSET", SCPI::isCmdwP, scpiInterface, com5003JustOffset);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "STATUS", SCPI::isQuery, scpiInterface, com5003JustStatus);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "COMPUTE", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, com5003JustCompute);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
+    connect(m_pGainCorrection, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
     m_pGainCorrection->initSCPIConnection(QString("%1CORRECTION:GAIN").arg(leadingNodes), scpiInterface);
+    connect(m_pPhaseCorrection, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
     m_pPhaseCorrection->initSCPIConnection(QString("%1CORRECTION:PHASE").arg(leadingNodes), scpiInterface);
+    connect(m_pOffsetCorrection, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
     m_pOffsetCorrection->initSCPIConnection(QString("%1CORRECTION:OFFSET").arg(leadingNodes), scpiInterface);
 }
 	    
 
-void cCOM5003JustData::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cCOM5003JustData::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case com5003JustGain:
-        sOutput = mReadGainCorrection(sInput);
+        protoCmd->m_sOutput = mReadGainCorrection(protoCmd->m_sInput);
         break;
     case com5003JustPhase:
-        sOutput = mReadPhaseCorrection(sInput);
+        protoCmd->m_sOutput = mReadPhaseCorrection(protoCmd->m_sInput);
         break;
     case com5003JustOffset:
-        sOutput = mReadOffsetCorrection(sInput);
+        protoCmd->m_sOutput = mReadOffsetCorrection(protoCmd->m_sInput);
         break;
     case com5003JustStatus:
-        sOutput = m_ReadStatus(sInput);
+        protoCmd->m_sOutput = m_ReadStatus(protoCmd->m_sInput);
         break;
     case com5003JustCompute:
-        sOutput = m_ComputeJustData(sInput);
+        protoCmd->m_sOutput = m_ComputeJustData(protoCmd->m_sInput);
         break;
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

@@ -7,7 +7,7 @@
 #include "scpidelegate.h"
 #include "systeminfo.h"
 #include "systeminterface.h"
-
+#include "protonetcommand.h"
 
 extern cATMEL* pAtmel;
 
@@ -26,108 +26,111 @@ void cSystemInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
 
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"SERVER", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionServer);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"DEVICE", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionDevice);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery | SCPI::isCmdwP, scpiInterface, SystemSystem::cmdVersionPCB);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "CTRL", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionCTRL);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "FPGA", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionFPGA);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, SystemSystem::cmdSerialNumber);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "BOOTLOADER", SCPI::isCmd, scpiInterface, SystemSystem::cmdUpdateControlerBootloader);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "PROGRAM", SCPI::isCmd, scpiInterface, SystemSystem::cmdUpdateControlerProgram);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "FLASH", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdUpdateControlerFlash);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "EEPROM", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdUpdateControlerEEprom);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "WRITE", SCPI::isCmd, scpiInterface, SystemSystem::cmdAdjFlashWrite);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "READ", SCPI::isCmd, scpiInterface, SystemSystem::cmdAdjFlashRead);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:XML").arg(leadingNodes), "WRITE", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdAdjXMLWrite);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:XML").arg(leadingNodes), "READ", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdAdjXMLRead);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "CHKSUM", SCPI::isQuery, scpiInterface, SystemSystem::cmdAdjFlashChksum);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SYSTEM:INTERFACE").arg(leadingNodes), "READ", SCPI::isQuery, scpiInterface, SystemSystem::cmdInterfaceRead);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
-void cSystemInterface::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cSystemInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case SystemSystem::cmdVersionServer:
-        sOutput = m_ReadServerVersion(sInput);
+        protoCmd->m_sOutput = m_ReadServerVersion(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdVersionDevice:
-        sOutput = m_ReadDeviceVersion(sInput);
+        protoCmd->m_sOutput = m_ReadDeviceVersion(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdVersionPCB:
-        sOutput = m_ReadWritePCBVersion(sInput);
+        protoCmd->m_sOutput = m_ReadWritePCBVersion(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdVersionCTRL:
-        sOutput = m_ReadCTRLVersion(sInput);
+        protoCmd->m_sOutput = m_ReadCTRLVersion(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdVersionFPGA:
-        sOutput = m_ReadFPGAVersion(sInput);
+        protoCmd->m_sOutput = m_ReadFPGAVersion(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdSerialNumber:
-        sOutput = m_ReadWriteSerialNumber(sInput);
+        protoCmd->m_sOutput = m_ReadWriteSerialNumber(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdUpdateControlerBootloader:
-        sOutput = m_StartControlerBootloader(sInput);
+        protoCmd->m_sOutput = m_StartControlerBootloader(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdUpdateControlerProgram:
-        sOutput = m_StartControlerProgram(sInput);
+        protoCmd->m_sOutput = m_StartControlerProgram(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdUpdateControlerFlash:
-        sOutput = m_LoadFlash(sInput);
+        protoCmd->m_sOutput = m_LoadFlash(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdUpdateControlerEEprom:
-        sOutput = m_LoadEEProm(sInput);
+        protoCmd->m_sOutput = m_LoadEEProm(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdAdjFlashWrite:
-        sOutput = m_AdjFlashWrite(sInput);
+        protoCmd->m_sOutput = m_AdjFlashWrite(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdAdjFlashRead:
-        sOutput = m_AdjFlashRead(sInput);
+        protoCmd->m_sOutput = m_AdjFlashRead(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdAdjXMLWrite:
-        sOutput = m_AdjXMLWrite(sInput);
+        protoCmd->m_sOutput = m_AdjXMLWrite(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdAdjXMLRead:
-        sOutput = m_AdjXMLRead(sInput);
+        protoCmd->m_sOutput = m_AdjXMLRead(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdAdjFlashChksum:
-        sOutput = m_AdjFlashChksum(sInput);
+        protoCmd->m_sOutput = m_AdjFlashChksum(protoCmd->m_sInput);
         break;
     case SystemSystem::cmdInterfaceRead:
-        sOutput = m_InterfaceRead(sInput);
+        protoCmd->m_sOutput = m_InterfaceRead(protoCmd->m_sInput);
         break;
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

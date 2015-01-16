@@ -48,7 +48,7 @@ public:
     virtual void unregisterResource(cRMConnection *rmConnection);
 
 protected slots:
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
     quint16 m_nType;

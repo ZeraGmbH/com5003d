@@ -5,6 +5,7 @@
 #include <gaussmatrix.h>
 #include <gaussnode.h>
 
+#include "protonetcommand.h"
 #include "atmel.h"
 #include "scpiconnection.h"
 #include "scpidelegate.h"
@@ -45,64 +46,67 @@ void cJustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
 
     delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient0);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient1);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient2);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient3);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode0);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode1);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode2);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode3);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
 }
 
 
-void cJustData::executeCommand(int cmdCode, QString& sInput, QString& sOutput)
+void cJustData::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case JustStatus:
-        sOutput = m_ReadWriteStatus(sInput);
+        protoCmd->m_sOutput = m_ReadWriteStatus(protoCmd->m_sInput);
         break;
     case JustCoefficient0:
-        sOutput = m_ReadWriteJustCoeeficient(sInput, 0);
+        protoCmd->m_sOutput = m_ReadWriteJustCoeeficient(protoCmd->m_sInput, 0);
         break;
     case JustCoefficient1:
-        sOutput = m_ReadWriteJustCoeeficient(sInput, 1);
+        protoCmd->m_sOutput = m_ReadWriteJustCoeeficient(protoCmd->m_sInput, 1);
         break;
     case JustCoefficient2:
-        sOutput = m_ReadWriteJustCoeeficient(sInput, 2);
+        protoCmd->m_sOutput = m_ReadWriteJustCoeeficient(protoCmd->m_sInput, 2);
         break;
     case JustCoefficient3:
-        sOutput = m_ReadWriteJustCoeeficient(sInput, 3);
+        protoCmd->m_sOutput = m_ReadWriteJustCoeeficient(protoCmd->m_sInput, 3);
         break;
     case JustNode0:
-        sOutput = m_ReadWriteJustNode(sInput, 0);
+        protoCmd->m_sOutput = m_ReadWriteJustNode(protoCmd->m_sInput, 0);
         break;
     case JustNode1:
-        sOutput = m_ReadWriteJustNode(sInput, 1);
+        protoCmd->m_sOutput = m_ReadWriteJustNode(protoCmd->m_sInput, 1);
         break;
     case JustNode2:
-        sOutput = m_ReadWriteJustNode(sInput, 2);
+        protoCmd->m_sOutput = m_ReadWriteJustNode(protoCmd->m_sInput, 2);
         break;
     case JustNode3:
-        sOutput = m_ReadWriteJustNode(sInput, 3);
+        protoCmd->m_sOutput = m_ReadWriteJustNode(protoCmd->m_sInput, 3);
         break;
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

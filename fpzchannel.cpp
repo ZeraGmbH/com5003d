@@ -6,6 +6,7 @@
 #include "scpiconnection.h"
 #include "sourcesettings.h"
 #include "fpzchannel.h"
+#include "protonetcommand.h"
 
 
 cFPZChannel::cFPZChannel(QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings)
@@ -30,48 +31,51 @@ void cFPZChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
 
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, FPZChannel::cmdAlias);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, FPZChannel::cmdType);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"DSPSERVER", SCPI::isQuery, scpiInterface, FPZChannel::cmdDspServer);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"DSPCHANNEL", SCPI::isQuery, scpiInterface, FPZChannel::cmdDspChannel);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, FPZChannel::cmdStatus);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"FFACTOR", SCPI::isQuery, scpiInterface, FPZChannel::cmdFormFactor);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
-void cFPZChannel::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cFPZChannel::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case FPZChannel::cmdAlias:
-        sOutput = m_ReadAlias(sInput);
+        protoCmd->m_sOutput = m_ReadAlias(protoCmd->m_sInput);
         break;
     case FPZChannel::cmdType:
-        sOutput = m_ReadType(sInput);
+        protoCmd->m_sOutput = m_ReadType(protoCmd->m_sInput);
         break;
     case FPZChannel::cmdDspServer:
-        sOutput = m_ReadDspServer(sInput);
+        protoCmd->m_sOutput = m_ReadDspServer(protoCmd->m_sInput);
         break;
     case FPZChannel::cmdDspChannel:
-        sOutput = m_ReadDspChannel(sInput);
+        protoCmd->m_sOutput = m_ReadDspChannel(protoCmd->m_sInput);
         break;
     case FPZChannel::cmdStatus:
-        sOutput = m_ReadChannelStatus(sInput);
+        protoCmd->m_sOutput = m_ReadChannelStatus(protoCmd->m_sInput);
         break;
     case FPZChannel::cmdFormFactor:
-        sOutput = m_ReadFFactor(sInput);
+        protoCmd->m_sOutput = m_ReadFFactor(protoCmd->m_sInput);
         break;
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 

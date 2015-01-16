@@ -59,7 +59,7 @@ public:
     bool isAvail();
 
 protected slots:
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput);
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
     QString m_sName; // the channels name m0...

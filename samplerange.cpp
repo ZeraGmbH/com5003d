@@ -2,7 +2,7 @@
 #include <scpi.h>
 
 #include "samplerange.h"
-
+#include "protonetcommand.h"
 
 cSampleRange::cSampleRange(QString name, quint16 srate, quint8 selcode)
     :m_sName(name), m_nSRate(srate), m_nSelCode(selcode)
@@ -19,7 +19,7 @@ void cSampleRange::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface
 
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"SRATE", SCPI::isQuery, scpiInterface, SampleRangeSamples);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
@@ -41,14 +41,17 @@ quint16 cSampleRange::getSRate()
 }
 
 
-void cSampleRange::executeCommand(int cmdCode, QString &sInput, QString &sOutput)
+void cSampleRange::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)
     {
     case SampleRangeSamples:
-        sOutput = m_ReadSRate(sInput);
+        protoCmd->m_sOutput = m_ReadSRate(protoCmd->m_sInput);
         break;
     }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
 }
 
 
