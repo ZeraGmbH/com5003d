@@ -8,7 +8,7 @@
 
 struct cNotificationData
 {
-    ProtoNetPeer *netClient;
+    ProtoNetPeer *netPeer;
     QByteArray clientID;
     quint16 notifier;
     cNotificationString *notString;
