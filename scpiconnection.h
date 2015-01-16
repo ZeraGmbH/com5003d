@@ -20,12 +20,14 @@ public:
 
 signals:
     void notifier(cNotificationString* notifier);
+    void cmdExecutionDone(cProtonetCommand* protoCmd);
 
 protected:
     QList<cSCPIDelegate*> m_DelegateList;
 
 protected slots:
-    virtual void executeCommand(int cmdCode, QString& sInput, QString& sOutput) = 0;
+    virtual void executeCommand(int, QString&, QString&);
+    virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd) = 0;
 };
 
 #endif // SCPICONNECTION_H

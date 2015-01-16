@@ -19,5 +19,10 @@ cSCPIConnection::~cSCPIConnection()
 }
 
 
+void cSCPIConnection::executeCommand(int, QString&, QString&)
+{
+}
+
+
 
 
