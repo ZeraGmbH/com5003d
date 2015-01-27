@@ -542,26 +542,32 @@ void cSenseInterface::m_ReadWriteMModeVersion(cProtonetCommand *protoCmd)
 
             if (mode == SenseSystem::sMMode[SenseSystem::modeAC] )
             {
+                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
                 m_nMMode = SenseSystem::modeAC;
                 if (oldMode != m_nMMode)
                 {
-                    protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
                     sensemodeProtonetCmdList.append(protoCmd);
                     m_ChangeSenseModeMachine.start(); // we emit cmdExecutionDone when statemachine is finished
                 }
+                else
+                    emit cmdExecutionDone(protoCmd);
+
+
             }
 
             else
 
             if (mode == SenseSystem::sMMode[SenseSystem::modeREF] )
             {
+                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
                 m_nMMode = SenseSystem::modeREF;
                 if (oldMode != m_nMMode)
                 {
-                    protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::ack];
                     sensemodeProtonetCmdList.append(protoCmd);
                     m_ChangeSenseModeMachine.start();
                 }
+                else
+                    emit cmdExecutionDone(protoCmd);
             }
 
             else
