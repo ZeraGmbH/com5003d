@@ -56,7 +56,13 @@ HEADERS	+= \
     com5003dprotobufwrapper.h \
     notificationstring.h \
     notificationdata.h \
-    protonetcommand.h
+    protonetcommand.h \
+    fpzinchannel.h \
+    frqinputinterface.h \
+    frqinputsettings.h \
+    scheadchannel.h \
+    scheadsettings.h \
+    scheadinterface.h
 
 SOURCES	+= \
 	main.cpp \
@@ -91,7 +97,13 @@ SOURCES	+= \
     rmconnection.cpp \
     com5003dprotobufwrapper.cpp \
     notificationstring.cpp \
-    protonetcommand.cpp
+    protonetcommand.cpp \
+    fpzinchannel.cpp \
+    frqinputinterface.cpp \
+    frqinputsettings.cpp \
+    scheadchannel.cpp \
+    scheadsettings.cpp \
+    scheadinterface.cpp
 
 unix {
   UI_DIR = .ui
