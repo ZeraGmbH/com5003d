@@ -77,7 +77,8 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
         rngList.append(new cSenseRange("240V", "240V", true, 240.0, 4712563.0, 5890704.0, 1, SenseRange::Phys));
         rngList.append(new cSenseRange("120V", "120V", true, 120.0, 4712563.0, 5890704.0, 2, SenseRange::Phys));
         rngList.append(new cSenseRange("60V" , "60V" , true, 60.0 , 4712563.0, 5890704.0, 3, SenseRange::Phys));
-        rngList.append(new cSenseRange("15V" , "15V" , true, 15.0 , 4859831.0, 6074789.0, 4, SenseRange::Phys));
+        // achtung nicht mal 1.25 sondern 1.205!!!!!
+        rngList.append(new cSenseRange("15V" , "15V" , true, 15.0 , 4859831.0, 5856096.0, 4, SenseRange::Phys));
         rngList.append(new cSenseRange("5V"  , "5V"  , true, 5.0  , 4516206.0, 5645258.0, 5, SenseRange::Phys));
 
         rngList.append(new cSenseRange("R0V" , "R0V" , false,  9.0, 3839668.2, 5332873.0, 14, SenseRange::Phys));

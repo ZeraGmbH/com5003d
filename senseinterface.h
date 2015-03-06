@@ -45,7 +45,6 @@ const QString sMMode[2] = {"AC", "REF"};
 class cCOM5003dServer;
 class cSenseSettings;
 class QDataStream;
-class cClientNetBase;
 
 
 class cSenseInterface : public cResource, public cAdjFlash, public cAdjXML
