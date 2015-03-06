@@ -19,12 +19,16 @@
 #include "sensesettings.h"
 #include "samplingsettings.h"
 #include "sourcesettings.h"
+#include "frqinputsettings.h"
+#include "scheadsettings.h"
 #include "statusinterface.h"
 #include "samplinginterface.h"
 #include "systeminterface.h"
 #include "systeminfo.h"
 #include "senseinterface.h"
 #include "sourceinterface.h"
+#include "frqinputinterface.h"
+#include "scheadinterface.h"
 #include "atmel.h"
 #include "atmelwatcher.h"
 #include "adjustment.h"
@@ -95,11 +99,17 @@ cCOM5003dServer::~cCOM5003dServer()
     if (m_pI2CSettings) delete m_pI2CSettings;
     if (m_pFPGAsettings) delete m_pFPGAsettings;
     if (m_pSenseSettings) delete m_pSenseSettings;
+    if (m_pSourceSettings) delete m_pSourceSettings;
+    if (m_pFRQInputSettings) delete m_pFRQInputSettings;
+    if (m_pSCHeadSettings) delete m_pSCHeadSettings;
     if (pAtmel) delete pAtmel;
     if (m_pAtmelWatcher) delete m_pAtmelWatcher;
     if (m_pStatusInterface) delete m_pStatusInterface;
     if (m_pSystemInterface) delete m_pSystemInterface;
     if (m_pSenseInterface) delete m_pSenseInterface;
+    if (m_pSourceInterface) delete m_pSourceInterface;
+    if (m_pFRQInputInterface) delete m_pFRQInputInterface;
+    if (m_pSCHeadInterface) delete m_pSCHeadInterface;
     if (m_pSystemInfo) delete m_pSystemInfo;
     if (m_pAdjHandler) delete m_pAdjHandler;
     if (m_pRMConnection) delete m_pRMConnection;
@@ -150,6 +160,10 @@ void cCOM5003dServer::doConfiguration()
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSourceSettings,SLOT(configXMLInfo(const QString&)));
             m_pSamplingSettings = new cSamplingSettings(myXMLConfigReader);
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSamplingSettings,SLOT(configXMLInfo(const QString&)));
+            m_pFRQInputSettings = new cFRQInputSettings(myXMLConfigReader);
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pFRQInputSettings,SLOT(configXMLInfo(const QString&)));
+            m_pSCHeadSettings = new cSCHeadSettings(myXMLConfigReader);
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSCHeadSettings,SLOT(configXMLInfo(const QString&)));
 
             QString s = args.at(1);
             qDebug() << s;
@@ -208,10 +222,14 @@ void cCOM5003dServer::doSetupServer()
     scpiConnectionList.append(m_pSenseInterface = new cSenseInterface(this, m_pSenseSettings));
     scpiConnectionList.append(m_pSamplingInterface = new cSamplingInterface(this, m_pSamplingSettings));
     scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(this, m_pSourceSettings));
+    scpiConnectionList.append(m_pFRQInputInterface = new cFRQInputInterface(this, m_pFRQInputSettings));
+    scpiConnectionList.append(m_pSCHeadInterface = new cSCHeadInterface(this, m_pSCHeadSettings));
 
     resourceList.append(m_pSenseInterface); // all our resources
     resourceList.append(m_pSamplingInterface);
     resourceList.append(m_pSourceInterface);
+    resourceList.append(m_pFRQInputInterface);
+    resourceList.append(m_pSCHeadInterface);
 
     m_pAdjHandler->addAdjFlashObject(m_pSenseInterface); // we add the senseinterface to both
     m_pAdjHandler->addAdjXMLObject(m_pSenseInterface); // adjustment list (flash and xml)
