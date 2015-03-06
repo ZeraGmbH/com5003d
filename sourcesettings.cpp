@@ -17,6 +17,7 @@ cSourceSettings::cSourceSettings(Zera::XMLConfig::cReader *xmlread)
         m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:alias").arg(i)] = SourceSystem::cfg0Alias + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:dspserver").arg(i)] = SourceSystem::cfg0dspserver + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:dspchannel").arg(i)] = SourceSystem::cfg0dspchannel + i;
+        m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:muxchannel").arg(i)] = SourceSystem::cfg0muxchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:source:fpzout:fo%1:avail").arg(i)] = SourceSystem::cfg0avail + i;
     }
 }
@@ -78,6 +79,18 @@ void cSourceSettings::configXMLInfo(QString key)
             break;
         case SourceSystem::cfg3dspchannel:
             m_ChannelSettingsList.at(3)->m_nDspChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SourceSystem::cfg0muxchannel:
+            m_ChannelSettingsList.at(0)->m_nMuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SourceSystem::cfg1muxchannel:
+            m_ChannelSettingsList.at(1)->m_nMuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SourceSystem::cfg2muxchannel:
+            m_ChannelSettingsList.at(2)->m_nMuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case SourceSystem::cfg3muxchannel:
+            m_ChannelSettingsList.at(3)->m_nMuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
             break;
         case SourceSystem::cfg0avail:
             m_ChannelSettingsList.at(0)->avail = (m_pXMLReader->getValue(key) == "true");
