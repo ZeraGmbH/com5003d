@@ -1,0 +1,4 @@
+#ifndef INPUTINTERFACE_H
+#define INPUTINTERFACE_H
+
+#endif // INPUTINTERFACE_H

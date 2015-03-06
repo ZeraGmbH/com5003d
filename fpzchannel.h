@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "scpiconnection.h"
-
+#include "notificationstring.h"
 
 namespace FPZChannel
 {
@@ -15,7 +15,8 @@ enum Commands
     cmdDspServer,
     cmdDspChannel,
     cmdStatus,
-    cmdFormFactor
+    cmdFormFactor,
+    cmdConstant
 };
 
 
@@ -54,12 +55,16 @@ private:
     double m_fFormFactor;
     bool m_bAvail; // is this channel available ?
 
+    cNotificationString notifierConstant;
+    void initNotifierConstant();
+
     QString m_ReadAlias(QString& sInput);
     QString m_ReadType(QString& sInput);
     QString m_ReadDspServer(QString& sInput);
     QString m_ReadDspChannel(QString& sInput);
     QString m_ReadChannelStatus(QString& sInput);
     QString m_ReadFFactor(QString& sInput);
+    QString m_ReadWriteConstant(QString& sInput);
 };
 
 #endif // FPZCHANNEL_H

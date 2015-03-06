@@ -18,6 +18,7 @@ cFPZChannel::cFPZChannel(QString description, quint8 nr, SourceSystem::cChannelS
     m_nDspChannel = cSettings->m_nDspChannel;
     m_nType = 0;
     m_fFormFactor = FPZChannel::FormFactor;
+    initNotifierConstant(); // we hold the constant as a notifier
     m_bAvail = cSettings->avail;
 }
 
@@ -47,6 +48,9 @@ void cFPZChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"FFACTOR", SCPI::isQuery, scpiInterface, FPZChannel::cmdFormFactor);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"CONSTANT", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, FPZChannel::cmdConstant);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
 
 
@@ -72,10 +76,19 @@ void cFPZChannel::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     case FPZChannel::cmdFormFactor:
         protoCmd->m_sOutput = m_ReadFFactor(protoCmd->m_sInput);
         break;
+    case FPZChannel::cmdConstant:
+        protoCmd->m_sOutput = m_ReadWriteConstant(protoCmd->m_sInput);
+        break;
     }
 
     if (protoCmd->m_bwithOutput)
         emit cmdExecutionDone(protoCmd);
+}
+
+
+void cFPZChannel::initNotifierConstant()
+{
+    notifierConstant = "0.0";
 }
 
 
@@ -171,4 +184,26 @@ QString cFPZChannel::m_ReadFFactor(QString &sInput)
         return QString("%1").arg(m_fFormFactor);
     else
         return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cFPZChannel::m_ReadWriteConstant(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+
+    {
+        emit notifier(&notifierConstant);
+        return notifierConstant.getString();
+    }
+    else
+        if (cmd.isCommand(1))
+        {
+            QString constant = cmd.getParam(0);
+            notifierConstant = constant;
+            return SCPI::scpiAnswer[SCPI::ack];
+        }
+        else
+            return SCPI::scpiAnswer[SCPI::nak];
 }

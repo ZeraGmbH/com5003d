@@ -1,0 +1,4 @@
+#ifndef SHEADINTERFACE_H
+#define SHEADINTERFACE_H
+
+#endif // SHEADINTERFACE_H
