@@ -1,1 +1,121 @@
+#include <QList>
+#include <QString>
+
+#include <scpi.h>
+#include <scpicommand.h>
+#include "scpiconnection.h"
+#include "scheadsettings.h"
+#include "scheadchannel.h"
+#include "protonetcommand.h"
+
+
+cSCHeadChannel::cSCHeadChannel(QString description, quint8 nr, SCHeadSystem::cChannelSettings *cSettings)
+    :m_sDescription(description)
+{
+    m_sName = QString("fi%1").arg(nr);
+    m_sAlias = cSettings->m_sAlias;
+    m_nMuxChannel = cSettings->m_nmuxChannel;
+    m_bAvail = cSettings->avail;
+}
+
+
+void cSCHeadChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+{
+    cSCPIDelegate* delegate;
+
+    if (leadingNodes != "")
+        leadingNodes += ":";
+
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdAlias);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"MUXCHANNEL", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdMuxChannel);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdStatus);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+}
+
+
+void cSCHeadChannel::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
+{
+    switch (cmdCode)
+    {
+    case SCHEADChannel::cmdAlias:
+        protoCmd->m_sOutput = m_ReadAlias(protoCmd->m_sInput);
+        break;
+    case SCHEADChannel::cmdMuxChannel:
+        protoCmd->m_sOutput = m_ReadMuxChannel(protoCmd->m_sInput);
+        break;
+    case SCHEADChannel::cmdStatus:
+        protoCmd->m_sOutput = m_ReadChannelStatus(protoCmd->m_sInput);
+        break;
+    }
+
+    if (protoCmd->m_bwithOutput)
+        emit cmdExecutionDone(protoCmd);
+}
+
+
+QString &cSCHeadChannel::getName()
+{
+    return m_sName;
+}
+
+
+QString &cSCHeadChannel::getAlias()
+{
+    return m_sAlias;
+}
+
+
+QString &cSCHeadChannel::getDescription()
+{
+    return m_sDescription;
+}
+
+
+bool cSCHeadChannel::isAvail()
+{
+    return m_bAvail;
+}
+
+
+QString cSCHeadChannel::m_ReadAlias(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+        return m_sAlias;
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSCHeadChannel::m_ReadMuxChannel(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+        return QString("%1").arg(m_nMuxChannel);
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSCHeadChannel::m_ReadChannelStatus(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+    {
+        quint32 r;
+        r = ((m_bAvail) ? 0 : 2 << 31);
+            return QString("%1").arg(r);
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
 
