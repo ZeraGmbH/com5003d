@@ -70,7 +70,7 @@ void cFRQInputInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInt
 void cFRQInputInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     cFPZInChannel* pChannel;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < m_ChannelList.count(); i++)
     {
         pChannel = m_ChannelList.at(i);
         register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("FRQINPUT;%1;1;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
@@ -81,7 +81,7 @@ void cFRQInputInterface::registerResource(cRMConnection *rmConnection, quint16 p
 void cFRQInputInterface::unregisterResource(cRMConnection *rmConnection)
 {
     cFPZInChannel* pChannel;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < m_ChannelList.count(); i++)
     {
         pChannel = m_ChannelList.at(i);
         unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("FRQINPUT;%1;").arg(pChannel->getName()));
