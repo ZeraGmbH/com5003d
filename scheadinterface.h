@@ -51,10 +51,6 @@ private:
     QString m_ReadVersion(QString& sInput);
     QString m_ReadChannelCatalog(QString& sInput);
 
-private slots:
-    void unregisterSense();
-    void registerSense();
-    void notifySense();
 };
 
 
