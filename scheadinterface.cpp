@@ -64,7 +64,7 @@ void cSCHeadInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInter
 void cSCHeadInterface::registerResource(cRMConnection *rmConnection, quint16 port)
 {
     cSCHeadChannel* pChannel;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < m_ChannelList.count(); i++)
     {
         pChannel = m_ChannelList.at(i);
         register1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SCHEAD;%1;1;%2;%3;").arg(pChannel->getName()).arg(pChannel->getDescription()).arg(port));
@@ -75,7 +75,7 @@ void cSCHeadInterface::registerResource(cRMConnection *rmConnection, quint16 por
 void cSCHeadInterface::unregisterResource(cRMConnection *rmConnection)
 {
     cSCHeadChannel* pChannel;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < m_ChannelList.count(); i++)
     {
         pChannel = m_ChannelList.at(i);
         unregister1Resource(rmConnection, m_pMyServer->getMsgNr(), QString("SCHEAD;%1;").arg(pChannel->getName()));
