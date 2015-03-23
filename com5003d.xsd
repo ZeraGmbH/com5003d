@@ -167,7 +167,7 @@
         <xs:element name="alias" type="xs:string"/>
         <xs:element name="dspserver" type="porttype"/>
         <xs:element name="dspchannel" type="dspfpzchanneltype"/>
-        <xs:element name="muxchannel" type="muxchanneltype">
+        <xs:element name="muxchannel" type="muxchanneltype"/>
         <xs:element name="avail" type="xs:boolean"/>
     </xs:sequence>
 </xs:complexType>
@@ -176,7 +176,7 @@
 <xs:complexType name="fpzinchannelltype">
     <xs:sequence>
         <xs:element name="alias" type="xs:string"/>
-        <xs:element name="muxchannel" type="muxchanneltype">
+        <xs:element name="muxchannel" type="muxchanneltype"/>
         <xs:element name="avail" type="xs:boolean"/>
     </xs:sequence>
 </xs:complexType>
@@ -185,7 +185,7 @@
 <xs:complexType name="scheadchannelltype">
     <xs:sequence>
         <xs:element name="alias" type="xs:string"/>
-        <xs:element name="muxchannel" type="muxchanneltype">
+        <xs:element name="muxchannel" type="muxchanneltype"/>
         <xs:element name="avail" type="xs:boolean"/>
     </xs:sequence>
 </xs:complexType>
