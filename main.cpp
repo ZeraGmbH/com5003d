@@ -22,7 +22,7 @@ int main( int argc, char *argv[] )
 
     int r;
 
-#ifndef COM5003DDEBUG
+#if !defined(COM5003DDEBUG) && !defined(SYSTEMD_NOTIFICATION)
     pid_t pid;
     if ( (pid=fork() ) < 0 ) // we generate a child process
     {

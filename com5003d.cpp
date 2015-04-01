@@ -34,6 +34,9 @@
 #include "adjustment.h"
 #include "rmconnection.h"
 
+#ifdef SYSTEMD_NOTIFICATION
+#include <systemd/sd-daemon.h>
+#endif
 
 cATMEL* pAtmel; // we take a static object for atmel connection
 
@@ -288,6 +291,9 @@ void cCOM5003dServer::doIdentAndRegister()
         connect(m_pRMConnection, SIGNAL(rmAck(quint32)), res, SLOT(resourceManagerAck(quint32)) );
         res->registerResource(m_pRMConnection, m_pETHSettings->getPort(server));
     }
+#ifdef SYSTEMD_NOTIFICATION
+    sd_notify(0, "READY=1");
+#endif
 }
 
 
