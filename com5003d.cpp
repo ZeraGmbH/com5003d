@@ -237,7 +237,7 @@ void cCOM5003dServer::doSetupServer()
 
     initSCPIConnections();
 
-    myServer->startServer(m_pETHSettings->getPort(server)); // and can start the server now
+    myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
 
     // our resource mananager connection must be opened after configuration is done
     m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
@@ -286,7 +286,7 @@ void cCOM5003dServer::doIdentAndRegister()
     {
         cResource *res = resourceList.at(i);
         connect(m_pRMConnection, SIGNAL(rmAck(quint32)), res, SLOT(resourceManagerAck(quint32)) );
-        res->registerResource(m_pRMConnection, m_pETHSettings->getPort(server));
+        res->registerResource(m_pRMConnection, m_pETHSettings->getPort(protobufserver));
     }
 }
 
