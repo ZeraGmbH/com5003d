@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+
+<xs:simpleType name="yesnotype">
+    <xs:restriction base="xs:integer">
+        <xs:maxInclusive value='1'/>
+        <xs:minInclusive value='0'/>
+    </xs:restriction>
+</xs:simpleType>
+
+
 <xs:simpleType name="debugtype">
     <xs:restriction base="xs:integer">
         <xs:maxInclusive value='7'/>
@@ -92,11 +101,13 @@
                     <xs:element name="port">
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:element name="server" type="porttype"/>
+                                <xs:element name="protobufserver" type="porttype"/>
+                                <xs:element name="scpiserver" type="porttype"/>
                                 <xs:element name="resourcemanager" type="porttype"/>
                             </xs:sequence>
                         </xs:complexType>
                     </xs:element>
+                    <xs:element name="scpiactive type="yesnotype"/>
                 </xs:sequence>
             </xs:complexType>
         </xs:element>
