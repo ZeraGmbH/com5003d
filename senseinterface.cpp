@@ -708,7 +708,7 @@ void cSenseInterface::registerSense()
 
     }
 
-    registerResource(m_pMyServer->m_pRMConnection, m_pMyServer->m_pETHSettings->getPort(server));
+    registerResource(m_pMyServer->m_pRMConnection, m_pMyServer->m_pETHSettings->getPort(protobufserver));
 
 }
 
