@@ -107,7 +107,7 @@
                             </xs:sequence>
                         </xs:complexType>
                     </xs:element>
-                    <xs:element name="scpiactive type="yesnotype"/>
+                    <xs:element name="scpiactive" type="yesnotype"/>
                 </xs:sequence>
             </xs:complexType>
         </xs:element>
