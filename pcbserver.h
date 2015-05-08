@@ -48,10 +48,20 @@ enum commands
 
 class cProtonetCommand;
 class ProtoNetServer;
+class QTcpServer;
+class QTcpSocket;
 class ProtoNetPeer;
 class cSCPI;
 class cStatusInterface;  // forward
-
+class cDebugSettings;
+class cFPGASettings;
+class cI2CSettings;
+class cETHSettings;
+class cFRQInputSettings;
+class cSCHeadSettings;
+class cSenseSettings;
+class cSamplingSettings;
+class cSourceSettings;
 
 /**
   @mainpage base class for pcb servers
@@ -91,9 +101,16 @@ public:
     QString& getVersion();
     cSCPI* getSCPIInterface();
 
-
+    cDebugSettings* m_pDebugSettings;
+    cFPGASettings* m_pFPGAsettings;
+    cI2CSettings* m_pI2CSettings;
+    cETHSettings* m_pETHSettings;
+    cSenseSettings* m_pSenseSettings;
+    cSamplingSettings* m_pSamplingSettings;
+    cSourceSettings* m_pSourceSettings;
+    cFRQInputSettings* m_pFRQInputSettings;
+    cSCHeadSettings* m_pSCHeadSettings;
     cStatusInterface* m_pStatusInterface;
-
 
 signals:
     void sendAnswer(QByteArray answer);
@@ -107,12 +124,17 @@ protected:
     QString m_sConfigurationPath;
     QList<cSCPIConnection*> scpiConnectionList; // a list of all scpi connections
     QList<cResource*> resourceList;
+    QTcpServer* m_pSCPIServer;
+    QTcpSocket* m_pSCPISocket;
 
 protected slots:
     virtual void doConfiguration() = 0; // all servers must configure
     virtual void setupServer(); // all servers must setup
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
     virtual void sendAnswer(cProtonetCommand* protoCmd);
+    virtual void setSCPIConnection();
+    virtual void SCPIInput();
+    virtual void SCPIdisconnect();
 
 private:
     /**
