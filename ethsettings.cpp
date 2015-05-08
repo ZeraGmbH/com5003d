@@ -9,9 +9,13 @@ cETHSettings::cETHSettings(Zera::XMLConfig::cReader *xmlread)
 {
     m_pXMLReader = xmlread;
     m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:ipadress:resourcemanager"] = setRMIPAdress;
-    m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:server"] = setServerPort;
+    m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:protobufserver"] = setProtobufServerPort;
+    m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:scpiserver"] = setSCPIServerPort;
     m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:port:resourcemanager"] = setRMPort;
-    m_nServerPort = defaultServerPort;
+    m_ConfigXMLMap["com5003dconfig:connectivity:ethernet:scpiactive"] = setSCPIactive;
+
+    m_nProtobufServerPort = defaultProtoBufServerPort;
+    m_nSCPIServerPort = defaultSCPIServerPort;
     m_nRMPort = defaultRMPort;
 }
 
@@ -28,8 +32,11 @@ quint16 cETHSettings::getPort(ethmember member)
 
     switch (member)
     {
-    case server:
-        port = m_nServerPort;
+    case protobufserver:
+        port = m_nProtobufServerPort;
+        break;
+    case scpiserver:
+        port = m_nSCPIServerPort;
         break;
     case resourcemanager:
         port = m_nRMPort;
@@ -37,6 +44,12 @@ quint16 cETHSettings::getPort(ethmember member)
     }
 
     return port;
+}
+
+
+bool cETHSettings::isSCPIactive()
+{
+    return m_bSCPIactive;
 }
 
 
@@ -51,11 +64,17 @@ void cETHSettings::configXMLInfo(QString key)
         case setRMIPAdress:
             m_sRMIPAdr = m_pXMLReader->getValue(key);
             break;
-        case setServerPort:
-            m_nServerPort = m_pXMLReader->getValue(key).toInt(&ok);
+        case setProtobufServerPort:
+            m_nProtobufServerPort = m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case setSCPIServerPort:
+            m_nSCPIServerPort = m_pXMLReader->getValue(key).toInt(&ok);
             break;
         case setRMPort:
             m_nRMPort = m_pXMLReader->getValue(key).toInt(&ok);
+            break;
+        case setSCPIactive:
+            m_bSCPIactive = (m_pXMLReader->getValue(key).toInt(&ok) == 1);
             break;
         }
     }

@@ -8,7 +8,8 @@
 
 enum ethmember
 {
-    server,
+    protobufserver,
+    scpiserver,
     resourcemanager
 };
 
@@ -16,8 +17,10 @@ enum ethmember
 enum ethconfigstate
 {
     setRMIPAdress,
-    setServerPort,
-    setRMPort
+    setProtobufServerPort,
+    setSCPIServerPort,
+    setRMPort,
+    setSCPIactive
 };
 
 
@@ -37,13 +40,15 @@ public:
     cETHSettings(Zera::XMLConfig::cReader *xmlread);
     QString getRMIPadr();
     quint16 getPort(ethmember member);
+    bool isSCPIactive();
 
 public slots:
     virtual void configXMLInfo(QString key);
 
 private:
     QString m_sRMIPAdr;
-    quint16 m_nServerPort, m_nRMPort;
+    quint16 m_nProtobufServerPort, m_nSCPIServerPort, m_nRMPort;
+    bool m_bSCPIactive;
 };
 
 
