@@ -10,15 +10,6 @@
 
 class QStateMachine;
 class QState;
-class cDebugSettings;
-class cFPGASettings;
-class cI2CSettings;
-class cETHSettings;
-class cFRQInputSettings;
-class cSCHeadSettings;
-class cSenseSettings;
-class cSamplingSettings;
-class cSourceSettings;
 class cStatusInterface;
 class cSystemInterface;
 class cSenseInterface;
@@ -40,15 +31,6 @@ public:
     explicit cCOM5003dServer(QObject* parent=0);
     ~cCOM5003dServer();
 
-    cDebugSettings* m_pDebugSettings;
-    cFPGASettings* m_pFPGAsettings;
-    cI2CSettings* m_pI2CSettings;
-    cETHSettings* m_pETHSettings;
-    cSenseSettings* m_pSenseSettings;
-    cSamplingSettings* m_pSamplingSettings;
-    cSourceSettings* m_pSourceSettings;
-    cFRQInputSettings* m_pFRQInputSettings;
-    cSCHeadSettings* m_pSCHeadSettings;
     cStatusInterface* m_pStatusInterface;
     cSystemInterface* m_pSystemInterface;
     cSenseInterface* m_pSenseInterface;

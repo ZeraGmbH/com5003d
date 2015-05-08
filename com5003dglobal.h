@@ -18,7 +18,8 @@ enum DebugLevel {NoDebug, DebugLevel1, DebugLevel2, DebugLevel3 = 4, MaxDebugLev
 #define defaultDebugLevel NoDebug
 #define defaultFPGADeviceNode "/dev/zFPGA1reg"
 #define defaultI2CDeviceNode "/dev/i2c-3"
-#define defaultServerPort 6308
+#define defaultProtoBufServerPort 6307
+#define defaultSCPIServerPort 6308
 #define defaultRMPort 6312
 #define defaultI2CMasterAdress 0x20
 #define defaultI2CAtmelAdress 0x21
@@ -38,6 +39,6 @@ enum ServerErrors
 };
 
 // wenn COM5003DDEBUG -> kein fork()
-//#define COM5003DDEBUG 1
+// #define COM5003DDEBUG 1
 
 #endif

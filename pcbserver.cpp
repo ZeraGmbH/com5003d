@@ -4,6 +4,7 @@
 #include <QList>
 #include <QString>
 #include <QTcpSocket>
+#include <QTcpServer>
 #include <protonetpeer.h>
 #include <xmlconfigreader.h>
 #include <protonetserver.h>
@@ -17,6 +18,7 @@
 #include "resource.h"
 #include "scpiconnection.h"
 #include "pcbserver.h"
+#include "ethsettings.h"
 #include "com5003dglobal.h"
 
 cPCBServer::cPCBServer(QObject *parent)
@@ -79,6 +81,14 @@ void cPCBServer::setupServer()
     myServer = new ProtoNetServer(this); // our working (talking) horse
     myServer->setDefaultWrapper(&m_ProtobufWrapper);
     connect(myServer,SIGNAL(sigClientConnected(ProtoNetPeer*)),this,SLOT(establishNewConnection(ProtoNetPeer*)));
+
+    if (m_pETHSettings->isSCPIactive())
+    {
+        m_pSCPIServer = new QTcpServer();
+        m_pSCPIServer->setMaxPendingConnections(1); // we only accept 1 client to connect
+        connect(m_pSCPIServer, SIGNAL(newConnection()), this, SLOT(setSCPIConnection()));
+    }
+
 }
 
 
@@ -101,76 +111,138 @@ void cPCBServer::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 
 void cPCBServer::sendAnswer(cProtonetCommand *protoCmd)
 {
-    if (protoCmd->m_bhasClientId)
+    if (protoCmd->m_pPeer == 0)
     {
-        ProtobufMessage::NetMessage protobufAnswer;
-        ProtobufMessage::NetMessage::NetReply *Answer = protobufAnswer.mutable_reply();
+        // we worked on a command comming from scpi socket connection
+        // todo: clean up this mess
+        QByteArray ba;
+        QString answer;
 
-        // dependent on rtype caller can see ack, nak, error
-        // in case of error the body has to be analyzed for details
+        answer = protoCmd->m_sOutput+"\n";
+        ba = answer.toLatin1();
+        m_pSCPISocket->write(ba);
+    }
+    else
+    {
+        if (protoCmd->m_bhasClientId)
+        {
+            ProtobufMessage::NetMessage protobufAnswer;
+            ProtobufMessage::NetMessage::NetReply *Answer = protobufAnswer.mutable_reply();
 
-        QString output = protoCmd->m_sOutput;
+            // dependent on rtype caller can see ack, nak, error
+            // in case of error the body has to be analyzed for details
 
-        if (output.contains(SCPI::scpiAnswer[SCPI::ack]))
-            Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
-        else
-            if (output.contains(SCPI::scpiAnswer[SCPI::nak]))
-                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_NACK);
+            QString output = protoCmd->m_sOutput;
+
+            if (output.contains(SCPI::scpiAnswer[SCPI::ack]))
+                Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
             else
-                if (output.contains(SCPI::scpiAnswer[SCPI::busy]))
-                    Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+                if (output.contains(SCPI::scpiAnswer[SCPI::nak]))
+                    Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_NACK);
                 else
-                    if (output.contains(SCPI::scpiAnswer[SCPI::errcon]))
+                    if (output.contains(SCPI::scpiAnswer[SCPI::busy]))
                         Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                     else
-                        if (output.contains(SCPI::scpiAnswer[SCPI::erraut]))
+                        if (output.contains(SCPI::scpiAnswer[SCPI::errcon]))
                             Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                         else
-                            if (output.contains(SCPI::scpiAnswer[SCPI::errval]))
+                            if (output.contains(SCPI::scpiAnswer[SCPI::erraut]))
                                 Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                             else
-                                if (output.contains(SCPI::scpiAnswer[SCPI::errxml]))
+                                if (output.contains(SCPI::scpiAnswer[SCPI::errval]))
                                     Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                                 else
-                                    if (output.contains(SCPI::scpiAnswer[SCPI::errmmem]))
+                                    if (output.contains(SCPI::scpiAnswer[SCPI::errxml]))
                                         Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                                     else
-                                        if (output.contains(SCPI::scpiAnswer[SCPI::errpath]))
+                                        if (output.contains(SCPI::scpiAnswer[SCPI::errmmem]))
                                             Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                                         else
-                                            if (output.contains(SCPI::scpiAnswer[SCPI::errexec]))
+                                            if (output.contains(SCPI::scpiAnswer[SCPI::errpath]))
                                                 Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                                             else
-                                                if (output.contains(SCPI::scpiAnswer[SCPI::errtimo]))
+                                                if (output.contains(SCPI::scpiAnswer[SCPI::errexec]))
                                                     Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
                                                 else
-                                                    Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
+                                                    if (output.contains(SCPI::scpiAnswer[SCPI::errtimo]))
+                                                        Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ERROR);
+                                                    else
+                                                        Answer->set_rtype(ProtobufMessage::NetMessage_NetReply_ReplyType_ACK);
 
-        Answer->set_body(output.toStdString()); // in any case we set the body
+            Answer->set_body(output.toStdString()); // in any case we set the body
 
-        protobufAnswer.set_clientid(protoCmd->m_clientId, protoCmd->m_clientId.count());
-        protobufAnswer.set_messagenr(protoCmd->m_nmessageNr);
+            protobufAnswer.set_clientid(protoCmd->m_clientId, protoCmd->m_clientId.count());
+            protobufAnswer.set_messagenr(protoCmd->m_nmessageNr);
 
-        protoCmd->m_pPeer->sendMessage(&protobufAnswer);
-    }
+            protoCmd->m_pPeer->sendMessage(&protobufAnswer);
+        }
 
-    else
+        else
 
-    {
-        QByteArray block;
+        {
+            QByteArray block;
 
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_4_0);
-        out << (qint32)0;
+            QDataStream out(&block, QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_4_0);
+            out << (qint32)0;
 
-        out << protoCmd->m_sOutput.toUtf8();
-        out.device()->seek(0);
-        out << (qint32)(block.size() - sizeof(qint32));
+            out << protoCmd->m_sOutput.toUtf8();
+            out.device()->seek(0);
+            out << (qint32)(block.size() - sizeof(qint32));
 
-        protoCmd->m_pPeer->getTcpSocket()->write(block);
+            protoCmd->m_pPeer->getTcpSocket()->write(block);
+        }
     }
 
     delete protoCmd;
+}
+
+
+void cPCBServer::setSCPIConnection()
+{
+    m_pSCPISocket = m_pSCPIServer->nextPendingConnection();
+    connect(m_pSCPISocket, SIGNAL(readyRead()), this, SLOT(SCPIInput()));
+    connect(m_pSCPISocket, SIGNAL(disconnected()), this, SLOT(SCPIdisconnect()));
+}
+
+
+void cPCBServer::SCPIInput()
+{
+    QString m_sInput;
+    QString dummy;
+    cSCPIObject* scpiObject;
+
+    m_sInput = "";
+    while ( m_pSCPISocket->canReadLine() )
+        m_sInput += m_pSCPISocket->readLine();
+
+    m_sInput.remove('\r'); // we remove cr lf
+    m_sInput.remove('\n');
+
+    QByteArray clientId = QByteArray(); // we set an empty byte array
+    cProtonetCommand* protoCmd = new cProtonetCommand(0, false, true, clientId, 0, m_sInput);
+    // peer = 0 means we are working on the scpi socket ....
+
+    if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+    {
+        cSCPIDelegate* scpiDelegate = static_cast<cSCPIDelegate*>(scpiObject);
+        if (!scpiDelegate->executeSCPI(protoCmd))
+        {
+            protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+            emit cmdExecutionDone(protoCmd);
+        }
+    }
+    else
+    {
+        protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
+        emit cmdExecutionDone(protoCmd);
+    }
+}
+
+
+void cPCBServer::SCPIdisconnect()
+{
+    disconnect(m_pSCPISocket, 0, 0, 0); // we disconnect everything
 }
 
 
