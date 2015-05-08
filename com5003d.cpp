@@ -3,6 +3,7 @@
 #include <QFinalState>
 #include <QStringList>
 #include <QDebug>
+#include <QHostAddress>
 #include <xmlconfigreader.h>
 #include <QCoreApplication>
 #include <protonetserver.h>
@@ -238,6 +239,7 @@ void cCOM5003dServer::doSetupServer()
     initSCPIConnections();
 
     myServer->startServer(m_pETHSettings->getPort(protobufserver)); // and can start the server now
+    m_pSCPIServer->listen(QHostAddress::AnyIPv4, m_pETHSettings->getPort(scpiserver));
 
     // our resource mananager connection must be opened after configuration is done
     m_pRMConnection = new cRMConnection(m_pETHSettings->getRMIPadr(), m_pETHSettings->getPort(resourcemanager), m_pDebugSettings->getDebugLevel());
