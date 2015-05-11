@@ -362,6 +362,8 @@ QString cSystemInterface::m_AdjFlashWrite(QString &sInput)
     {
         if (m_pAdjHandler->exportJDataFlash())
             ret = cmddone;
+        else
+            ret = cmdexecfault;
     }
     m_genAnswer(ret, s);
     return s;
@@ -416,10 +418,13 @@ QString cSystemInterface::m_AdjXMLRead(QString &sInput)
             QString filename = cmd.getParam(0);
             if (m_pAdjHandler->importJDataXML(filename))
                 ret = cmddone;
+            else
+                ret = cmdexecfault;
         }
         else
             return SCPI::scpiAnswer[SCPI::erraut];
     }
+
     m_genAnswer(ret, s);
     return s;
 }
