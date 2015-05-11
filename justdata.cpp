@@ -39,7 +39,7 @@ void cJustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
 
     delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes), "STATUS", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustStatus);
     m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int,QString&,QString&)), this, SLOT(executeCommand(int,QString&,QString&)));
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     if (leadingNodes != "")
         leadingNodes += ":";
