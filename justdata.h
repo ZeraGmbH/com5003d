@@ -25,6 +25,16 @@ enum JustCommands
     JustNode3
 };
 
+
+namespace JustData {
+
+enum StatusMasks
+{
+    Justified = 128
+};
+
+}
+
 class cJustNode;
 
 class cJustData: public cSCPIConnection // base class for adjustment coefficients and nodes

@@ -14,6 +14,7 @@
 #include "atmel.h"
 #include "com5003dglobal.h"
 #include "adjflash.h"
+#include "justdata.h"
 #include "adjxml.h"
 #include "systeminfo.h"
 #include "adjustment.h"
@@ -470,9 +471,11 @@ quint8 cAdjustment::getAdjustmentStatus()
     for (int i = 0; i < m_AdjFlashList.count(); i++)
         stat &= m_AdjFlashList.at(i)->getAdjustmentStatus();
 
-    ret = m_nAdjStatus;
-    if (stat == 0)
+    ret = m_nAdjStatus; // here we already stored ev. wrong serial or wrong version
+
+    if ((stat & JustData::Justified)== 0)
         ret += Adjustment::notAdjusted;
+
     return ret;
 }
 
