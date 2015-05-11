@@ -380,6 +380,8 @@ QString cSystemInterface::m_AdjFlashRead(QString &sInput)
     {
         if (m_pAdjHandler->importJDataFlash())
             ret = cmddone;
+        else
+            ret = cmdexecfault;
     }
     m_genAnswer(ret, s);
     return s;
@@ -397,6 +399,8 @@ QString cSystemInterface::m_AdjXMLWrite(QString &sInput)
         QString filename = cmd.getParam(0);
         if (m_pAdjHandler->exportJDataXML(filename))
             ret = cmddone;
+        else
+            ret = cmdexecfault;
     }
     m_genAnswer(ret, s);
     return s;
