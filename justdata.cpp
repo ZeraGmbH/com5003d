@@ -119,7 +119,7 @@ QString cJustData::m_ReadWriteStatus(QString &sInput)
 
     if (cmd.isQuery())
     {
-        return QString("%1;").arg(m_nStatus);
+        return QString("%1").arg(m_nStatus);
     }
     else
     {
@@ -134,19 +134,19 @@ QString cJustData::m_ReadWriteStatus(QString &sInput)
                     if (ok)
                     {
                         m_nStatus = par;
-                        return SCPI::scpiAnswer[SCPI::ack]+";";
+                        return SCPI::scpiAnswer[SCPI::ack];
                     }
                     else
-                        return SCPI::scpiAnswer[SCPI::errval]+";";
+                        return SCPI::scpiAnswer[SCPI::errval];
                 }
                 else
-                    return SCPI::scpiAnswer[SCPI::erraut]+";";
+                    return SCPI::scpiAnswer[SCPI::erraut];
             }
-            else return SCPI::scpiAnswer[SCPI::errexec]+";";
+            else return SCPI::scpiAnswer[SCPI::errexec];
         }
     }
 
-    return SCPI::scpiAnswer[SCPI::nak]+";";
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -158,7 +158,7 @@ QString cJustData::m_ReadWriteJustCoeeficient(QString &sInput, quint8 index)
 
     if (cmd.isQuery())
     {
-        return QString("%1;").arg(getCoefficient(index));
+        return QString("%1").arg(getCoefficient(index));
     }
     else
     {
@@ -174,20 +174,20 @@ QString cJustData::m_ReadWriteJustCoeeficient(QString &sInput, quint8 index)
                     if (ok)
                     {
                         setCoefficient(index, par);
-                        return SCPI::scpiAnswer[SCPI::ack]+";";
+                        return SCPI::scpiAnswer[SCPI::ack];
                     }
                     else
-                        return SCPI::scpiAnswer[SCPI::errval]+";";
+                        return SCPI::scpiAnswer[SCPI::errval];
                 }
                 else
-                    return SCPI::scpiAnswer[SCPI::erraut]+";";
+                    return SCPI::scpiAnswer[SCPI::erraut];
             }
             else
-                return SCPI::scpiAnswer[SCPI::errexec]+";";
+                return SCPI::scpiAnswer[SCPI::errexec];
         }
     }
 
-    return SCPI::scpiAnswer[SCPI::nak]+";";
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -217,20 +217,20 @@ QString cJustData::m_ReadWriteJustNode(QString &sInput, quint8 index)
                     {
                         cJustNode jn = cJustNode(par0,par1);
                         setNode(index, jn);
-                        return SCPI::scpiAnswer[SCPI::ack]+";";
+                        return SCPI::scpiAnswer[SCPI::ack];
                     }
                     else
-                        return SCPI::scpiAnswer[SCPI::errval]+";";
+                        return SCPI::scpiAnswer[SCPI::errval];
                 }
                 else
-                    return SCPI::scpiAnswer[SCPI::erraut]+";";
+                    return SCPI::scpiAnswer[SCPI::erraut];
             }
             else
-                return SCPI::scpiAnswer[SCPI::errexec]+";";
+                return SCPI::scpiAnswer[SCPI::errexec];
         }
     }
 
-    return SCPI::scpiAnswer[SCPI::nak]+";";
+    return SCPI::scpiAnswer[SCPI::nak];
 }
 
 
@@ -268,7 +268,7 @@ QString cJustData::SerializeCoefficients() // writes adjustment data to qstring
     int i;
     QString s = "";
     for (i = 0; i < m_nOrder+1; i++)
-        s += QString("%1;").arg(m_pCoefficient[i],0,'f',12);
+        s += QString("%1").arg(m_pCoefficient[i],0,'f',12);
     return s;
 }
 

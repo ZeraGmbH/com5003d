@@ -397,14 +397,14 @@ void cPCBServer::executeCommand(google::protobuf::Message* cmd)
 
                 if (!scpiDelegate->executeSCPI(protoCmd))
                 {
-                    protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+                    protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
                     emit cmdExecutionDone(protoCmd);
                 }
 
             }
             else
             {
-                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak]+";";
+                protoCmd->m_sOutput = SCPI::scpiAnswer[SCPI::nak];
                 emit cmdExecutionDone(protoCmd);
             }
         }
