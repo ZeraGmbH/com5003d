@@ -440,7 +440,7 @@ QString cSystemInterface::m_AdjFlashChksum(QString &sInput)
 
     if (cmd.isQuery())
     {
-        QString s = QString("%1").arg(m_pAdjHandler->getAdjustmentStatus());
+        QString s = QString("0x%1").arg(m_pAdjHandler->getChecksum(),0,16); // hex output
         return s;
     }
     else
