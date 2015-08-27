@@ -207,6 +207,14 @@ quint8 cCOM5003JustData::getAdjustmentStatus()
 }
 
 
+void cCOM5003JustData::initJustData()
+{
+    m_pGainCorrection->initJustData(1.0);
+    m_pPhaseCorrection->initJustData(0.0);
+    m_pOffsetCorrection->initJustData(0.0);
+}
+
+
 
 
 
