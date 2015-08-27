@@ -20,9 +20,7 @@ cJustData::cJustData(int order, double init)
 {
     m_pCoefficient = new double[order+1];  
     m_pJustNode = new cJustNode[order+1]; 
-    setNode(0 , cJustNode(init,0.0)); // setting the 1st node and all following
-    cmpCoefficients();
-    m_nStatus = 0;
+    initJustData(init);
 }
 
 
@@ -268,7 +266,7 @@ QString cJustData::SerializeCoefficients() // writes adjustment data to qstring
     int i;
     QString s = "";
     for (i = 0; i < m_nOrder+1; i++)
-        s += QString("%1").arg(m_pCoefficient[i],0,'f',12);
+        s += QString("%1;").arg(m_pCoefficient[i],0,'f',12);
     return s;
 }
 
@@ -390,6 +388,14 @@ bool cJustData::cmpCoefficients() // calculates coefficients from nodes
 quint8 cJustData::getStatus()
 {
     return m_nStatus;
+}
+
+
+void cJustData::initJustData(double init)
+{
+    setNode(0 , cJustNode(init,0.0)); // setting the 1st node and all following
+    cmpCoefficients();
+    m_nStatus = 0;
 }
 
     

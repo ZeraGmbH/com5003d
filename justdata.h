@@ -56,6 +56,7 @@ public:
     double getCorrection(double arg); // calculates correction value c= ax^order +bx^order-1 ...
     bool cmpCoefficients(); // calculates coefficients from nodes
     quint8 getStatus();
+    void initJustData(double init); // for initialization of justdata
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
