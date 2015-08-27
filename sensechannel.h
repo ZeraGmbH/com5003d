@@ -58,6 +58,8 @@ public:
     void setMMode(int m);
     bool isAvail();
 
+    void initJustData();
+
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
