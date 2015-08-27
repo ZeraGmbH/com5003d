@@ -25,7 +25,8 @@ enum Commands
     cmdMMode,
     cmdMModeCat,
     cmdChannelCat,
-    cmdGroupCat
+    cmdGroupCat,
+    initAdjData
 };
 
 enum MMode
@@ -84,7 +85,7 @@ private:
     QString m_ReadMModeCatalog(QString& sInput);
     QString m_ReadSenseChannelCatalog(QString& sInput);
     QString m_ReadSenseGroupCatalog(QString& sInput);
-
+    QString m_InitSenseAdjData(QString& sInput);
     cNotificationString notifierSenseMMode;
     cNotificationString notifierSenseChannelCat;
 

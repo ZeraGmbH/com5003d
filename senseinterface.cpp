@@ -177,6 +177,10 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInterf
     delegate = new cSCPIDelegate(QString("%1SENSE:GROUP").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SenseSystem::cmdGroupCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1SENSE:CORRECTION").arg(leadingNodes),"INIT", SCPI::isCmd, scpiInterface, SenseSystem::initAdjData);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+
 
     for (int i = 0; i < m_ChannelList.count(); i++)
     {
@@ -242,6 +246,12 @@ void cSenseInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         protoCmd->m_sOutput = m_ReadSenseGroupCatalog(protoCmd->m_sInput);
         if (protoCmd->m_bwithOutput)
             emit cmdExecutionDone(protoCmd);
+        break;
+    case SenseSystem::initAdjData:
+        protoCmd->m_sOutput = m_InitSenseAdjData(protoCmd->m_sInput);
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
+        break;
         break;
 
     }
@@ -636,6 +646,22 @@ QString cSenseInterface::m_ReadSenseGroupCatalog(QString &sInput)
             s = "m0,m1,m2;m3,m4,m5;";
 
         return s;
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSenseInterface::m_InitSenseAdjData(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(0))
+    {
+        for (int i = 0; i < m_ChannelList.count(); i++)
+            m_ChannelList.at(i)->initJustData();
+
+        return SCPI::scpiAnswer[SCPI::ack];
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
