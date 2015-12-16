@@ -12,7 +12,7 @@
 cSCHeadChannel::cSCHeadChannel(QString description, quint8 nr, SCHeadSystem::cChannelSettings *cSettings)
     :m_sDescription(description)
 {
-    m_sName = QString("fi%1").arg(nr);
+    m_sName = QString("sh%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_nMuxChannel = cSettings->m_nmuxChannel;
     m_bAvail = cSettings->avail;
