@@ -16,7 +16,6 @@ cFRQInputSettings::cFRQInputSettings(Zera::XMLConfig::cReader *xmlread)
     {
         m_ChannelSettingsList.append(settings = new FRQInputSystem::cChannelSettings);
         m_ConfigXMLMap[QString("com5003dconfig:resource:frqinput:fi%1:alias").arg(i)] = FRQInputSystem::cfgFin0Alias + i;
-        m_ConfigXMLMap[QString("com5003dconfig:resource:frqinput:fi%1:muxchannel").arg(i)] = FRQInputSystem::cfgFin0muxchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:frqinput:fi%1:avail").arg(i)] = FRQInputSystem::cfgFin0avail + i;
     }
 }
@@ -54,18 +53,6 @@ void cFRQInputSettings::configXMLInfo(QString key)
             break;
         case FRQInputSystem::cfgFin3Alias:
             m_ChannelSettingsList.at(3)->m_sAlias = m_pXMLReader->getValue(key);
-            break;
-        case FRQInputSystem::cfgFin0muxchannel:
-            m_ChannelSettingsList.at(0)->m_nmuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case FRQInputSystem::cfgFin1muxchannel:
-            m_ChannelSettingsList.at(1)->m_nmuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case FRQInputSystem::cfgFin2muxchannel:
-            m_ChannelSettingsList.at(2)->m_nmuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
-            break;
-        case FRQInputSystem::cfgFin3muxchannel:
-            m_ChannelSettingsList.at(3)->m_nmuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
             break;
         case FRQInputSystem::cfgFin0avail:
             m_ChannelSettingsList.at(0)->avail = (m_pXMLReader->getValue(key) == "true");

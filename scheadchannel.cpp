@@ -14,7 +14,6 @@ cSCHeadChannel::cSCHeadChannel(QString description, quint8 nr, SCHeadSystem::cCh
 {
     m_sName = QString("sh%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
-    m_nMuxChannel = cSettings->m_nmuxChannel;
     m_bAvail = cSettings->avail;
 }
 
@@ -29,9 +28,6 @@ void cSCHeadChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterfa
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdAlias);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"MUXCHANNEL", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdMuxChannel);
-    m_DelegateList.append(delegate);
-    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
@@ -44,9 +40,6 @@ void cSCHeadChannel::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     {
     case SCHEADChannel::cmdAlias:
         protoCmd->m_sOutput = m_ReadAlias(protoCmd->m_sInput);
-        break;
-    case SCHEADChannel::cmdMuxChannel:
-        protoCmd->m_sOutput = m_ReadMuxChannel(protoCmd->m_sInput);
         break;
     case SCHEADChannel::cmdStatus:
         protoCmd->m_sOutput = m_ReadChannelStatus(protoCmd->m_sInput);
@@ -88,17 +81,6 @@ QString cSCHeadChannel::m_ReadAlias(QString &sInput)
 
     if (cmd.isQuery())
         return m_sAlias;
-    else
-        return SCPI::scpiAnswer[SCPI::nak];
-}
-
-
-QString cSCHeadChannel::m_ReadMuxChannel(QString &sInput)
-{
-    cSCPICommand cmd = sInput;
-
-    if (cmd.isQuery())
-        return QString("%1").arg(m_nMuxChannel);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }

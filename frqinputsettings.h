@@ -14,10 +14,6 @@ enum configstate
     cfgFin1Alias,
     cfgFin2Alias,
     cfgFin3Alias,
-    cfgFin0muxchannel,
-    cfgFin1muxchannel,
-    cfgFin2muxchannel,
-    cfgFin3muxchannel,
     cfgFin0avail,
     cfgFin1avail,
     cfgFin2avail,
@@ -28,7 +24,6 @@ enum configstate
 struct cChannelSettings // what we want to get configured
 {
     QString m_sAlias; // the names channel
-    quint8 m_nmuxChannel; // where to configure the channel
     bool avail; // is this channel available ?
 };
 }

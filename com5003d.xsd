@@ -77,14 +77,6 @@
 </xs:simpleType>
 
 
-<xs:simpleType name="muxchanneltype">
-    <xs:restriction base="xs:integer">
-        <xs:maxInclusive value='31'/>
-        <xs:minInclusive value='0'/>
-    </xs:restriction>
-</xs:simpleType>
-
-
 <xs:complexType name="connectivitytype">
     <xs:sequence>
         <xs:element name="debuglevel" type="debugtype"/>
@@ -178,7 +170,6 @@
         <xs:element name="alias" type="xs:string"/>
         <xs:element name="dspserver" type="porttype"/>
         <xs:element name="dspchannel" type="dspfpzchanneltype"/>
-        <xs:element name="muxchannel" type="muxchanneltype"/>
         <xs:element name="avail" type="xs:boolean"/>
     </xs:sequence>
 </xs:complexType>
@@ -187,7 +178,6 @@
 <xs:complexType name="fpzinchannelltype">
     <xs:sequence>
         <xs:element name="alias" type="xs:string"/>
-        <xs:element name="muxchannel" type="muxchanneltype"/>
         <xs:element name="avail" type="xs:boolean"/>
     </xs:sequence>
 </xs:complexType>
@@ -196,7 +186,6 @@
 <xs:complexType name="scheadchannelltype">
     <xs:sequence>
         <xs:element name="alias" type="xs:string"/>
-        <xs:element name="muxchannel" type="muxchanneltype"/>
         <xs:element name="avail" type="xs:boolean"/>
     </xs:sequence>
 </xs:complexType>

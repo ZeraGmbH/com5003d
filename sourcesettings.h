@@ -22,10 +22,6 @@ enum configstate
     cfg1dspchannel,
     cfg2dspchannel,
     cfg3dspchannel,
-    cfg0muxchannel,
-    cfg1muxchannel,
-    cfg2muxchannel,
-    cfg3muxchannel,
     cfg0avail,
     cfg1avail,
     cfg2avail,
@@ -38,7 +34,6 @@ struct cChannelSettings // what we want to get configured
     QString m_sAlias; // the names channel
     quint16 m_nDspServerPort; // where to control the channel
     quint8 m_nDspChannel; // where to configure the channel
-    quint8 m_nMuxChannel; // for routing to standard error calculator
     bool avail; // is this channel available ?
 };
 }

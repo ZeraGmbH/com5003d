@@ -12,7 +12,6 @@ namespace SCHeadSystem
 enum configstate
 {
     cfgSH0Alias,
-    cfgSH0muxchannel,
     cfgSH0avail,
 };
 
@@ -20,7 +19,6 @@ enum configstate
 struct cChannelSettings // what we want to get configured
 {
     QString m_sAlias; // the names channel
-    quint8 m_nmuxChannel; // where to configure the channel
     bool avail; // is this channel available ?
 };
 }

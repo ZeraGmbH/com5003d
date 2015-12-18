@@ -98,28 +98,24 @@
                 <alias>Fout1</alias>
                 <dspserver>6310</dspserver>
                 <dspchannel>0</dspchannel>
-                <muxchannel>0</muxchannel>
                 <avail>true</avail>
             </fo0>
             <fo1>
                 <alias>Fout2</alias>
                 <dspserver>6310</dspserver>
                 <dspchannel>1</dspchannel>
-                <muxchannel>1</muxchannel>
                 <avail>true</avail>
             </fo1>
             <fo2>
                 <alias>Fout3</alias>
                 <dspserver>6310</dspserver>
                 <dspchannel>2</dspchannel>
-                <muxchannel>2</muxchannel>
                 <avail>true</avail>
             </fo2>
             <fo3>
                 <alias>Fout4</alias>
                 <dspserver>6310</dspserver>
                 <dspchannel>3</dspchannel>
-                <muxchannel>3</muxchannel>
                 <avail>true</avail>
             </fo3>
         </fpzout>
@@ -128,22 +124,18 @@
     <frqinput>
         <fi0>
             <alias>Fin1</alias>
-            <muxchannel>4</muxchannel>
             <avail>true</avail>
         </fi0>
         <fi1>
             <alias>Fin2</alias>
-            <muxchannel>5</muxchannel>
             <avail>true</avail>
         </fi1>
         <fi2>
             <alias>Fin3</alias>
-            <muxchannel>6</muxchannel>
             <avail>true</avail>
         </fi2>
         <fi3>
             <alias>Fin2</alias>
-            <muxchannel>7</muxchannel>
             <avail>true</avail>
         </fi3>
     </frqinput>
@@ -151,7 +143,6 @@
     <schead>
         <sh0>
             <alias>SC1</alias>
-            <muxchannel>8</muxchannel>
             <avail>true</avail>
         </sh0>
     </schead>

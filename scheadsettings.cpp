@@ -16,7 +16,6 @@ cSCHeadSettings::cSCHeadSettings(Zera::XMLConfig::cReader *xmlread)
     {
         m_ChannelSettingsList.append(settings = new SCHeadSystem::cChannelSettings);
         m_ConfigXMLMap[QString("com5003dconfig:resource:schead:sh%1:alias").arg(i)] = SCHeadSystem::cfgSH0Alias + i;
-        m_ConfigXMLMap[QString("com5003dconfig:resource:schead:sh%1:muxchannel").arg(i)] = SCHeadSystem::cfgSH0muxchannel + i;
         m_ConfigXMLMap[QString("com5003dconfig:resource:schead:fi%1:avail").arg(i)] = SCHeadSystem::cfgSH0avail + i;
     }
 }
@@ -45,9 +44,6 @@ void cSCHeadSettings::configXMLInfo(QString key)
         {
         case SCHeadSystem::cfgSH0Alias:
             m_ChannelSettingsList.at(0)->m_sAlias = m_pXMLReader->getValue(key);
-            break;
-        case SCHeadSystem::cfgSH0muxchannel:
-            m_ChannelSettingsList.at(0)->m_nmuxChannel  =  m_pXMLReader->getValue(key).toInt(&ok);
             break;
         case SCHeadSystem::cfgSH0avail:
             m_ChannelSettingsList.at(0)->avail = (m_pXMLReader->getValue(key) == "true");
