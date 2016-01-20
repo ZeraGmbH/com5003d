@@ -1,5 +1,6 @@
 #include <QStateMachine>
 #include <QState>
+#include <QFile>
 #include <QFinalState>
 #include <QStringList>
 #include <QDebug>
@@ -9,6 +10,7 @@
 #include <protonetserver.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <syslog.h>
 
 #include "com5003dglobal.h"
 #include "com5003d.h"
@@ -67,7 +69,8 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     stateCONF->addTransition(this, SIGNAL(abortInit()),stateFINISH); // from anywhere we arrive here if some error
 
     QState* statexmlConfiguration = new QState(stateCONF); // we configure our server with xml file
-    QState* statewait4Atmel = new QState(stateCONF); // we snchronize on atmel running
+    QState* stateprogAtmel = new QState(stateCONF); // maybe we have to update the atmel
+    QState* statewait4Atmel = new QState(stateCONF); // we synchronize on atmel running
     QState* statesetupServer = new QState(stateCONF); // we setup our server now
     stateconnect2RM = new QState(stateCONF); // we connect to resource manager
     stateconnect2RMError = new QState(stateCONF);
@@ -75,8 +78,8 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
 
     stateCONF->setInitialState(statexmlConfiguration);
 
-
-    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML(bool)), statewait4Atmel);
+    statexmlConfiguration->addTransition(myXMLConfigReader, SIGNAL(finishedParsingXML(bool)), stateprogAtmel);
+    stateprogAtmel->addTransition(this, SIGNAL(atmelProgrammed()), statewait4Atmel);
     statewait4Atmel->addTransition(this, SIGNAL(atmelRunning()), statesetupServer);
     statesetupServer->addTransition(this, SIGNAL(serverSetup()), stateconnect2RM);
 
@@ -85,6 +88,7 @@ cCOM5003dServer::cCOM5003dServer(QObject *parent)
     m_pInitializationMachine->setInitialState(stateCONF);
 
     QObject::connect(statexmlConfiguration, SIGNAL(entered()), this, SLOT(doConfiguration()));
+    QObject::connect(stateprogAtmel, SIGNAL(entered()), this, SLOT(programAtmelFlash()));
     QObject::connect(statewait4Atmel, SIGNAL(entered()), this, SLOT(doWait4Atmel()));
     QObject::connect(statesetupServer, SIGNAL(entered()), this, SLOT(doSetupServer()));
     QObject::connect(stateconnect2RM, SIGNAL(entered()), this, SLOT(doConnect2RM()));
@@ -196,6 +200,116 @@ void cCOM5003dServer::doConfiguration()
         close(m_nFPGAfd);
 
     }
+}
+
+
+void cCOM5003dServer::programAtmelFlash()
+{
+    QFile atmelFile(atmelFlashfilePath);
+    if (atmelFile.exists())
+    {
+        int fd;
+        QString devNode;
+
+        m_nerror = atmelProgError; // preset error
+
+        devNode = m_pFPGAsettings->getDeviceNode();
+        syslog(LOG_INFO,"Starting programming atmel flash\n");
+
+        if ( (fd = open(devNode.toLatin1().data(),O_RDWR)) < 0 )
+        {
+            syslog(LOG_ERR,"error opening fpga device: %s\n",devNode.toLatin1().data());
+            emit abortInit();
+        }
+        else
+        {
+            ulong pcbTestReg;
+            int r;
+            if ( (r = lseek(fd,0xffc,0)) < 0 )
+            {
+                syslog(LOG_ERR,"error positioning fpga device: %s\n", devNode.toLatin1().data());
+                syslog(LOG_ERR,"Programming atmel failed\n");
+                close(fd);
+                emit abortInit();
+            }
+
+            r = read(fd,(char*) &pcbTestReg,4);
+            syslog(LOG_ERR,"reading fpga adr 0xffc =  %x\n", pcbTestReg);
+            if (r < 0 )
+            {
+                syslog(LOG_ERR,"error reading fpga device: %s\n", devNode.toLatin1().data());
+                syslog(LOG_ERR,"Programming atmel failed\n");
+                emit abortInit();
+            }
+
+            pcbTestReg |=  1 << (atmelResetBit-1); // set bit for atmel reset
+            syslog(LOG_INFO,"writing fpga adr 0xffc =  %x\n", pcbTestReg);
+            r = write(fd, (char*) &pcbTestReg,4);
+
+            if (r < 0 )
+            {
+                syslog(LOG_ERR,"error writing fpga device: %s\n", devNode.toLatin1().data());
+                syslog(LOG_ERR,"Programming atmel failed\n");
+                emit abortInit();
+            }
+
+            usleep(100); // give atmel some time for reset
+
+            pcbTestReg &=  ~(1 << (atmelResetBit-1)); // reset bit for atmel reset
+            syslog(LOG_INFO,"writing fpga adr 0xffc =  %x\n", pcbTestReg);
+            r = write(fd, (char*) &pcbTestReg,4);
+            close(fd);
+
+            if (r < 0 )
+            {
+                syslog(LOG_ERR,"error writing fpga device: %s\n", devNode.toLatin1().data());
+                syslog(LOG_ERR,"Programming atmel failed\n");
+                emit abortInit();
+            }
+
+            // atmel is reset
+            usleep(100000); // now we wait for 100ms so bootloader is running definitely
+
+            // and start writing flash
+            cIntelHexFileIO IntelHexData;
+            if (IntelHexData.ReadHexFile(atmelFlashfilePath))
+            {
+               if (pAtmel->loadFlash(IntelHexData) == cmddone)
+               {
+                   syslog(LOG_INFO,"Programming atmel passed\n");
+               }
+               else
+               {
+                   syslog(LOG_ERR,"error writing atmel flash\n");
+                   syslog(LOG_ERR,"Programming atmel failed\n");
+                   emit abortInit();
+               }
+            }
+            else
+            {
+                syslog(LOG_ERR,"error reading hex file\n");
+                syslog(LOG_ERR,"Programming atmel failed\n");
+                emit abortInit();
+            }
+
+            // we must restart atmel now
+            if (pAtmel->startProgram() == cmddone)
+            {
+                syslog(LOG_ERR,"Restart atmel after programming done\n");
+                emit atmelProgrammed();
+            }
+            {
+                syslog(LOG_ERR,"Restart atmel after programming failed\n");
+                emit abortInit();
+            }
+
+        }
+
+        // once the job is done, we remove the file
+        atmelFile.remove();
+    }
+    else
+        emit atmelProgrammed();
 }
 
 
