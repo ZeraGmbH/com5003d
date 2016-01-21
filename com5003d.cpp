@@ -205,6 +205,8 @@ void cCOM5003dServer::doConfiguration()
 
 void cCOM5003dServer::programAtmelFlash()
 {
+    pAtmel = new cATMEL(m_pI2CSettings->getDeviceNode(), m_pI2CSettings->getI2CAdress(i2cSettings::atmel), m_pDebugSettings->getDebugLevel());
+
     QFile atmelFile(atmelFlashfilePath);
     if (atmelFile.exists())
     {
@@ -315,9 +317,7 @@ void cCOM5003dServer::programAtmelFlash()
 
 void cCOM5003dServer::doWait4Atmel()
 {
-    pAtmel = new cATMEL(m_pI2CSettings->getDeviceNode(), m_pI2CSettings->getI2CAdress(i2cSettings::atmel), m_pDebugSettings->getDebugLevel());
     m_pAtmelWatcher = new cAtmelWatcher(m_pDebugSettings->getDebugLevel(), m_pFPGAsettings->getDeviceNode(), 10000, 100);
-
 
     m_nerror = atmelError; // we preset error
     connect(m_pAtmelWatcher,SIGNAL(timeout()),this,SIGNAL(abortInit()));
