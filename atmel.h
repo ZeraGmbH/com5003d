@@ -101,6 +101,7 @@ class cATMEL
 public:
     // atmel information about i2c device node, the controlers i2c adress and debuglevel
     cATMEL(QString devnode, quint8 adr, quint8 debuglevel);
+    ~cATMEL();
 
     atmelRM readSerialNumber(QString& answer);
     atmelRM writeSerialNumber(QString &sNumber);
@@ -136,7 +137,7 @@ private:
     quint8* GenAdressPointerParameter(quint8 adresspointerSize, quint32 adr);
     atmelRM loadMemory(bl_cmdcode blwriteCmd, cIntelHexFileIO& ihxFIO);
 
-    cMaxim1WireCRC myCRCGenerator;
+    cMaxim1WireCRC *m_pCRCGenerator;
     QString m_sI2CDevNode;
     quint8 m_nI2CAdr;
     quint8 m_nDebugLevel;

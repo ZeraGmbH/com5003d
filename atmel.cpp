@@ -9,7 +9,13 @@
 cATMEL::cATMEL(QString devnode, quint8 adr, quint8 debuglevel)
     :m_sI2CDevNode(devnode), m_nI2CAdr(adr), m_nDebugLevel(debuglevel)
 {
-    myCRCGenerator = new cMaxim1WireCRC();
+    m_pCRCGenerator = new cMaxim1WireCRC();
+}
+
+
+cATMEL::~cATMEL()
+{
+    delete m_pCRCGenerator;
 }
 
 
@@ -356,7 +362,7 @@ qint16 cATMEL::writeCommand(hw_cmd * hc)
 
     if (! I2CTransfer(m_sI2CDevNode,m_nI2CAdr,m_nDebugLevel ,&comData)) // if no error
     {
-        if (inpBuf[4] == myCRCGenerator.CalcBlockCRC(inpBuf, 4) )
+        if (inpBuf[4] == m_pCRCGenerator->CalcBlockCRC(inpBuf, 4) )
         {
             rlen = (inpBuf[2] << 8) + inpBuf[3];
             hc->RM = (inpBuf[0] << 8) + inpBuf[1];
@@ -388,7 +394,7 @@ qint16 cATMEL::writeBootloaderCommand(bl_cmd* blc)
 
     if (! I2CTransfer(m_sI2CDevNode,m_nI2CAdr,m_nDebugLevel ,&comData)) // wenn kein fehler
     {
-        if (inpBuf[4] == myCRCGenerator.CalcBlockCRC(inpBuf, 4) )
+        if (inpBuf[4] == m_pCRCGenerator->CalcBlockCRC(inpBuf, 4) )
         {
             rlen = (inpBuf[2] << 8) + inpBuf[3];
             blc->RM = (inpBuf[0] << 8) + inpBuf[1];
@@ -416,7 +422,7 @@ qint16 cATMEL::readOutput(char* data, quint16 dlen)
     if DEBUG2 syslog(LOG_INFO,"i2c readoutput %d bytes from i2cslave at 0x%x",dlen+1, m_nI2CAdr);
     if (! I2CTransfer(m_sI2CDevNode,m_nI2CAdr,m_nDebugLevel,&comData)) // if no error
     {
-        if (data[dlen-1] == myCRCGenerator.CalcBlockCRC((quint8*) data, dlen-1) )
+        if (data[dlen-1] == m_pCRCGenerator->CalcBlockCRC((quint8*) data, dlen-1) )
         rlen = dlen;
      }
      else
@@ -444,7 +450,7 @@ void  cATMEL::GenCommand(hw_cmd* hc)
     for (int i = 0; i < hc->plen;i++)
     *p++ = *ppar++;
 
-        *p = myCRCGenerator.CalcBlockCRC(hc->cmddata,len-1);
+        *p = m_pCRCGenerator->CalcBlockCRC(hc->cmddata,len-1);
         hc->cmdlen = len;
 }
 
@@ -463,7 +469,7 @@ void cATMEL::GenBootloaderCommand(bl_cmd* blc)
     for (int i = 0; i < blc->plen; i++)
         *p++ = *ppar++;
 
-    *p = myCRCGenerator.CalcBlockCRC(blc->cmddata,len-1);
+    *p = m_pCRCGenerator->CalcBlockCRC(blc->cmddata,len-1);
     blc->cmdlen = len;
 }
 
