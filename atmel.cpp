@@ -9,6 +9,7 @@
 cATMEL::cATMEL(QString devnode, quint8 adr, quint8 debuglevel)
     :m_sI2CDevNode(devnode), m_nI2CAdr(adr), m_nDebugLevel(debuglevel)
 {
+    myCRCGenerator = new cMaxim1WireCRC();
 }
 
 
