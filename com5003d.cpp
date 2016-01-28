@@ -289,6 +289,7 @@ void cCOM5003dServer::programAtmelFlash()
 
                        emit atmelProgrammed();
                    }
+                   else
                    {
                        syslog(LOG_ERR,"Restart atmel after programming failed\n");
                        emit abortInit();
