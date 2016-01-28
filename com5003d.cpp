@@ -279,6 +279,20 @@ void cCOM5003dServer::programAtmelFlash()
                if (pAtmel->loadFlash(IntelHexData) == cmddone)
                {
                    syslog(LOG_INFO,"Programming atmel passed\n");
+
+                   // we must restart atmel now
+                   if (pAtmel->startProgram() == cmddone)
+                   {
+                       syslog(LOG_ERR,"Restart atmel after programming done\n");
+                       // once the job is done, we remove the file
+                       atmelFile.remove();
+
+                       emit atmelProgrammed();
+                   }
+                   {
+                       syslog(LOG_ERR,"Restart atmel after programming failed\n");
+                       emit abortInit();
+                   }
                }
                else
                {
@@ -293,23 +307,9 @@ void cCOM5003dServer::programAtmelFlash()
                 syslog(LOG_ERR,"Programming atmel failed\n");
                 emit abortInit();
             }
-
-            // we must restart atmel now
-            if (pAtmel->startProgram() == cmddone)
-            {
-                syslog(LOG_ERR,"Restart atmel after programming done\n");
-                emit atmelProgrammed();
-            }
-            {
-                syslog(LOG_ERR,"Restart atmel after programming failed\n");
-                emit abortInit();
-            }
-
         }
-
-        // once the job is done, we remove the file
-        atmelFile.remove();
     }
+
     else
         emit atmelProgrammed();
 }
