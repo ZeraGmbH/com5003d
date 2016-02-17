@@ -89,7 +89,7 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
     for (i = 3; i < 6; i++)
     {
         rngList.clear();
-        rngList.append(new cSenseRange("160A" ,"160A" , true, 160.0,5005789.0, 6257236.0, 0 , SenseRange::Phys));
+        rngList.append(new cSenseRange("200A" ,"200A" , true, 200.0,6257236.0, 5256077.0, 0 , SenseRange::Phys));
         rngList.append(new cSenseRange("100A" ,"100A" , true, 100.0,4692928.0, 5866160.0, 1 , SenseRange::Phys));
         rngList.append(new cSenseRange("50A"  ,"50A"  , true,  50.0,4692928.0, 5866160.0, 2 , SenseRange::Phys));
         rngList.append(new cSenseRange("25A"  ,"25A"  , true, 25.0 ,4692928.0, 5866160.0, 3 , SenseRange::Phys));
