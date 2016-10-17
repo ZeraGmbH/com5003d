@@ -42,6 +42,8 @@ bool cAdjustment::exportJDataFlash()
    QByteArray ba;
 
    QDataStream stream(&ba,QIODevice::ReadWrite);
+   stream.setVersion(QDataStream::Qt_5_4);
+
    QDateTime DateTime;
 
    stream << count;
@@ -62,6 +64,8 @@ bool cAdjustment::exportJDataFlash()
    QByteArray ca(6, 0); // qbyte array mit 6 bytes
 
    QDataStream castream( &ca, QIODevice::WriteOnly );
+   castream.setVersion(QDataStream::Qt_5_4);
+
    castream << count << m_nChecksum;
 
    QBuffer mem(&ba);
@@ -71,6 +75,8 @@ bool cAdjustment::exportJDataFlash()
 
    m_nChecksum = qChecksum(ba.data(),ba.size()); // +crc-16
    QDataStream castream2( &ca, QIODevice::WriteOnly );
+   castream2.setVersion(QDataStream::Qt_5_4);
+
    castream2 << count << m_nChecksum;
 
    mem.seek(0);
@@ -108,6 +114,7 @@ bool cAdjustment::importJDataFlash()
     }
 
     QDataStream bastream( &ba, QIODevice::ReadOnly );
+    bastream.setVersion(QDataStream::Qt_5_4);
     uint count;
     quint16 chksumCMP = 0;
     bastream >> count >> m_nChecksum; // länge der flashdaten u. checksumme
@@ -134,6 +141,7 @@ bool cAdjustment::importJDataFlash()
 
     QByteArray ca(6, 0); // qbyte array mit 6 bytes
     QDataStream castream( &ca, QIODevice::WriteOnly );
+    castream.setVersion(QDataStream::Qt_5_4);
     castream << count << chksumCMP;
 
     mem.write(ca); // 0 setzen der checksumme
@@ -149,6 +157,8 @@ bool cAdjustment::importJDataFlash()
     // jetzt die daten noch einsortieren
     QString SVersion;
     QDataStream ba2stream( &ba2, QIODevice::ReadOnly );
+    ba2stream.setVersion(QDataStream::Qt_5_4);
+
     char flashdata[100];
     char* s = flashdata;
     ba2stream >> count >> chksumCMP;
