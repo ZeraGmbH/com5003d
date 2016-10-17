@@ -376,6 +376,11 @@ void cSenseInterface::exportAdjData(QDomDocument& doc, QDomElement& qde)
 
             gpotag = doc.createElement( "Offset" );
             rtag.appendChild(gpotag);
+            tag = doc.createElement( "Status" );
+            jdata = rng->getJustData()->m_pOffsetCorrection->SerializeStatus();
+            t = doc.createTextNode(jdata);
+            tag.appendChild(t);
+            gpotag.appendChild(tag);
             tag = doc.createElement( "Coefficients" );
             gpotag.appendChild(tag);
             jdata = rng->getJustData()->m_pOffsetCorrection->SerializeCoefficients();
