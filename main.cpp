@@ -58,6 +58,8 @@ int main( int argc, char *argv[] )
         syslog(LOG_EMERG,"Abort, atmel not running\n") ;
     if (r == rmConnectionError)
         syslog(LOG_EMERG,"Abort, resourcemanager connection error\n") ;
+    if (r == atmelProgError)
+        syslog(LOG_EMERG,"Abort, atmel flash program error\n") ;
 
     syslog(LOG_INFO,"com5003d server child process terminated ret = %d\n", r);
     delete com5003d;
