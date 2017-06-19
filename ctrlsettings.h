@@ -1,0 +1,5 @@
+#ifndef CTRLSETTINGS
+#define CTRLSETTINGS
+
+#endif // CTRLSETTINGS
+

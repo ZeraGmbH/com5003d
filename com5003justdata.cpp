@@ -49,6 +49,9 @@ void cCOM5003JustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInter
     delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "COMPUTE", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, com5003JustCompute);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1CORRECTION").arg(leadingNodes), "INIT", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, com5003JustInit);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     connect(m_pGainCorrection, SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
     m_pGainCorrection->initSCPIConnection(QString("%1CORRECTION:GAIN").arg(leadingNodes), scpiInterface);
@@ -77,6 +80,9 @@ void cCOM5003JustData::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         break;
     case com5003JustCompute:
         protoCmd->m_sOutput = m_ComputeJustData(protoCmd->m_sInput);
+        break;
+    case com5003JustInit:
+        protoCmd->m_sOutput = m_InitJustData(protoCmd->m_sInput);
         break;
     }
 
@@ -171,6 +177,33 @@ QString cCOM5003JustData::m_ComputeJustData(QString& sInput)
                 m_pGainCorrection->cmpCoefficients();
                 m_pPhaseCorrection->cmpCoefficients();
                 m_pOffsetCorrection->cmpCoefficients();
+                return SCPI::scpiAnswer[SCPI::ack];
+            }
+            else
+                return SCPI::scpiAnswer[SCPI::erraut];
+        }
+        else
+            return SCPI::scpiAnswer[SCPI::errexec];
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cCOM5003JustData::m_InitJustData(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
+    {
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        {
+            if (enable)
+            {
+                m_pGainCorrection->initJustData(1.0);
+                m_pPhaseCorrection->initJustData(0.0);
+                m_pOffsetCorrection->initJustData(0.0);
                 return SCPI::scpiAnswer[SCPI::ack];
             }
             else

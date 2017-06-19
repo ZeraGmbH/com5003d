@@ -12,7 +12,8 @@ enum com5003JustCommands
     com5003JustPhase,
     com5003JustOffset,
     com5003JustStatus,
-    com5003JustCompute
+    com5003JustCompute,
+    com5003JustInit
 };
 
 
@@ -52,6 +53,7 @@ private:
     QString mReadOffsetCorrection(QString&sInput);
     QString m_ReadStatus(QString& sInput);
     QString m_ComputeJustData(QString& sInput);
+    QString m_InitJustData(QString& sInput);
 };
 
 
