@@ -97,6 +97,12 @@ void cSenseRange::initJustData()
 }
 
 
+void cSenseRange::computeJustData()
+{
+    m_pJustdata->computeJustData();
+}
+
+
 void cSenseRange::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 {
     switch (cmdCode)

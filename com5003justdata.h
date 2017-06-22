@@ -43,6 +43,7 @@ public:
     void Deserialize(QDataStream&); // zum lesen aller justagedaten aus flashspeicher
     quint8 getAdjustmentStatus();
     void initJustData();
+    void computeJustData();
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);

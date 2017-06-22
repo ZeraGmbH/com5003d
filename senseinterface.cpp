@@ -179,6 +179,9 @@ void cSenseInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInterf
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1SENSE:CORRECTION").arg(leadingNodes),"INIT", SCPI::isCmd, scpiInterface, SenseSystem::initAdjData);
     m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));  
+    delegate = new cSCPIDelegate(QString("%1SENSE:CORRECTION").arg(leadingNodes),"COMPUTE", SCPI::isCmd, scpiInterface, SenseSystem::computeAdjData);
+    m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
 
@@ -252,8 +255,12 @@ void cSenseInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
         if (protoCmd->m_bwithOutput)
             emit cmdExecutionDone(protoCmd);
         break;
+    case SenseSystem::computeAdjData:
+        protoCmd->m_sOutput = m_ComputeSenseAdjData(protoCmd->m_sInput);
+        if (protoCmd->m_bwithOutput)
+            emit cmdExecutionDone(protoCmd);
         break;
-
+        break;
     }
 
 
@@ -666,6 +673,21 @@ QString cSenseInterface::m_InitSenseAdjData(QString &sInput)
         for (int i = 0; i < m_ChannelList.count(); i++)
             m_ChannelList.at(i)->initJustData();
 
+        return SCPI::scpiAnswer[SCPI::ack];
+    }
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSenseInterface::m_ComputeSenseAdjData(QString &sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isCommand(0))
+    {
+        for (int i = 0; i < m_ChannelList.count(); i++)
+            m_ChannelList.at(i)->computeJustData();
         return SCPI::scpiAnswer[SCPI::ack];
     }
     else

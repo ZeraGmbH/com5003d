@@ -248,6 +248,14 @@ void cCOM5003JustData::initJustData()
 }
 
 
+void cCOM5003JustData::computeJustData()
+{
+    m_pGainCorrection->cmpCoefficients();
+    m_pPhaseCorrection->cmpCoefficients();
+    m_pOffsetCorrection->cmpCoefficients();
+}
+
+
 
 
 

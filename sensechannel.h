@@ -59,6 +59,7 @@ public:
     bool isAvail();
 
     void initJustData();
+    void computeJustData();
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
