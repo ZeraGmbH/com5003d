@@ -668,7 +668,8 @@ QString cSenseInterface::m_InitSenseAdjData(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == "")))
+    // cmd.isCommand(0) is not correct but we leave it for compatibility
     {
         for (int i = 0; i < m_ChannelList.count(); i++)
             m_ChannelList.at(i)->initJustData();
@@ -684,7 +685,7 @@ QString cSenseInterface::m_ComputeSenseAdjData(QString &sInput)
 {
     cSCPICommand cmd = sInput;
 
-    if (cmd.isCommand(0))
+    if ( cmd.isCommand(1) && (cmd.getParam(0) == "") )
     {
         for (int i = 0; i < m_ChannelList.count(); i++)
             m_ChannelList.at(i)->computeJustData();
