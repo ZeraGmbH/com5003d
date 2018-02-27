@@ -101,7 +101,7 @@ QString cCOM5003JustData::mReadGainCorrection(QString& sInput)
         QString spar = cmd.getParam(0);
         double par = spar.toDouble(&ok);
         if (ok)
-            return QString("%1").arg(m_pGainCorrection->getCorrection(par));
+            return QString("%1").arg(m_pGainCorrection->getCorrection(par),0,'f',8);
         else
             return SCPI::scpiAnswer[SCPI::errval];
     }
@@ -120,7 +120,7 @@ QString cCOM5003JustData::mReadPhaseCorrection(QString& sInput)
         QString spar = cmd.getParam(0);
         double par = spar.toDouble(&ok);
         if (ok)
-            return QString("%1").arg(m_pPhaseCorrection->getCorrection(par));
+            return QString("%1").arg(m_pPhaseCorrection->getCorrection(par),0,'f',7);
         else
             return SCPI::scpiAnswer[SCPI::errval];
     }
@@ -140,7 +140,7 @@ QString cCOM5003JustData::mReadOffsetCorrection(QString& sInput)
         QString spar = cmd.getParam(0);
         double par = spar.toDouble(&ok);
         if (ok)
-            return QString("%1").arg(m_pOffsetCorrection->getCorrection(par));
+            return QString("%1").arg(m_pOffsetCorrection->getCorrection(par),0,'f',8);
         else
             return SCPI::scpiAnswer[SCPI::errval];
     }

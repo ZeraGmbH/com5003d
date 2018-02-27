@@ -156,7 +156,7 @@ QString cJustData::m_ReadWriteJustCoeeficient(QString &sInput, quint8 index)
 
     if (cmd.isQuery())
     {
-        return QString("%1").arg(getCoefficient(index));
+        return QString("%1").arg(getCoefficient(index),0,'f',8);
     }
     else
     {
