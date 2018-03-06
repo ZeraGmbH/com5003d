@@ -360,10 +360,20 @@ QString cSystemInterface::m_AdjFlashWrite(QString &sInput)
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
-        if (m_pAdjHandler->exportJDataFlash())
-            ret = cmddone;
-        else
-            ret = cmdexecfault;
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        {
+            if (enable)
+            {
+                if (m_pAdjHandler->exportJDataFlash())
+                    ret = cmddone;
+                else
+                    ret = cmdexecfault;
+            }
+            else
+                ret = cmdexecfault;
+        }
+        else ret = cmdexecfault;
     }
     m_genAnswer(ret, s);
     return s;
