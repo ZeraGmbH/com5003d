@@ -671,13 +671,25 @@ QString cSenseInterface::m_InitSenseAdjData(QString &sInput)
     if ( cmd.isCommand(0) || (cmd.isCommand(1) && (cmd.getParam(0) == "")))
     // cmd.isCommand(0) is not correct but we leave it for compatibility
     {
-        for (int i = 0; i < m_ChannelList.count(); i++)
-            m_ChannelList.at(i)->initJustData();
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        {
+            if (enable)
+            {
+                for (int i = 0; i < m_ChannelList.count(); i++)
+                    m_ChannelList.at(i)->initJustData();
 
-        return SCPI::scpiAnswer[SCPI::ack];
+                return SCPI::scpiAnswer[SCPI::ack];
+            }
+            else
+                return SCPI::scpiAnswer[SCPI::erraut];
+        }
+        else
+            return SCPI::scpiAnswer[SCPI::errexec];
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
+
 }
 
 
@@ -687,9 +699,21 @@ QString cSenseInterface::m_ComputeSenseAdjData(QString &sInput)
 
     if ( cmd.isCommand(1) && (cmd.getParam(0) == "") )
     {
-        for (int i = 0; i < m_ChannelList.count(); i++)
-            m_ChannelList.at(i)->computeJustData();
-        return SCPI::scpiAnswer[SCPI::ack];
+
+        bool enable;
+        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        {
+            if (enable)
+            {
+                for (int i = 0; i < m_ChannelList.count(); i++)
+                    m_ChannelList.at(i)->computeJustData();
+                return SCPI::scpiAnswer[SCPI::ack];
+            }
+            else
+               return SCPI::scpiAnswer[SCPI::erraut];
+        }
+        else
+            return SCPI::scpiAnswer[SCPI::errexec];
     }
     else
         return SCPI::scpiAnswer[SCPI::nak];
