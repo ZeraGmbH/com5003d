@@ -93,7 +93,7 @@ void cFPZChannel::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
 }
 
 
-void cFPZChannel::initNotifierConstant(cNotificationString &notifier)
+void cFPZChannel::initNotifier(cNotificationString &notifier)
 {
     notifier = "0.0";
 }
