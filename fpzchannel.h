@@ -57,8 +57,8 @@ private:
     bool m_bAvail; // is this channel available ?
 
     cNotificationString notifierConstant;
+    void initNotifier(cNotificationString& notifier);
     cNotificationString notifierPowerType;
-    void initNotifierConstant(cNotificationString& notifier);
 
     QString m_ReadAlias(QString& sInput);
     QString m_ReadType(QString& sInput);
