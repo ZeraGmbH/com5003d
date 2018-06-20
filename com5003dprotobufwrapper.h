@@ -1,17 +1,17 @@
 #ifndef COM5003DPROTOBUFWRAPPER_H
 #define COM5003DPROTOBUFWRAPPER_H
 
-#include <protonetwrapper.h>
+#include <xiqnetwrapper.h>
 
-class cCom5003dProtobufWrapper : public ProtoNetWrapper
+class cCom5003dProtobufWrapper : public XiQNetWrapper
 {
 public:
   cCom5003dProtobufWrapper();
 
 
-  google::protobuf::Message *byteArrayToProtobuf(QByteArray bA);
+  std::shared_ptr<google::protobuf::Message> byteArrayToProtobuf(QByteArray bA) override;
 
-  QByteArray protobufToByteArray(google::protobuf::Message *pMessage);
+  QByteArray protobufToByteArray(const google::protobuf::Message &pMessage) override;
 };
 
 #endif // COM5003DPROTOBUFWRAPPER_H
