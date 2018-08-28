@@ -73,41 +73,41 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server, cSenseSettings *senseS
     for (i = 0; i < 3; i++)
     {
         rngList.clear();
-        rngList.append(new cSenseRange("480V", "480V", true, 480.0, 4712563.0, 5890704.0, 0, SenseRange::Phys));
-        rngList.append(new cSenseRange("240V", "240V", true, 240.0, 4712563.0, 5890704.0, 1, SenseRange::Phys));
-        rngList.append(new cSenseRange("120V", "120V", true, 120.0, 4712563.0, 5890704.0, 2, SenseRange::Phys));
-        rngList.append(new cSenseRange("60V" , "60V" , true, 60.0 , 4712563.0, 5890704.0, 3, SenseRange::Phys));
+        rngList.append(new cSenseRange("480V", "480V", true, 480.0, 4712563.0, 5890704.0, 8388607.0, 0, SenseRange::Phys));
+        rngList.append(new cSenseRange("240V", "240V", true, 240.0, 4712563.0, 5890704.0, 8388607.0, 1, SenseRange::Phys));
+        rngList.append(new cSenseRange("120V", "120V", true, 120.0, 4712563.0, 5890704.0, 8388607.0, 2, SenseRange::Phys));
+        rngList.append(new cSenseRange("60V" , "60V" , true, 60.0 , 4712563.0, 5890704.0, 8388607.0, 3, SenseRange::Phys));
 
-        rngList.append(new cSenseRange("12V" , "12V" , true, 12.0 , 3887864.8, 4859831.0, 4, SenseRange::Phys));
-        rngList.append(new cSenseRange("5V"  , "5V"  , true, 5.0  , 4516206.0, 5645258.0, 5, SenseRange::Phys));
+        rngList.append(new cSenseRange("12V" , "12V" , true, 12.0 , 3887864.8, 4859831.0, 8388607.0, 4, SenseRange::Phys));
+        rngList.append(new cSenseRange("5V"  , "5V"  , true, 5.0  , 4516206.0, 5645258.0, 8388607.0, 5, SenseRange::Phys));
 
-        rngList.append(new cSenseRange("R0V" , "R0V" , false,  9.0, 3839668.2, 5332873.0, 14, SenseRange::Phys));
-        rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 4266298.0, 5332873.0, 15, SenseRange::Phys));
+        rngList.append(new cSenseRange("R0V" , "R0V" , false,  9.0, 3839668.2, 5332873.0, 8388607.0, 14, SenseRange::Phys));
+        rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 4266298.0, 5332873.0, 8388607.0, 15, SenseRange::Phys));
         m_ChannelList.at(i)->setRangeList(rngList);
     }
 
     for (i = 3; i < 6; i++)
     {
         rngList.clear();
-        rngList.append(new cSenseRange("200A" ,"200A" , true, 200.0,6257236.0, 5256077.0, 0 , SenseRange::Phys));
-        rngList.append(new cSenseRange("100A" ,"100A" , true, 100.0,4692928.0, 5866160.0, 1 , SenseRange::Phys));
-        rngList.append(new cSenseRange("50A"  ,"50A"  , true,  50.0,4692928.0, 5866160.0, 2 , SenseRange::Phys));
-        rngList.append(new cSenseRange("25A"  ,"25A"  , true, 25.0 ,4692928.0, 5866160.0, 3 , SenseRange::Phys));
-        rngList.append(new cSenseRange("10A"  ,"10A"  , true, 10.0 ,4692928.0, 5866160.0, 4 , SenseRange::Phys));
-        rngList.append(new cSenseRange("5A"    ,"5A"  , true,  5.0 ,4692928.0, 5866160.0, 5 , SenseRange::Phys));
+        rngList.append(new cSenseRange("200A" ,"200A" , true, 200.0,6257236.0, 5256077.0, 8388607.0, 0 , SenseRange::Phys));
+        rngList.append(new cSenseRange("100A" ,"100A" , true, 100.0,4692928.0, 5866160.0, 8388607.0, 1 , SenseRange::Phys));
+        rngList.append(new cSenseRange("50A"  ,"50A"  , true,  50.0,4692928.0, 5866160.0, 8388607.0, 2 , SenseRange::Phys));
+        rngList.append(new cSenseRange("25A"  ,"25A"  , true, 25.0 ,4692928.0, 5866160.0, 8388607.0, 3 , SenseRange::Phys));
+        rngList.append(new cSenseRange("10A"  ,"10A"  , true, 10.0 ,4692928.0, 5866160.0, 8388607.0, 4 , SenseRange::Phys));
+        rngList.append(new cSenseRange("5A"    ,"5A"  , true,  5.0 ,4692928.0, 5866160.0, 8388607.0, 5 , SenseRange::Phys));
 
-        rngList.append(new cSenseRange("2.5A" ,"2.5A" , true, 2.5  ,4692928.0, 5866160.0, 6 , SenseRange::Phys));
-        rngList.append(new cSenseRange("1.0A" ,"1.0A" , true, 1.0  ,4692928.0, 5866160.0, 7 , SenseRange::Phys));
-        rngList.append(new cSenseRange("500mA","500mA", true, 0.5  ,4692928.0, 5866160.0, 8 , SenseRange::Phys));
-        rngList.append(new cSenseRange("250mA","250mA", true, 0.25 ,4692928.0, 5866160.0, 9 , SenseRange::Phys));
-        rngList.append(new cSenseRange("100mA","100mA", true, 0.1  ,4692928.0, 5866160.0,10 , SenseRange::Phys));
-        rngList.append(new cSenseRange("50mA" ,"50mA" , true, 0.05 ,4692928.0, 5866160.0,11, SenseRange::Phys));
-        rngList.append(new cSenseRange("25mA" ,"25mA" , true, 0.025,4692928.0, 5866160.0,12, SenseRange::Phys));
-        rngList.append(new cSenseRange("10mA" ,"10mA" , true, 0.01 ,4692928.0, 5866160.0,13, SenseRange::Phys));
-        rngList.append(new cSenseRange("5mA"  ,"5mA"  , true, 0.005,4692928.0, 5866160.0,14, SenseRange::Phys));
+        rngList.append(new cSenseRange("2.5A" ,"2.5A" , true, 2.5  ,4692928.0, 5866160.0, 8388607.0, 6 , SenseRange::Phys));
+        rngList.append(new cSenseRange("1.0A" ,"1.0A" , true, 1.0  ,4692928.0, 5866160.0, 8388607.0, 7 , SenseRange::Phys));
+        rngList.append(new cSenseRange("500mA","500mA", true, 0.5  ,4692928.0, 5866160.0, 8388607.0, 8 , SenseRange::Phys));
+        rngList.append(new cSenseRange("250mA","250mA", true, 0.25 ,4692928.0, 5866160.0, 8388607.0, 9 , SenseRange::Phys));
+        rngList.append(new cSenseRange("100mA","100mA", true, 0.1  ,4692928.0, 5866160.0, 8388607.0,10 , SenseRange::Phys));
+        rngList.append(new cSenseRange("50mA" ,"50mA" , true, 0.05 ,4692928.0, 5866160.0, 8388607.0,11, SenseRange::Phys));
+        rngList.append(new cSenseRange("25mA" ,"25mA" , true, 0.025,4692928.0, 5866160.0, 8388607.0,12, SenseRange::Phys));
+        rngList.append(new cSenseRange("10mA" ,"10mA" , true, 0.01 ,4692928.0, 5866160.0, 8388607.0,13, SenseRange::Phys));
+        rngList.append(new cSenseRange("5mA"  ,"5mA"  , true, 0.005,4692928.0, 5866160.0, 8388607.0,14, SenseRange::Phys));
 
-        rngList.append(new cSenseRange("R0V" , "R0V" , false,  9.0, 3839668.2, 5332873.0,15, SenseRange::Phys));
-        rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 4266298.0, 5332873.0,16, SenseRange::Phys));
+        rngList.append(new cSenseRange("R0V" , "R0V" , false,  9.0, 3839668.2, 5332873.0, 8388607.0,15, SenseRange::Phys));
+        rngList.append(new cSenseRange("R10V", "R10V", false, 10.0, 4266298.0, 5332873.0, 8388607.0,16, SenseRange::Phys));
 
         m_ChannelList.at(i)->setRangeList(rngList);
     }
