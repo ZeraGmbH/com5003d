@@ -5,8 +5,8 @@
 #include "protonetcommand.h"
 
 
-cSenseRange::cSenseRange(QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec)
-    :m_sName(name), m_sAlias(alias), m_bAvail(avail), m_fRValue(rValue), m_fRejection(rejection), m_fOVRejection(ovrejection), m_nSelCode(rselcode), m_nRSpec(rspec)
+cSenseRange::cSenseRange(QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, double adcrejection, quint8 rselcode, quint8 rspec)
+    :m_sName(name), m_sAlias(alias), m_bAvail(avail), m_fRValue(rValue), m_fRejection(rejection), m_fOVRejection(ovrejection), m_fADCRejection(adcrejection), m_nSelCode(rselcode), m_nRSpec(rspec)
 {
     m_pJustdata = new cCOM5003JustData();
 }
@@ -41,6 +41,9 @@ void cSenseRange::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
     delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"OVREJECTION",SCPI::isQuery,scpiInterface, SenseRange::cmdOVRejection);
+    m_DelegateList.append(delegate);
+    connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ADCREJECTION",SCPI::isQuery,scpiInterface, SenseRange::cmdADCRejection);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
@@ -125,6 +128,9 @@ void cSenseRange::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
     case SenseRange::cmdOVRejection:
         protoCmd->m_sOutput = m_ReadRangeOVRejection(protoCmd->m_sInput);
         break;
+    case SenseRange::cmdADCRejection:
+        protoCmd->m_sOutput = m_ReadRangeADCRejection(protoCmd->m_sInput);
+        break;
     }
 
     if (protoCmd->m_bwithOutput)
@@ -187,7 +193,7 @@ QString cSenseRange::m_ReadRangeRejection(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fRejection);
+        return QString("%1").arg(m_fRejection, 0, 'g', 6);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }
@@ -198,7 +204,18 @@ QString cSenseRange::m_ReadRangeOVRejection(QString &sInput)
     cSCPICommand cmd = sInput;
 
     if (cmd.isQuery())
-        return QString("%1").arg(m_fOVRejection);
+        return QString("%1").arg(m_fOVRejection, 0, 'g', 6);
+    else
+        return SCPI::scpiAnswer[SCPI::nak];
+}
+
+
+QString cSenseRange::m_ReadRangeADCRejection(QString& sInput)
+{
+    cSCPICommand cmd = sInput;
+
+    if (cmd.isQuery())
+        return QString("%1").arg(m_fADCRejection, 0, 'g', 6);
     else
         return SCPI::scpiAnswer[SCPI::nak];
 }

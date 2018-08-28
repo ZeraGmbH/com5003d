@@ -22,7 +22,8 @@ enum Commands
     cmdAvail,
     cmdValue,
     cmdRejection,
-    cmdOVRejection
+    cmdOVRejection,
+    cmdADCRejection
 };
 }
 
@@ -33,7 +34,7 @@ class cSenseRange:public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSenseRange(QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, quint8 rselcode, quint8 rspec);
+    cSenseRange(QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, double adcrejection, quint8 rselcode, quint8 rspec);
     ~cSenseRange();
     virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
     quint8 getAdjustmentStatus();
@@ -59,6 +60,7 @@ private:
     double m_fRValue; // upper range value
     double m_fRejection; // 100% rejection value
     double m_fOVRejection; // overload rejection value
+    double m_fADCRejection; // the adc's maximum rejection
     quint8 m_nSelCode; // selection code
     quint8 m_nRSpec; // range spec (phys. or virt. range)
     cCOM5003JustData* m_pJustdata;
@@ -69,6 +71,7 @@ private:
     QString m_ReadRangeValue(QString& sInput);
     QString m_ReadRangeRejection(QString& sInput);
     QString m_ReadRangeOVRejection(QString& sInput);
+    QString m_ReadRangeADCRejection(QString& sInput);
 };
 
 
