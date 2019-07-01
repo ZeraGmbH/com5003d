@@ -8,8 +8,11 @@
 
 enum com5003JustCommands
 {
+    com5003Gain,
     com5003JustGain,
+    com5003Phase,
     com5003JustPhase,
+    com5003Offset,
     com5003JustOffset,
     com5003JustStatus,
     com5003JustCompute,

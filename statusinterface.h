@@ -15,7 +15,8 @@ namespace StatusSystem
 enum StatusCommands
 {
     cmdDevice,
-    cmdAdjustment
+    cmdAdjustment,
+    cmdAuthorization
 };
 }
 
@@ -37,6 +38,7 @@ protected slots:
 private:
     cAdjustment* m_pAdjHandler;
     quint8 getDeviceStatus();
+    quint8 getAuthorizationStatus();
 };
 
 #endif // STATUSINTERFACE_H
