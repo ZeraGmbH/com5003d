@@ -358,7 +358,15 @@ qint16 cATMEL::writeCommand(hw_cmd * hc)
 
     struct i2c_rdwr_ioctl_data comData = {  msgs: Msgs, nmsgs: 2 };
 
-    if DEBUG2 syslog(LOG_INFO,"i2c writecommand %d bytes to i2cslave at 0x%x",hc->cmdlen,m_nI2CAdr);
+    if DEBUG2
+    {
+        QString i2cHexParam;
+        quint16 iByte;
+        for(iByte=0; iByte<hc->plen; iByte++)
+           i2cHexParam += QString("0x%1 ").arg(hc->par[iByte], 2, 16, QLatin1Char('0'));
+        syslog(LOG_INFO,"cATMEL::writeCommand: cmd 0x%04x / dev 0x%02x / par %s",
+               (quint16)hc->cmdcode, hc->device, qPrintable(i2cHexParam));
+    }
 
     if (! I2CTransfer(m_sI2CDevNode,m_nI2CAdr,m_nDebugLevel ,&comData)) // if no error
     {
