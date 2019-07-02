@@ -285,7 +285,8 @@ void cCOM5003dServer::programAtmelFlash()
                    {
                        syslog(LOG_ERR,"Restart atmel after programming done\n");
                        // once the job is done, we remove the file
-                       atmelFile.remove();
+                       if(!atmelFile.remove())
+                           syslog(LOG_ERR,"Error deleting %s\n", atmelFlashfilePath);
 
                        emit atmelProgrammed();
                    }
