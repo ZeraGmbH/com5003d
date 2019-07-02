@@ -236,7 +236,7 @@ void cCOM5003dServer::programAtmelFlash()
             }
 
             r = read(fd,(char*) &pcbTestReg,4);
-            syslog(LOG_ERR,"reading fpga adr 0xffc =  %x\n", pcbTestReg);
+            syslog(LOG_INFO,"reading fpga adr 0xffc =  %x\n", pcbTestReg);
             if (r < 0 )
             {
                 syslog(LOG_ERR,"error reading fpga device: %s\n", devNode.toLatin1().data());
@@ -284,7 +284,7 @@ void cCOM5003dServer::programAtmelFlash()
                    // we must restart atmel now
                    if (pAtmel->startProgram() == cmddone)
                    {
-                       syslog(LOG_ERR,"Restart atmel after programming done\n");
+                       syslog(LOG_INFO,"Restart atmel after programming done\n");
                        // once the job is done, we remove the file
                        if(!atmelFile.remove())
                            syslog(LOG_ERR,"Error deleting %s\n", atmelFlashfilePath);
