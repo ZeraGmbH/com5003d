@@ -276,6 +276,7 @@ void cCOM5003dServer::programAtmelFlash()
             cIntelHexFileIO IntelHexData;
             if (IntelHexData.ReadHexFile(atmelFlashfilePath))
             {
+               syslog(LOG_INFO,"Writing %s to atmel...\n", atmelFlashfilePath);
                if (pAtmel->loadFlash(IntelHexData) == cmddone)
                {
                    syslog(LOG_INFO,"Programming atmel passed\n");
