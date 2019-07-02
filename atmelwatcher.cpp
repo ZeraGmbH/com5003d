@@ -58,7 +58,7 @@ void cAtmelWatcher::doAtmelTest()
             close(fd);
 
             if (DEBUG2)
-                syslog(LOG_ERR,"reading fpga adr 0xffc =  %ld\n", pcbTestReg);
+                syslog(LOG_INFO,"reading fpga adr 0xffc =  %ld\n", pcbTestReg);
 
             if (ret < 0 )
             {
