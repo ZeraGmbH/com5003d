@@ -25,7 +25,7 @@ enum DebugLevel {NoDebug, DebugLevel1, DebugLevel2, DebugLevel3 = 4, MaxDebugLev
 #define defaultI2CAtmelAdress 0x21
 #define defaultI2CFlashAdress 0x50
 #define defaultXSDFile "/etc/zera/com5003d/com5003d.xsd"
-#define atmelFlashfilePath "/opt/zera/bin/atmel.hex"
+#define atmelFlashfilePath "/opt/zera/bin/atmel-com5003.hex"
 #define atmelResetBit 16
 #define defaultTMaxAtmel 10000
 
