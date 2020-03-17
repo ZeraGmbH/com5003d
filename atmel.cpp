@@ -307,14 +307,14 @@ atmelRM cATMEL::readPLLChannel(quint8& chn)
     quint8 PAR[1];
     chn = 0; // default AC
 
-    struct hw_cmd CMD = { cmdcode: hwGetMode, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
+    struct hw_cmd CMD = { cmdcode: hwGetPLLChannel, device: 0, par: PAR, plen: 0,cmdlen: 0,cmddata: 0, RM:0 };
 
     if ( (writeCommand(&CMD) == 2) && (CMD.RM == 0))
     {
         char answ[2];
         if (readOutput(answ,2) == 2)
             chn = answ[0];
-                return cmddone;
+        return cmddone;
     }
 
     return cmdexecfault;
