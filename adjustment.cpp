@@ -106,8 +106,7 @@ bool cAdjustment::importJDataFlash()
 
     QByteArray ba(6, 0); // byte array for length and checksum
     cF24LC256* Flash = new cF24LC256(m_sDeviceNode, m_nDebugLevel,m_nI2CAdr);
-    if ( (6 - Flash->ReadData(ba.data(),6,0)) >0 )
-    {
+    if ( (6 - Flash->ReadData(ba.data(),6,0)) >0 ) {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
         delete Flash;
         return(false); // lesefehler
@@ -119,16 +118,18 @@ bool cAdjustment::importJDataFlash()
     quint16 chksumCMP = 0;
     bastream >> count >> m_nChecksum; // länge der flashdaten u. checksumme
     // syslog(LOG_ERR,"flash length is %d, chksum is %d\n",count, m_nChecksum);
-    if ( count > (uint)Flash->size() )
-    {
-        if DEBUG1 syslog(LOG_ERR,"error reading flashmemory, count > flash\n");
+    uint flashSize = static_cast<uint>(Flash->size());
+    if ( count > flashSize ) {
+        if(DEBUG1) {
+            syslog(LOG_ERR,"error reading flashmemory, count %i > flash %i\n",
+                   count, flashSize);
+        }
         delete Flash;
         return(false); // lesefehler
     }
 
     QByteArray ba2(count, 0); // byte array zur aufnahme der gesamten daten
-    if ( (count - Flash->ReadData(ba2.data(),count,0)) >0 )
-    {
+    if ( (count - Flash->ReadData(ba2.data(),count,0)) >0 ) {
         if DEBUG1 syslog(LOG_ERR,"error reading flashmemory\n");
         delete Flash;
         return(false); // lesefehler
@@ -148,9 +149,11 @@ bool cAdjustment::importJDataFlash()
 
     chksumCMP = qChecksum(ba2.data(),ba2.size());
     // syslog(LOG_ERR,"computed flash chksum is %d\n",chksumCMP);
-    if (chksumCMP != m_nChecksum)
-    {
-        if DEBUG1 syslog(LOG_ERR,"invalid checksum encountered reading flashmemory\n");
+    if (chksumCMP != m_nChecksum) {
+        if(DEBUG1) {
+            syslog(LOG_ERR,"invalid checksum encountered reading flashmemory: expected 0x%04X / found 0x%04X\n",
+                   chksumCMP, m_nChecksum);
+        }
         return(false); // daten fehlerhaft
     }
 
@@ -164,21 +167,25 @@ bool cAdjustment::importJDataFlash()
     ba2stream >> count >> chksumCMP;
 
     ba2stream >> s; //
-    if (QString(s) != "ServerVersion")
-    {
-        if DEBUG1 syslog(LOG_ERR,"flashmemory read, ServerVersion not found\n");
+    if (QString(s) != "ServerVersion") {
+        if(DEBUG1) {
+            syslog(LOG_ERR,"flashmemory read, ServerVersion not found\n");
+        }
         return false; // datensatz falsch
     }
 
     ba2stream >> s;
     SVersion = QString(s);
 
-    ba2stream >> s; // jetzt steht in s auch für die neue version der leiterplatten name
+    ba2stream >> s; // we take the device name
 
-    if (QString(s) != m_pSystemInfo->getDeviceName())
-    {
-        if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains wrong pcb name\n");
-        return false; // leiterkarten name falsch
+    QString sysDevName = m_pSystemInfo->getDeviceName();
+    if (QString(s) != sysDevName) {
+        if(DEBUG1) {
+            syslog(LOG_ERR,"flashmemory read, contains wrong pcb name: flash %s / µC %s\n",
+                   s, qPrintable(sysDevName));
+        }
+        return false; // wrong pcb name
     }
 
     ba2stream >> s;
@@ -189,8 +196,7 @@ bool cAdjustment::importJDataFlash()
     pAtmel->getEEPROMAccessEnable(enable);
 
     QString sDV = m_pSystemInfo->getDeviceVersion();
-    if (qs != sDV)
-    {
+    if (qs != sDV) {
         // test ob sich nur die hinteren nummern der lca bzw. ctrl version geändert haben
         // indem die hinteren stellen der nummern aus sDeviceVersion nach s übertragen werden
         // und anschliessend nochmal verglichen wird
@@ -212,34 +218,46 @@ bool cAdjustment::importJDataFlash()
 
         if (qs != sDV)
         {
-            if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber\n");
+            if(DEBUG1) {
+                syslog(LOG_ERR,"flashmemory read, contains wrong versionnumber: flash %s / µC %s\n",
+                       qPrintable(qs), qPrintable(sDV));
+            }
             m_nAdjStatus += Adjustment::wrongVERS;
-            if (!enable) return false; // versionsnummer falsch
+            if (!enable) {
+                return false; // wrong version number
+            }
         }
     }
 
     ba2stream >> s;
-    if (QString(s) != m_pSystemInfo->getSerialNumber())
+    QString sysSerNo = m_pSystemInfo->getSerialNumber();
+    if (QString(s) != sysSerNo)
     {
-        if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains wrong serialnumber\n");
+        if(DEBUG1) {
+            syslog(LOG_ERR,"flashmemory read, contains wrong serialnumber: flash %s / µC: %s\n",
+                   s, qPrintable(sysSerNo));
+        }
         m_nAdjStatus += Adjustment::wrongSNR;
-        if (!enable) return false; // seriennummer falsch
+        if (!enable) {
+            return false; // wrong serial number
+        }
     }
 
     ba2stream >> s;
     DateTime.fromString(QString(s),Qt::TextDate); // datum und uhrzeit übernehmen
 
-    while (!ba2stream.atEnd())
-    {
-        bool done;
+    while (!ba2stream.atEnd()) {
+        bool done = false;
         ba2stream >> s;
         QString  JDataSpecifier = s; // Type:Channel:Range
-        done = false;
-        for (int i = 0; i < m_AdjFlashList.count(); i++)
+        for (int i = 0; i < m_AdjFlashList.count(); i++) {
             done |= m_AdjFlashList.at(i)->importAdjData(JDataSpecifier, ba2stream); // we call all participants
+        }
         if (!done)
         {
-            if DEBUG1 syslog(LOG_ERR,"flashmemory read, contains strange data\n");
+            if(DEBUG1) {
+                syslog(LOG_ERR,"flashmemory read, contains strange data\n");
+            }
             return false;
         }
     }
