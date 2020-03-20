@@ -46,20 +46,20 @@ cATMEL* pAtmel; // we take a static object for atmel connection
 cCOM5003dServer::cCOM5003dServer(QObject *parent)
     :cPCBServer(parent)
 {
-
-    m_pDebugSettings = 0;
-    m_pETHSettings = 0;
-    m_pI2CSettings = 0;
-    m_pFPGAsettings = 0;
-    m_pSenseSettings = 0;
-    pAtmel = 0;
-    m_pAtmelWatcher = 0;
-    m_pStatusInterface = 0;
-    m_pSystemInterface = 0;
-    m_pSenseInterface = 0;
-    m_pSystemInfo = 0;
-    m_pAdjHandler = 0;
-    m_pRMConnection = 0;
+    // TODO: Move to cPCBServer::cPCBServer?
+    m_pDebugSettings = nullptr;
+    m_pETHSettings = nullptr;
+    m_pI2CSettings = nullptr;
+    m_pFPGAsettings = nullptr;
+    m_pSenseSettings = nullptr;
+    pAtmel = nullptr;
+    m_pAtmelWatcher = nullptr;
+    m_pStatusInterface = nullptr;
+    m_pSystemInterface = nullptr;
+    m_pSenseInterface = nullptr;
+    m_pSystemInfo = nullptr;
+    m_pAdjHandler = nullptr;
+    m_pRMConnection = nullptr;
 
     m_pInitializationMachine = new QStateMachine(this);
 
@@ -130,7 +130,6 @@ void cCOM5003dServer::doConfiguration()
 
     quint32 sigStart;
 
-
     args = QCoreApplication::instance()->arguments();
     if (args.count() != 2) // we want exactly 1 parameter
     {
@@ -143,15 +142,15 @@ void cCOM5003dServer::doConfiguration()
         m_nFPGAfd = open("/dev/zFPGA1reg",O_RDWR);
         lseek(m_nFPGAfd,0x0,0);
         sigStart = 0;
-        write(m_nFPGAfd,(char*) &sigStart, 4);
+        write(m_nFPGAfd, &sigStart, 4);
         sigStart = 1;
-        write(m_nFPGAfd,(char*) &sigStart, 4);
+        write(m_nFPGAfd, &sigStart, 4);
 
         if (myXMLConfigReader->loadSchema(defaultXSDFile))
         {
 
             sigStart = 0;
-            write(m_nFPGAfd,(char*) &sigStart, 4);
+            write(m_nFPGAfd, &sigStart, 4);
 
             // we want to initialize all settings first
             m_pDebugSettings = new cDebugSettings(myXMLConfigReader);
@@ -177,11 +176,11 @@ void cCOM5003dServer::doConfiguration()
             qDebug() << s;
 
             sigStart = 1;
-            write(m_nFPGAfd,(char*) &sigStart, 4);
+            write(m_nFPGAfd, &sigStart, 4);
             if (myXMLConfigReader->loadXML(s)) // the first parameter should be the filename
             {
                 sigStart = 0;
-                write(m_nFPGAfd,(char*) &sigStart, 4);
+                write(m_nFPGAfd, &sigStart, 4);
                 // xmlfile ok -> nothing to do .. the configreader will emit all configuration
                 // signals and after this the finishedparsingXML signal
             }
@@ -225,9 +224,8 @@ void cCOM5003dServer::programAtmelFlash()
         }
         else
         {
-            ulong pcbTestReg;
-            int r;
-            if ( (r = lseek(fd,0xffc,0)) < 0 )
+            quint32 pcbTestReg;
+            if ( lseek(fd,0xffc,0) < 0 )
             {
                 syslog(LOG_ERR,"error positioning fpga device: %s\n", devNode.toLatin1().data());
                 syslog(LOG_ERR,"Programming atmel failed\n");
@@ -235,8 +233,8 @@ void cCOM5003dServer::programAtmelFlash()
                 emit abortInit();
             }
 
-            r = read(fd,(char*) &pcbTestReg,4);
-            syslog(LOG_INFO,"reading fpga adr 0xffc =  %x\n", pcbTestReg);
+            ssize_t r = read(fd, &pcbTestReg,4);
+            syslog(LOG_INFO,"reading fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
             if (r < 0 )
             {
                 syslog(LOG_ERR,"error reading fpga device: %s\n", devNode.toLatin1().data());
@@ -244,9 +242,9 @@ void cCOM5003dServer::programAtmelFlash()
                 emit abortInit();
             }
 
-            pcbTestReg |=  1 << (atmelResetBit-1); // set bit for atmel reset
-            syslog(LOG_INFO,"writing fpga adr 0xffc =  %x\n", pcbTestReg);
-            r = write(fd, (char*) &pcbTestReg,4);
+            pcbTestReg |= 1 << (atmelResetBit-1); // set bit for atmel reset
+            syslog(LOG_INFO,"writing fpga adr 0xFFC = 0x%08X\n", pcbTestReg);
+            r = write(fd, &pcbTestReg,4);
 
             if (r < 0 )
             {
@@ -257,9 +255,9 @@ void cCOM5003dServer::programAtmelFlash()
 
             usleep(100); // give atmel some time for reset
 
-            pcbTestReg &=  ~(1 << (atmelResetBit-1)); // reset bit for atmel reset
-            syslog(LOG_INFO,"writing fpga adr 0xffc =  %x\n", pcbTestReg);
-            r = write(fd, (char*) &pcbTestReg,4);
+            pcbTestReg &= static_cast<quint32>(~(1 << (atmelResetBit-1))); // reset bit for atmel reset
+            syslog(LOG_INFO,"writing fpga adr 0xffc = 0x%08X\n", pcbTestReg);
+            r = write(fd, &pcbTestReg,4);
             close(fd);
 
             if (r < 0 )

@@ -35,4 +35,6 @@ public:
     atmelRM readPLLChannel(quint8& chn);
 };
 
+extern cATMEL* pAtmel;
+
 #endif // ATMEL_H
