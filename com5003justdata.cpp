@@ -182,7 +182,7 @@ QString cCOM5003JustData::m_ComputeJustData(QString& sInput)
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {
@@ -209,7 +209,7 @@ QString cCOM5003JustData::m_InitJustData(QString &sInput)
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {

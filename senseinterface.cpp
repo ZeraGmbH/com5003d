@@ -672,7 +672,7 @@ QString cSenseInterface::m_InitSenseAdjData(QString &sInput)
     // cmd.isCommand(0) is not correct but we leave it for compatibility
     {
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {
@@ -701,7 +701,7 @@ QString cSenseInterface::m_ComputeSenseAdjData(QString &sInput)
     {
 
         bool enable;
-        if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+        if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
         {
             if (enable)
             {

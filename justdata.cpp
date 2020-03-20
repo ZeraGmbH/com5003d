@@ -123,7 +123,7 @@ QString cJustData::m_ReadWriteStatus(QString &sInput)
     {
         if (cmd.isCommand(1))
         {
-            if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+            if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
             {
                 if (enable)
                 {
@@ -163,7 +163,7 @@ QString cJustData::m_ReadWriteJustCoeeficient(QString &sInput, quint8 index)
         if (cmd.isCommand(1))
         {
             bool enable;
-            if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+            if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
             {
                 if (enable)
                 {
@@ -203,7 +203,7 @@ QString cJustData::m_ReadWriteJustNode(QString &sInput, quint8 index)
         {
             bool enable;
             bool ok0, ok1;
-            if (pAtmel->getEEPROMAccessEnable(enable) == cmddone)
+            if (pAtmel->getEEPROMAccessEnable(enable) == ZeraMcontrollerBase::cmddone)
             {
                 if (enable)
                 {
