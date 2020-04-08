@@ -51,7 +51,7 @@ cATMEL::cATMEL(QString devnode, quint8 adr, quint8 debuglevel) :
 
 ZeraMcontrollerBase::atmelRM cATMEL::readSerialNumber(QString& answer)
 {
-    return mGetText(hwGetSerialNr, answer);
+    return readVariableLenText(hwGetSerialNr, answer);
 }
 
 
@@ -78,13 +78,13 @@ ZeraMcontrollerBase::atmelRM cATMEL::writeSerialNumber(QString &sNumber)
 
 ZeraMcontrollerBase::atmelRM cATMEL::readDeviceName(QString& answer)
 {
-    return mGetText(hwGetDevName, answer);
+    return readVariableLenText(hwGetDevName, answer);
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readPCBVersion(QString& answer)
 {
-    return mGetText(hwGetPCBVersion, answer);
+    return readVariableLenText(hwGetPCBVersion, answer);
 }
 
 
@@ -111,13 +111,13 @@ ZeraMcontrollerBase::atmelRM cATMEL::writePCBVersion(QString &sVersion)
 
 ZeraMcontrollerBase::atmelRM cATMEL::readCTRLVersion(QString& answer)
 {
-    return mGetText(hwGetCtrlVersion, answer);
+    return readVariableLenText(hwGetCtrlVersion, answer);
 }
 
 
 ZeraMcontrollerBase::atmelRM cATMEL::readLCAVersion(QString& answer)
 {
-    return mGetText(hwGetLCAVersion, answer);
+    return readVariableLenText(hwGetLCAVersion, answer);
 }
 
 
