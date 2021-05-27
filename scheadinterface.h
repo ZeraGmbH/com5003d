@@ -34,9 +34,9 @@ class cSCHeadInterface : public cResource
     Q_OBJECT
 
 public:
-    cSCHeadInterface(cCOM5003dServer* server, cSCHeadSettings *scheadSettings);
+    cSCHeadInterface(cCOM5003dServer* server);
     ~cSCHeadInterface();
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
 

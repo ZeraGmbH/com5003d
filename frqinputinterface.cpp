@@ -11,22 +11,23 @@
 #include "protonetcommand.h"
 
 
-cFRQInputInterface::cFRQInputInterface(cCOM5003dServer *server, cFRQInputSettings* fpzinSettings)
+cFRQInputInterface::cFRQInputInterface(cCOM5003dServer *server)
+    :m_pMyServer(server)
 {
-    m_pMyServer = server;
-    QList<FRQInputSystem::cChannelSettings*> mySettings;
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
-    mySettings = fpzinSettings->getChannelSettings();
+    QList<FRQInputSystem::cChannelSettings*> channelSettings;
+    channelSettings = m_pMyServer->m_pFRQInputSettings->getChannelSettings();
 
     // we have 4 frequency input channels
     cFPZInChannel* pChannel;
-    pChannel = new cFPZInChannel("Frequency input 0..1MHz", 0, mySettings.at(0) );
+    pChannel = new cFPZInChannel(m_pMyServer, "Frequency input 0..1MHz", 0, channelSettings.at(0) );
     m_ChannelList.append(pChannel);
-    pChannel = new cFPZInChannel("Frequency output 0..1MHz", 1, mySettings.at(1) );
+    pChannel = new cFPZInChannel(m_pMyServer, "Frequency output 0..1MHz", 1, channelSettings.at(1) );
     m_ChannelList.append(pChannel);
-    pChannel = new cFPZInChannel("Frequency output 0..1MHz", 2,  mySettings.at(2) );
+    pChannel = new cFPZInChannel(m_pMyServer, "Frequency output 0..1MHz", 2,  channelSettings.at(2) );
     m_ChannelList.append(pChannel);
-    pChannel = new cFPZInChannel("Frequency output 0..1MHz", 3, mySettings.at(3) );
+    pChannel = new cFPZInChannel(m_pMyServer, "Frequency output 0..1MHz", 3, channelSettings.at(3) );
     m_ChannelList.append(pChannel);
 
     m_sVersion = FRQInputSystem::Version;
@@ -44,17 +45,17 @@ cFRQInputInterface::~cFRQInputInterface()
 }
 
 
-void cFRQInputInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface)
+void cFRQInputInterface::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1FRQINPUT").arg(leadingNodes),"VERSION",SCPI::isQuery,scpiInterface, FRQInputSystem::cmdVersion);
+    delegate = new cSCPIDelegate(QString("%1FRQINPUT").arg(leadingNodes),"VERSION",SCPI::isQuery,m_pSCPIInterface, FRQInputSystem::cmdVersion);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1FRQINPUT:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, FRQInputSystem::cmdChannelCat);
+    delegate = new cSCPIDelegate(QString("%1FRQINPUT:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, m_pSCPIInterface, FRQInputSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
@@ -62,7 +63,7 @@ void cFRQInputInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInt
     {
         connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
         connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
-        m_ChannelList.at(i)->initSCPIConnection(QString("%1FRQINPUT").arg(leadingNodes),scpiInterface);
+        m_ChannelList.at(i)->initSCPIConnection(QString("%1FRQINPUT").arg(leadingNodes));
     }
 }
 

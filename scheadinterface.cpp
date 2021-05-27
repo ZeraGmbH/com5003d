@@ -11,16 +11,17 @@
 #include "protonetcommand.h"
 
 
-cSCHeadInterface::cSCHeadInterface(cCOM5003dServer *server, cSCHeadSettings* scheadSettings)
+cSCHeadInterface::cSCHeadInterface(cCOM5003dServer *server)
 {
     m_pMyServer = server;
-    QList<SCHeadSystem::cChannelSettings*> mySettings;
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
-    mySettings = scheadSettings->getChannelSettings();
+    QList<SCHeadSystem::cChannelSettings*> channelSettings;
+    channelSettings = m_pMyServer->m_pSCHeadSettings->getChannelSettings();
 
     // we have 1 scanning head input channel
     cSCHeadChannel* pChannel;
-    pChannel = new cSCHeadChannel("Scanning head input", 0, mySettings.at(0) );
+    pChannel = new cSCHeadChannel(m_pSCPIInterface, "Scanning head input", 0, channelSettings.at(0) );
     m_ChannelList.append(pChannel);
 
     m_sVersion = SCHeadSystem::Version;
@@ -38,17 +39,17 @@ cSCHeadInterface::~cSCHeadInterface()
 }
 
 
-void cSCHeadInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface)
+void cSCHeadInterface::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1SCHEAD").arg(leadingNodes),"VERSION",SCPI::isQuery,scpiInterface, SCHeadSystem::cmdVersion);
+    delegate = new cSCPIDelegate(QString("%1SCHEAD").arg(leadingNodes),"VERSION",SCPI::isQuery,m_pSCPIInterface, SCHeadSystem::cmdVersion);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SCHEAD:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, scpiInterface, SCHeadSystem::cmdChannelCat);
+    delegate = new cSCPIDelegate(QString("%1SCHEAD:CHANNEL").arg(leadingNodes),"CATALOG", SCPI::isQuery, m_pSCPIInterface, SCHeadSystem::cmdChannelCat);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
@@ -56,7 +57,7 @@ void cSCHeadInterface::initSCPIConnection(QString leadingNodes, cSCPI* scpiInter
     {
         connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
         connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
-        m_ChannelList.at(i)->initSCPIConnection(QString("%1SCHEAD").arg(leadingNodes),scpiInterface);
+        m_ChannelList.at(i)->initSCPIConnection(QString("%1SCHEAD").arg(leadingNodes));
     }
 }
 

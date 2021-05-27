@@ -34,9 +34,9 @@ class cSenseRange:public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSenseRange(QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, double adcrejection, quint8 rselcode, quint8 rspec);
+    cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, double adcrejection, quint8 rselcode, quint8 rspec);
     ~cSenseRange();
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
     quint8 getAdjustmentStatus();
 
     QString& getName();

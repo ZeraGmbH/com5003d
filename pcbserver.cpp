@@ -31,17 +31,17 @@ cPCBServer::cPCBServer(QObject *parent)
 }
 
 
-void cPCBServer::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cPCBServer::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1SERVER").arg(leadingNodes),"REGISTER",SCPI::isCmdwP,scpiInterface, PCBServer::cmdRegister);
+    delegate = new cSCPIDelegate(QString("%1SERVER").arg(leadingNodes),"REGISTER",SCPI::isCmdwP,m_pSCPIInterface, PCBServer::cmdRegister);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SERVER").arg(leadingNodes),"UNREGISTER",SCPI::isQuery | SCPI::isCmd ,scpiInterface, PCBServer::cmdUnregister);
+    delegate = new cSCPIDelegate(QString("%1SERVER").arg(leadingNodes),"UNREGISTER",SCPI::isQuery | SCPI::isCmd ,m_pSCPIInterface, PCBServer::cmdUnregister);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
@@ -71,13 +71,13 @@ QString &cPCBServer::getVersion()
 
 cSCPI *cPCBServer::getSCPIInterface()
 {
-    return m_pSCPInterface;
+    return m_pSCPIInterface;
 }
 
 
 void cPCBServer::setupServer()
 {
-    m_pSCPInterface = new cSCPI(m_sServerName); // our scpi interface
+    m_pSCPIInterface = new cSCPI(m_sServerName); // our scpi interface
     myServer = new XiQNetServer(this); // our working (talking) horse
     myServer->setDefaultWrapper(&m_ProtobufWrapper);
     connect(myServer,SIGNAL(sigClientConnected(XiQNetPeer*)),this,SLOT(establishNewConnection(XiQNetPeer*)));
@@ -223,7 +223,7 @@ void cPCBServer::SCPIInput()
     cProtonetCommand* protoCmd = new cProtonetCommand(0, false, true, clientId, 0, m_sInput);
     // peer = 0 means we are working on the scpi socket ....
 
-    if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+    if ( (scpiObject =  m_pSCPIInterface->getSCPIObject(m_sInput, dummy)) != 0)
     {
         cSCPIDelegate* scpiDelegate = static_cast<cSCPIDelegate*>(scpiObject);
         if (!scpiDelegate->executeSCPI(protoCmd))
@@ -257,7 +257,7 @@ void cPCBServer::m_RegisterNotifier(cProtonetCommand *protoCmd)
         cSCPIObject* scpiObject;
         QString query = cmd.getParam(0);
 
-        if ( (scpiObject =  m_pSCPInterface->getSCPIObject(query, dummy)) != 0)
+        if ( (scpiObject =  m_pSCPIInterface->getSCPIObject(query, dummy)) != 0)
         {
             cNotificationData notData;
 
@@ -357,7 +357,7 @@ void cPCBServer::executeCommand(std::shared_ptr<google::protobuf::Message> cmd)
                 ProtobufMessage::NetMessage::ScpiCommand scpiCmd = protobufCommand->scpi();
                 m_sInput = QString::fromStdString(scpiCmd.command()) +  " " + QString::fromStdString(scpiCmd.parameter());
                 cProtonetCommand* protoCmd = new cProtonetCommand(peer, true, true, clientId, messageNr, m_sInput);
-                if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+                if ( (scpiObject =  m_pSCPIInterface->getSCPIObject(m_sInput, dummy)) != 0)
                 {
                     cSCPIDelegate* scpiDelegate = static_cast<cSCPIDelegate*>(scpiObject);
                     if (!scpiDelegate->executeSCPI(protoCmd))
@@ -382,7 +382,7 @@ void cPCBServer::executeCommand(std::shared_ptr<google::protobuf::Message> cmd)
             m_sInput =  QString::fromStdString(protobufCommand->scpi().command());
             QByteArray clientId = QByteArray(); // we set an empty byte array
             cProtonetCommand* protoCmd = new cProtonetCommand(peer, false, true, clientId, 0, m_sInput);
-            if ( (scpiObject =  m_pSCPInterface->getSCPIObject(m_sInput, dummy)) != 0)
+            if ( (scpiObject =  m_pSCPIInterface->getSCPIObject(m_sInput, dummy)) != 0)
             {
                 cSCPIDelegate* scpiDelegate = static_cast<cSCPIDelegate*>(scpiObject);
 
@@ -472,7 +472,7 @@ void cPCBServer::initSCPIConnections()
 {
     for (int i = 0; i < scpiConnectionList.count(); i++)
     {
-        scpiConnectionList.at(i)->initSCPIConnection("",m_pSCPInterface); // we have our interface
+        scpiConnectionList.at(i)->initSCPIConnection(""); // we have our interface
         connect(scpiConnectionList.at(i), SIGNAL(notifier(cNotificationString*)), this, SLOT(establishNewNotifier(cNotificationString*)));
         connect(scpiConnectionList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SLOT(sendAnswer(cProtonetCommand*)));
     }

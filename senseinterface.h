@@ -54,9 +54,9 @@ class cSenseInterface : public cResource, public cAdjFlash, public cAdjXML
     Q_OBJECT
 
 public:
-    cSenseInterface(cCOM5003dServer* server,cSenseSettings* senseSettings);
+    cSenseInterface(cCOM5003dServer* server);
     ~cSenseInterface();
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
     cSenseChannel* getChannel(QString& name);
     quint8 getAdjustmentStatus(); // we return 0 if not adj. else 1
     virtual void exportAdjData(QDataStream& stream);

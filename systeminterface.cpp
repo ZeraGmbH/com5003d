@@ -11,65 +11,66 @@
 
 extern cATMEL* pAtmel;
 
-cSystemInterface::cSystemInterface(cCOM5003dServer *server, cAdjustment *adjHandler, cSystemInfo *sInfo)
-    :m_pMyServer(server), m_pAdjHandler(adjHandler), m_pSystemInfo(sInfo)
+cSystemInterface::cSystemInterface(cCOM5003dServer *server)
+    :m_pMyServer(server)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 
-void cSystemInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cSystemInterface::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"SERVER", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionServer);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"SERVER", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionServer);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"DEVICE", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionDevice);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes),"DEVICE", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionDevice);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery | SCPI::isCmdwP, scpiInterface, SystemSystem::cmdVersionPCB);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "PCB", SCPI::isQuery | SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdVersionPCB);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "CTRL", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionCTRL);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "CTRL", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionCTRL);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "FPGA", SCPI::isQuery, scpiInterface, SystemSystem::cmdVersionFPGA);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:VERSION").arg(leadingNodes), "FPGA", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdVersionFPGA);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, SystemSystem::cmdSerialNumber);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM").arg(leadingNodes), "SERIAL", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, SystemSystem::cmdSerialNumber);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "BOOTLOADER", SCPI::isCmd, scpiInterface, SystemSystem::cmdUpdateControlerBootloader);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "BOOTLOADER", SCPI::isCmd, m_pSCPIInterface, SystemSystem::cmdUpdateControlerBootloader);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "PROGRAM", SCPI::isCmd, scpiInterface, SystemSystem::cmdUpdateControlerProgram);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "PROGRAM", SCPI::isCmd, m_pSCPIInterface, SystemSystem::cmdUpdateControlerProgram);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "FLASH", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdUpdateControlerFlash);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "FLASH", SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdUpdateControlerFlash);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "EEPROM", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdUpdateControlerEEprom);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:UPDATE:CONTROLER").arg(leadingNodes), "EEPROM", SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdUpdateControlerEEprom);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "WRITE", SCPI::isCmd, scpiInterface, SystemSystem::cmdAdjFlashWrite);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "WRITE", SCPI::isCmd, m_pSCPIInterface, SystemSystem::cmdAdjFlashWrite);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "READ", SCPI::isCmd, scpiInterface, SystemSystem::cmdAdjFlashRead);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "READ", SCPI::isCmd, m_pSCPIInterface, SystemSystem::cmdAdjFlashRead);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:XML").arg(leadingNodes), "WRITE", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdAdjXMLWrite);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:XML").arg(leadingNodes), "WRITE", SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdAdjXMLWrite);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:XML").arg(leadingNodes), "READ", SCPI::isCmdwP, scpiInterface, SystemSystem::cmdAdjXMLRead);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:XML").arg(leadingNodes), "READ", SCPI::isCmdwP, m_pSCPIInterface, SystemSystem::cmdAdjXMLRead);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "CHKSUM", SCPI::isQuery, scpiInterface, SystemSystem::cmdAdjFlashChksum);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:ADJUSTMENT:FLASH").arg(leadingNodes), "CHKSUM", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdAdjFlashChksum);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1SYSTEM:INTERFACE").arg(leadingNodes), "READ", SCPI::isQuery, scpiInterface, SystemSystem::cmdInterfaceRead);
+    delegate = new cSCPIDelegate(QString("%1SYSTEM:INTERFACE").arg(leadingNodes), "READ", SCPI::isQuery, m_pSCPIInterface, SystemSystem::cmdInterfaceRead);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
@@ -156,8 +157,8 @@ QString cSystemInterface::m_ReadDeviceVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pSystemInfo->dataRead())
-            return m_pSystemInfo->getDeviceVersion();
+        if (m_pMyServer->m_pSystemInfo->dataRead())
+            return m_pMyServer->m_pSystemInfo->getDeviceVersion();
         else
             return SCPI::scpiAnswer[SCPI::errexec];
     }
@@ -173,8 +174,8 @@ QString cSystemInterface::m_ReadDeviceName(QString& sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pSystemInfo->dataRead())
-            return m_pSystemInfo->getDeviceName();
+        if (m_pMyServer->m_pSystemInfo->dataRead())
+            return m_pMyServer->m_pSystemInfo->getDeviceName();
         else
             return SCPI::scpiAnswer[SCPI::errexec];
     }
@@ -191,8 +192,8 @@ QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pSystemInfo->dataRead())
-            s = m_pSystemInfo->getPCBVersion();
+        if (m_pMyServer->m_pSystemInfo->dataRead())
+            s = m_pMyServer->m_pSystemInfo->getPCBVersion();
         else
             s = SCPI::scpiAnswer[SCPI::errexec];
     }
@@ -202,7 +203,7 @@ QString cSystemInterface::m_ReadWritePCBVersion(QString &sInput)
         {
             QString Version = cmd.getParam(0);
             ret = pAtmel->writePCBVersion(Version);
-            m_pSystemInfo->getSystemInfo(); // read back info
+            m_pMyServer->m_pSystemInfo->getSystemInfo(); // read back info
         }
 
         m_genAnswer(ret, s);
@@ -219,8 +220,8 @@ QString cSystemInterface::m_ReadCTRLVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pSystemInfo->dataRead())
-            return m_pSystemInfo->getCTRLVersion();
+        if (m_pMyServer->m_pSystemInfo->dataRead())
+            return m_pMyServer->m_pSystemInfo->getCTRLVersion();
         else
             return SCPI::scpiAnswer[SCPI::errexec];
     }
@@ -236,8 +237,8 @@ QString cSystemInterface::m_ReadFPGAVersion(QString &sInput)
 
     if (cmd.isQuery())
     {
-        if (m_pSystemInfo->dataRead())
-            return m_pSystemInfo->getLCAVersion();
+        if (m_pMyServer->m_pSystemInfo->dataRead())
+            return m_pMyServer->m_pSystemInfo->getLCAVersion();
         else
             return SCPI::scpiAnswer[SCPI::errexec];
     }
@@ -256,8 +257,8 @@ QString cSystemInterface::m_ReadWriteSerialNumber(QString &sInput)
     if (cmd.isQuery())
     {
         {
-            if (m_pSystemInfo->dataRead())
-                s = m_pSystemInfo->getSerialNumber();
+            if (m_pMyServer->m_pSystemInfo->dataRead())
+                s = m_pMyServer->m_pSystemInfo->getSerialNumber();
             else
                 s = SCPI::scpiAnswer[SCPI::errexec];
         }
@@ -268,7 +269,7 @@ QString cSystemInterface::m_ReadWriteSerialNumber(QString &sInput)
         {
             QString Serial = cmd.getParam(0);
             ret = pAtmel->writeSerialNumber(Serial);
-            m_pSystemInfo->getSystemInfo(); // read back info
+            m_pMyServer->m_pSystemInfo->getSystemInfo(); // read back info
         }
 
         m_genAnswer(ret, s);
@@ -365,7 +366,7 @@ QString cSystemInterface::m_AdjFlashWrite(QString &sInput)
         {
             if (enable)
             {
-                if (m_pAdjHandler->exportJDataFlash())
+                if (m_pMyServer->m_pAdjHandler->exportJDataFlash())
                     ret = ZeraMcontrollerBase::cmddone;
                 else
                     ret = ZeraMcontrollerBase::cmdexecfault;
@@ -388,7 +389,7 @@ QString cSystemInterface::m_AdjFlashRead(QString &sInput)
 
     if (cmd.isCommand(1) && (cmd.getParam(0) == ""))
     {
-        if (m_pAdjHandler->importJDataFlash())
+        if (m_pMyServer->m_pAdjHandler->importJDataFlash())
             ret = ZeraMcontrollerBase::cmddone;
         else
             ret = ZeraMcontrollerBase::cmdexecfault;
@@ -407,7 +408,7 @@ QString cSystemInterface::m_AdjXMLWrite(QString &sInput)
     if (cmd.isCommand(1))
     {
         QString filename = cmd.getParam(0);
-        if (m_pAdjHandler->exportJDataXML(filename))
+        if (m_pMyServer->m_pAdjHandler->exportJDataXML(filename))
             ret = ZeraMcontrollerBase::cmddone;
         else
             ret = ZeraMcontrollerBase::cmdexecfault;
@@ -430,7 +431,7 @@ QString cSystemInterface::m_AdjXMLRead(QString &sInput)
         if (enable)
         {
             QString filename = cmd.getParam(0);
-            if (m_pAdjHandler->importJDataXML(filename))
+            if (m_pMyServer->m_pAdjHandler->importJDataXML(filename))
                 ret = ZeraMcontrollerBase::cmddone;
             else
                 ret = ZeraMcontrollerBase::cmdexecfault;
@@ -450,7 +451,7 @@ QString cSystemInterface::m_AdjFlashChksum(QString &sInput)
 
     if (cmd.isQuery())
     {
-        QString s = QString("0x%1").arg(m_pAdjHandler->getChecksum(),0,16); // hex output
+        QString s = QString("0x%1").arg(m_pMyServer->m_pAdjHandler->getChecksum(),0,16); // hex output
         return s;
     }
     else

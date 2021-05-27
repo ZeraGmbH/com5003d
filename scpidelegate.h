@@ -17,6 +17,7 @@ public:
     cSCPIDelegate(QString cmdParent, QString cmd, quint8 type, cSCPI *scpiInterface, quint16 cmdCode);
     virtual bool executeSCPI(const QString& sInput, QString& sOutput);
     virtual bool executeSCPI(cProtonetCommand* protoCmd);
+    QString getCommand();
 
 signals:
     void execute(int cmdCode, QString& sInput, QString& sOutput);
@@ -24,6 +25,7 @@ signals:
 
 private:
     quint16 m_nCmdCode;
+    QString m_sCommand;
 };
 
 

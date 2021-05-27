@@ -27,8 +27,8 @@ class cSCHeadChannel : public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSCHeadChannel(QString description, quint8 nr, SCHeadSystem::cChannelSettings* cSettings);
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    cSCHeadChannel(cSCPI *scpiiinterface, QString description, quint8 nr, SCHeadSystem::cChannelSettings* cSettings);
+    virtual void initSCPIConnection(QString leadingNodes);
 
     QString& getName();
     QString& getAlias();

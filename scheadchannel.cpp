@@ -9,26 +9,28 @@
 #include "protonetcommand.h"
 
 
-cSCHeadChannel::cSCHeadChannel(QString description, quint8 nr, SCHeadSystem::cChannelSettings *cSettings)
+cSCHeadChannel::cSCHeadChannel(cSCPI *scpiiinterface, QString description, quint8 nr, SCHeadSystem::cChannelSettings *cSettings)
     :m_sDescription(description)
 {
+    m_pSCPIInterface = scpiiinterface;
+
     m_sName = QString("sh%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_bAvail = cSettings->avail;
 }
 
 
-void cSCHeadChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cSCHeadChannel::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdAlias);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, m_pSCPIInterface, SCHEADChannel::cmdAlias);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, SCHEADChannel::cmdStatus);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, m_pSCPIInterface, SCHEADChannel::cmdStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }

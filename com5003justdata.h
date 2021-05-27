@@ -34,9 +34,9 @@ class cCOM5003JustData: public cSCPIConnection  // alle korrekturdaten für eine
     Q_OBJECT
 
 public:
-    cCOM5003JustData();
+    cCOM5003JustData(cSCPI* scpiinterface);
     ~cCOM5003JustData();
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
 
     cJustData* m_pGainCorrection;
     cJustData* m_pPhaseCorrection; 

@@ -9,6 +9,7 @@
 cSCPIDelegate::cSCPIDelegate(QString cmdParent, QString cmd, quint8 type, cSCPI *scpiInterface, quint16 cmdCode)
     :cSCPIObject(cmd, type), m_nCmdCode(cmdCode)
 {
+    m_sCommand = QString("%1:%2").arg(cmdParent).arg(cmd);
     scpiInterface->genSCPICmd(cmdParent.split(":"), this);
 }
 
@@ -26,4 +27,8 @@ bool cSCPIDelegate::executeSCPI(cProtonetCommand *protoCmd)
     return true;
 }
 
+QString cSCPIDelegate::getCommand()
+{
+    return m_sCommand;
+}
 

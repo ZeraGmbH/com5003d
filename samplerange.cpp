@@ -4,20 +4,21 @@
 #include "samplerange.h"
 #include "protonetcommand.h"
 
-cSampleRange::cSampleRange(QString name, quint16 srate, quint8 selcode)
+cSampleRange::cSampleRange(cSCPI *scpiinterface, QString name, quint16 srate, quint8 selcode)
     :m_sName(name), m_nSRate(srate), m_nSelCode(selcode)
 {
+    m_pSCPIInterface = scpiinterface;
 }
 
 
-void cSampleRange::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cSampleRange::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"SRATE", SCPI::isQuery, scpiInterface, SampleRangeSamples);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"SRATE", SCPI::isQuery, m_pSCPIInterface, SampleRangeSamples);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
