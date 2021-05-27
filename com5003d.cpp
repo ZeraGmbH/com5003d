@@ -24,6 +24,7 @@
 #include "sourcesettings.h"
 #include "frqinputsettings.h"
 #include "scheadsettings.h"
+#include "hkeysettings.h"
 #include "statusinterface.h"
 #include "samplinginterface.h"
 #include "systeminterface.h"
@@ -32,6 +33,7 @@
 #include "sourceinterface.h"
 #include "frqinputinterface.h"
 #include "scheadinterface.h"
+#include "hkeyinterface.h"
 #include "atmel.h"
 #include "atmelwatcher.h"
 #include "adjustment.h"
@@ -118,6 +120,7 @@ cCOM5003dServer::~cCOM5003dServer()
     if (m_pSourceInterface) delete m_pSourceInterface;
     if (m_pFRQInputInterface) delete m_pFRQInputInterface;
     if (m_pSCHeadInterface) delete m_pSCHeadInterface;
+    if (m_pHKeyInterface) delete m_pHKeyInterface;
     if (m_pSystemInfo) delete m_pSystemInfo;
     if (m_pAdjHandler) delete m_pAdjHandler;
     if (m_pRMConnection) delete m_pRMConnection;
@@ -171,6 +174,8 @@ void cCOM5003dServer::doConfiguration()
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pFRQInputSettings,SLOT(configXMLInfo(const QString&)));
             m_pSCHeadSettings = new cSCHeadSettings(myXMLConfigReader);
             connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pSCHeadSettings,SLOT(configXMLInfo(const QString&)));
+            m_pHKeySettings = new cHKeySettings(myXMLConfigReader);
+            connect(myXMLConfigReader,SIGNAL(valueChanged(const QString&)),m_pHKeySettings,SLOT(configXMLInfo(const QString&)));
 
             QString s = args.at(1);
             qDebug() << s;
@@ -343,12 +348,14 @@ void cCOM5003dServer::doSetupServer()
     scpiConnectionList.append(m_pSourceInterface = new cSourceInterface(this));
     scpiConnectionList.append(m_pFRQInputInterface = new cFRQInputInterface(this));
     scpiConnectionList.append(m_pSCHeadInterface = new cSCHeadInterface(this));
+    scpiConnectionList.append(m_pHKeyInterface = new cHKeyInterface(this));
 
     resourceList.append(m_pSenseInterface); // all our resources
     resourceList.append(m_pSamplingInterface);
     resourceList.append(m_pSourceInterface);
     resourceList.append(m_pFRQInputInterface);
     resourceList.append(m_pSCHeadInterface);
+    resourceList.append(m_pHKeyInterface);
 
     m_pAdjHandler->addAdjFlashObject(m_pSenseInterface); // we add the senseinterface to both
     m_pAdjHandler->addAdjXMLObject(m_pSenseInterface); // adjustment list (flash and xml)

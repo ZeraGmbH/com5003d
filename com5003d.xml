@@ -146,6 +146,13 @@
             <avail>true</avail>
         </sh0>
     </schead>
+
+    <hkey>
+        <hk0>
+            <alias>HK1</alias>
+            <avail>true</avail>
+        </hk0>
+    </hkey>
 </resource>
 
 </com5003dconfig> 
