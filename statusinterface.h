@@ -29,14 +29,14 @@ class cStatusInterface: public cSCPIConnection
     Q_OBJECT
 
 public:
-    cStatusInterface(cAdjustment* adjHandler);
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    cStatusInterface(cCOM5003dServer *server);
+    virtual void initSCPIConnection(QString leadingNodes);
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
-    cAdjustment* m_pAdjHandler;
+    cCOM5003dServer* m_pMyServer;
     quint8 getDeviceStatus();
     quint8 getAuthorizationStatus();
 };

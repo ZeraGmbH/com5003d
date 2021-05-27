@@ -15,10 +15,11 @@
 
 extern cATMEL* pAtmel;
 
-cJustData::cJustData(int order, double init)
+cJustData::cJustData(cSCPI *scpiinterface, int order, double init)
     :m_nOrder(order)
 {
-    m_pCoefficient = new double[order+1];  
+    m_pSCPIInterface = scpiinterface;
+    m_pCoefficient = new double[order+1];
     m_pJustNode = new cJustNode[order+1]; 
     initJustData(init);
 }
@@ -31,39 +32,39 @@ cJustData::~cJustData()
 }
 
 
-void cJustData::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cJustData::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
-    delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes), "STATUS", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustStatus);
+    delegate = new cSCPIDelegate(QString("%1").arg(leadingNodes), "STATUS", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient0);
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustCoefficient0);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient1);
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustCoefficient1);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient2);
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustCoefficient2);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustCoefficient3);
+    delegate = new cSCPIDelegate(QString("%1COEFFICIENT").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustCoefficient3);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode0);
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "0", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustNode0);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode1);
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "1", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustNode1);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode2);
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "2", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustNode2);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, scpiInterface, JustNode3);
+    delegate = new cSCPIDelegate(QString("%1NODE").arg(leadingNodes), "3", SCPI::isCmdwP || SCPI::isQuery, m_pSCPIInterface, JustNode3);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 

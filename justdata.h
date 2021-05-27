@@ -40,9 +40,9 @@ class cJustNode;
 class cJustData: public cSCPIConnection // base class for adjustment coefficients and nodes
 {
 public:
-    cJustData(int order,double init);
+    cJustData(cSCPI *scpiinterface, int order,double init);
     ~cJustData();
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
 
     void Serialize(QDataStream& qds); // can be used to write adjustment data to flash memory
     void Deserialize(QDataStream& qds); // coefficients and nodes will be serialitzed both

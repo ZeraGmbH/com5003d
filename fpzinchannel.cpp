@@ -5,30 +5,32 @@
 #include <scpicommand.h>
 #include "scpiconnection.h"
 #include "frqinputsettings.h"
+#include "com5003d.h"
 #include "fpzinchannel.h"
 #include "protonetcommand.h"
 
 
-cFPZInChannel::cFPZInChannel(QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings)
-    :m_sDescription(description)
+cFPZInChannel::cFPZInChannel(cCOM5003dServer *server, QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings)
+    :m_pMyServer(server), m_sDescription(description)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     m_sName = QString("fi%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_bAvail = cSettings->avail;
 }
 
 
-void cFPZInChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cFPZInChannel::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, FPZINChannel::cmdAlias);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, m_pSCPIInterface, FPZINChannel::cmdAlias);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, FPZINChannel::cmdStatus);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, m_pSCPIInterface, FPZINChannel::cmdStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }

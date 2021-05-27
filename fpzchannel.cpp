@@ -9,9 +9,11 @@
 #include "protonetcommand.h"
 
 
-cFPZChannel::cFPZChannel(QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings)
+cFPZChannel::cFPZChannel(cSCPI *scpiinterface, QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings)
     :m_sDescription(description)
 {
+    m_pSCPIInterface = scpiinterface;
+
     m_sName = QString("fo%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_nDspServer = cSettings->m_nDspServerPort;
@@ -24,35 +26,35 @@ cFPZChannel::cFPZChannel(QString description, quint8 nr, SourceSystem::cChannelS
 }
 
 
-void cFPZChannel::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cFPZChannel::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, scpiInterface, FPZChannel::cmdAlias);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"ALIAS", SCPI::isQuery, m_pSCPIInterface, FPZChannel::cmdAlias);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, scpiInterface, FPZChannel::cmdType);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"TYPE", SCPI::isQuery, m_pSCPIInterface, FPZChannel::cmdType);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"DSPSERVER", SCPI::isQuery, scpiInterface, FPZChannel::cmdDspServer);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"DSPSERVER", SCPI::isQuery, m_pSCPIInterface, FPZChannel::cmdDspServer);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"DSPCHANNEL", SCPI::isQuery, scpiInterface, FPZChannel::cmdDspChannel);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"DSPCHANNEL", SCPI::isQuery, m_pSCPIInterface, FPZChannel::cmdDspChannel);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, scpiInterface, FPZChannel::cmdStatus);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"STATUS", SCPI::isQuery, m_pSCPIInterface, FPZChannel::cmdStatus);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"FFACTOR", SCPI::isQuery, scpiInterface, FPZChannel::cmdFormFactor);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"FFACTOR", SCPI::isQuery, m_pSCPIInterface, FPZChannel::cmdFormFactor);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"CONSTANT", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, FPZChannel::cmdConstant);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"CONSTANT", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, FPZChannel::cmdConstant);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"POWTYPE", SCPI::isQuery | SCPI::isCmdwP , scpiInterface, FPZChannel::cmdPowtype);
+    delegate = new cSCPIDelegate(QString("%1%2").arg(leadingNodes).arg(m_sName),"POWTYPE", SCPI::isQuery | SCPI::isCmdwP , m_pSCPIInterface, FPZChannel::cmdPowtype);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }

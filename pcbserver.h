@@ -91,7 +91,8 @@ public:
       @param the servers name
       */
     explicit cPCBServer(QObject* parent=0);
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
+    cSCPI* getSCPIInterface();
     quint32 getMsgNr();
 
     /**
@@ -99,7 +100,6 @@ public:
       */
     QString& getName();
     QString& getVersion();
-    cSCPI* getSCPIInterface();
 
     cDebugSettings* m_pDebugSettings;
     cFPGASettings* m_pFPGAsettings;
@@ -143,10 +143,6 @@ private:
     QString m_sServerName;
     QString m_sServerVersion;
 
-    /**
-      @b A pointer to the server's scpi interface.
-      */
-    cSCPI *m_pSCPInterface;
     QString m_sInput, m_sOutput;
     QTcpSocket* resourceManagerSocket;
 

@@ -34,9 +34,9 @@ class cFRQInputInterface : public cResource
     Q_OBJECT
 
 public:
-    cFRQInputInterface(cCOM5003dServer* server, cFRQInputSettings *fpzinSettings);
+    cFRQInputInterface(cCOM5003dServer *server);
     ~cFRQInputInterface();
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
 

@@ -40,16 +40,14 @@ class cSystemInterface: public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSystemInterface(cCOM5003dServer* server, cAdjustment* adjHandler, cSystemInfo* sInfo);
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    cSystemInterface(cCOM5003dServer* server);
+    virtual void initSCPIConnection(QString leadingNodes);
 
 protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
     cCOM5003dServer* m_pMyServer;
-    cAdjustment* m_pAdjHandler;
-    cSystemInfo* m_pSystemInfo;
     QString m_ReadServerVersion(QString& sInput);
     QString m_ReadDeviceVersion(QString& sInput);
     QString m_ReadDeviceName(QString& sInput);

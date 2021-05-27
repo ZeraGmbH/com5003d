@@ -30,9 +30,9 @@ class cSourceInterface : public cResource
     Q_OBJECT
 
 public:
-    cSourceInterface(cCOM5003dServer* server, cSourceSettings* sourceSettings);
+    cSourceInterface(cCOM5003dServer* server);
     ~cSourceInterface();
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface);
+    virtual void initSCPIConnection(QString leadingNodes);
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
 
@@ -40,6 +40,7 @@ protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
+    cCOM5003dServer* m_pMyServer;
     QList<cFPZChannel*> m_ChannelList;
     QString m_sVersion;
 

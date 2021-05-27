@@ -21,14 +21,13 @@ public:
     virtual ~cResource();
     virtual void registerResource(cRMConnection *rmConnection, quint16 port) = 0;
     virtual void unregisterResource(cRMConnection *rmConnection) = 0;
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI* scpiInterface) = 0;
+    virtual void initSCPIConnection(QString leadingNodes) = 0;
 
 signals:
     void registerRdy(); // we emit signal when all register or unregister action is done
 
 protected:
     QList<quint32> msgNrList;
-    cCOM5003dServer* m_pMyServer;
     void register1Resource(cRMConnection *rmConnection, quint32 msgnr, QString registerParameter);
     void unregister1Resource(cRMConnection *rmConnection, quint32 msgnr, QString unregisterParameter);
 

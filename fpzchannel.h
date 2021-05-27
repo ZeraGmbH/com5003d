@@ -35,8 +35,8 @@ class cFPZChannel : public cSCPIConnection
     Q_OBJECT
 
 public:
-    cFPZChannel(QString description, quint8 nr, SourceSystem::cChannelSettings* cSettings);
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    cFPZChannel(cSCPI *scpiinterface, QString description, quint8 nr, SourceSystem::cChannelSettings* cSettings);
+    virtual void initSCPIConnection(QString leadingNodes);
 
     QString& getName();
     QString& getAlias();

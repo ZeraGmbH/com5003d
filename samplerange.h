@@ -20,8 +20,8 @@ class cSampleRange: public cSCPIConnection
     Q_OBJECT
 
 public:
-    cSampleRange(QString name, quint16 srate, quint8 selcode);
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    cSampleRange(cSCPI* scpiinterface, QString name, quint16 srate, quint8 selcode);
+    virtual void initSCPIConnection(QString leadingNodes);
     QString &getName();
     quint8 getSelCode();
     quint16 getSRate();

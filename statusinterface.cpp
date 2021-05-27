@@ -6,26 +6,27 @@
 extern cATMEL* pAtmel;
 
 
-cStatusInterface::cStatusInterface(cAdjustment *adjHandler)
-    :m_pAdjHandler(adjHandler)
+cStatusInterface::cStatusInterface(cCOM5003dServer* server)
+    :m_pMyServer(server)
 {
+    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 
-void cStatusInterface::initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface)
+void cStatusInterface::initSCPIConnection(QString leadingNodes)
 {
     cSCPIDelegate* delegate;
 
     if (leadingNodes != "")
         leadingNodes += ":";
 
-    delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"DEVICE",SCPI::isQuery,scpiInterface, StatusSystem::cmdDevice);
+    delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"DEVICE",SCPI::isQuery,m_pSCPIInterface, StatusSystem::cmdDevice);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"ADJUSTMENT", SCPI::isQuery, scpiInterface, StatusSystem::cmdAdjustment);
+    delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"ADJUSTMENT", SCPI::isQuery, m_pSCPIInterface, StatusSystem::cmdAdjustment);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
-    delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"AUTHORIZATION", SCPI::isQuery, scpiInterface, StatusSystem::cmdAuthorization);
+    delegate = new cSCPIDelegate(QString("%1STATUS").arg(leadingNodes),"AUTHORIZATION", SCPI::isQuery, m_pSCPIInterface, StatusSystem::cmdAuthorization);
     m_DelegateList.append(delegate);
     connect(delegate, SIGNAL(execute(int, cProtonetCommand*)), this, SLOT(executeCommand(int, cProtonetCommand*)));
 }
@@ -43,7 +44,7 @@ void cStatusInterface::executeCommand(int cmdCode, cProtonetCommand *protoCmd)
             protoCmd->m_sOutput = QString("%1").arg(getDeviceStatus());
             break; // StatusDevice
         case StatusSystem::cmdAdjustment:
-            protoCmd->m_sOutput = QString("%1").arg(m_pAdjHandler->getAdjustmentStatus());
+            protoCmd->m_sOutput = QString("%1").arg(m_pMyServer->m_pAdjHandler->getAdjustmentStatus());
             break; // StatusAdjustment
         case StatusSystem::cmdAuthorization:
             protoCmd->m_sOutput = QString("%1").arg(getAuthorizationStatus());

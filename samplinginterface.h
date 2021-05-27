@@ -42,8 +42,8 @@ class cSamplingInterface: public cResource
     Q_OBJECT
 
 public:
-    cSamplingInterface(cCOM5003dServer* server, cSamplingSettings* samplingSettings);
-    virtual void initSCPIConnection(QString leadingNodes, cSCPI *scpiInterface);
+    cSamplingInterface(cCOM5003dServer* server);
+    virtual void initSCPIConnection(QString leadingNodes);
     virtual void registerResource(cRMConnection *rmConnection, quint16 port);
     virtual void unregisterResource(cRMConnection *rmConnection);
 
@@ -51,6 +51,7 @@ protected slots:
     virtual void executeCommand(int cmdCode, cProtonetCommand* protoCmd);
 
 private:
+    cCOM5003dServer *m_pMyServer;
     quint16 m_nType;
     QString m_sVersion;
     QString m_sAlias;
