@@ -82,6 +82,12 @@ ${PROJECT_SOURCE_DIR}/frqinputsettings.cpp
 ${PROJECT_SOURCE_DIR}/scheadchannel.cpp
 ${PROJECT_SOURCE_DIR}/scheadsettings.cpp
 ${PROJECT_SOURCE_DIR}/scheadinterface.cpp
+${PROJECT_SOURCE_DIR}/hkeysettings.cpp
+${PROJECT_SOURCE_DIR}/hkeyinterface.cpp
+${PROJECT_SOURCE_DIR}/hkeychannel.cpp
+${PROJECT_SOURCE_DIR}/hkeychannel.h
+${PROJECT_SOURCE_DIR}/hkeyinterface.h
+${PROJECT_SOURCE_DIR}/hkeysettings.h
     )
 
 

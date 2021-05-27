@@ -190,6 +190,13 @@
     </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="hkeychannelltype">
+    <xs:sequence>
+        <xs:element name="alias" type="xs:string"/>
+        <xs:element name="avail" type="xs:boolean"/>
+    </xs:sequence>
+</xs:complexType>
+
 
 <xs:element name="com5003dconfig">
     <xs:complexType>
@@ -252,6 +259,14 @@
                             <xs:complexType>
                                 <xs:sequence>
                                     <xs:element name="sh0" type="scheadchannelltype"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+
+                        <xs:element name="hkey">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="hk0" type="hkeychannelltype"/>
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>

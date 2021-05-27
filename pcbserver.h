@@ -59,6 +59,7 @@ class cI2CSettings;
 class cETHSettings;
 class cFRQInputSettings;
 class cSCHeadSettings;
+class cHKeySettings;
 class cSenseSettings;
 class cSamplingSettings;
 class cSourceSettings;
@@ -110,6 +111,7 @@ public:
     cSourceSettings* m_pSourceSettings;
     cFRQInputSettings* m_pFRQInputSettings;
     cSCHeadSettings* m_pSCHeadSettings;
+    cHKeySettings* m_pHKeySettings;
     cStatusInterface* m_pStatusInterface;
 
 signals:
