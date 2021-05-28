@@ -74,7 +74,6 @@ ${PROJECT_SOURCE_DIR}/adjustment.cpp
 ${PROJECT_SOURCE_DIR}/systeminfo.cpp
 ${PROJECT_SOURCE_DIR}/resource.cpp
 ${PROJECT_SOURCE_DIR}/rmconnection.cpp
-${PROJECT_SOURCE_DIR}/com5003dprotobufwrapper.cpp
 ${PROJECT_SOURCE_DIR}/notificationstring.cpp
 ${PROJECT_SOURCE_DIR}/protonetcommand.cpp
 ${PROJECT_SOURCE_DIR}/fpzinchannel.cpp
@@ -122,7 +121,6 @@ ${PROJECT_SOURCE_DIR}/adjxml.h
 ${PROJECT_SOURCE_DIR}/adjustment.h
 ${PROJECT_SOURCE_DIR}/systeminfo.h
 ${PROJECT_SOURCE_DIR}/rmconnection.h
-${PROJECT_SOURCE_DIR}/com5003dprotobufwrapper.h
 ${PROJECT_SOURCE_DIR}/notificationstring.h
 ${PROJECT_SOURCE_DIR}/notificationdata.h
 ${PROJECT_SOURCE_DIR}/protonetcommand.h
