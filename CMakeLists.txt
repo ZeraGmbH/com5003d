@@ -142,10 +142,20 @@ file(GLOB RESOURCES
     ${PROJECT_SOURCE_DIR}/*.qrc
     )
 
-set(OTHER_FILES 
-    ${PROJECT_SOURCE_DIR}/com5003d.xsd
+set(CONFIG_FILES
     ${PROJECT_SOURCE_DIR}/com5003d.xml
 )
+set(CONFIG_VALIDATOR
+    ${PROJECT_SOURCE_DIR}/com5003d.xsd
+)
+
+# check for valid config files / display in qt-creator
+add_custom_target(com5003-configs ALL
+    DEPENDS ${CONFIG_VALIDATOR} ${CONFIG_FILES}
+    SOURCES ${CONFIG_VALIDATOR} ${CONFIG_FILES}
+    COMMAND xmllint --noout --schema ${CONFIG_VALIDATOR} ${CONFIG_FILES}
+    )
+
 
 #create executable
 add_executable(com5003d
