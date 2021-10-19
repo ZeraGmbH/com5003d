@@ -212,7 +212,7 @@ install(TARGETS com5003d
     )
 
 install(
-    FILES ${OTHER_FILES}
+    FILES ${CONFIG_FILES} ${CONFIG_VALIDATOR}
     DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/zera/com5003d
     )
 
