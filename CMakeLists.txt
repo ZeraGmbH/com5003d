@@ -24,7 +24,7 @@ include(FeatureSummary)
 include(GNUInstallDirs)
 
 #Find dependecies
-find_package(Qt5 COMPONENTS Quick Core Xml Network CONFIG REQUIRED)
+find_package(Qt5 COMPONENTS Core Gui Xml Network CONFIG REQUIRED)
 find_package(SCPI REQUIRED)
 find_package(xiqnet REQUIRED)
 find_package(zerai2c REQUIRED)
@@ -175,9 +175,9 @@ endif()
 target_link_libraries(com5003d
     PRIVATE
     Qt5::Core
+    Qt5::Gui
     Qt5::Xml
     Qt5::Network
-    Qt5::Quick
     Zera::SCPI
     VeinMeta::xiqnet
     ZeraClasses::zerai2c
