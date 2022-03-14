@@ -26,7 +26,7 @@ int main( int argc, char *argv[] )
     pid_t pid;
     if ( (pid=fork() ) < 0 ) // we generate a child process
     {
-        syslog(LOG_EMERG,"fork() failed\n") ; // error message to syslogd if not
+        qCritical("fork() failed\n") ; // error message to syslogd if not
         return (1);
     }
 
@@ -49,17 +49,17 @@ int main( int argc, char *argv[] )
 #endif // COM5003DDEBUG
 
     if (r == parameterError)
-        syslog(LOG_EMERG,"Abort, wrong parameter count\n") ;
+        qCritical("Abort, wrong parameter count\n") ;
     if (r == xsdfileError)
-        syslog(LOG_EMERG,"Abort, xsd file error\n") ;
+        qCritical("Abort, xsd file error\n") ;
     if (r == xmlfileError)
-        syslog(LOG_EMERG,"Abort, xml file error\n") ;
+        qCritical("Abort, xml file error\n") ;
     if (r == atmelError)
-        syslog(LOG_EMERG,"Abort, atmel not running\n") ;
+        qCritical("Abort, atmel not running\n") ;
     if (r == rmConnectionError)
-        syslog(LOG_EMERG,"Abort, resourcemanager connection error\n") ;
+        qCritical("Abort, resourcemanager connection error\n") ;
     if (r == atmelProgError)
-        syslog(LOG_EMERG,"Abort, atmel flash program error\n") ;
+        qCritical("Abort, atmel flash program error\n") ;
 
     syslog(LOG_INFO,"com5003d server child process terminated ret = %d\n", r);
     delete com5003d;
