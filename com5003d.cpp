@@ -336,7 +336,7 @@ void cCOM5003dServer::doSetupServer()
 {
     pAtmel->setPLLChannel(1); // default channel m0 for pll control
     m_pSystemInfo = new cSystemInfo();
-    m_pAdjHandler = new cAdjustment(m_pSystemInfo, m_pI2CSettings->getDeviceNode(), m_pDebugSettings->getDebugLevel(), m_pI2CSettings->getI2CAdress(i2cSettings::flash) );
+    m_pAdjHandler = new cAdjustment(m_pSystemInfo, m_pI2CSettings->getDeviceNode(), m_pI2CSettings->getI2CAdress(i2cSettings::flash) );
 
     cPCBServer::setupServer(); // here our scpi interface gets instanciated, we need this for further steps
 

@@ -21,7 +21,7 @@ class cSystemInfo;
 class cAdjustment: public cAdjXML
 {
 public:
-    cAdjustment(cSystemInfo* sInfo, QString& devNode, quint8 dlevel, quint8 adr); //
+    cAdjustment(cSystemInfo* sInfo, QString& devNode, quint8 adr); //
     virtual ~cAdjustment();
     bool exportJDataFlash();
     bool importJDataFlash();
@@ -39,7 +39,6 @@ private:
     QList<cAdjXML*> m_AdjXMLList;
     cSystemInfo* m_pSystemInfo;
     QString m_sDeviceNode;
-    quint8 m_nDebugLevel;
     quint8 m_nI2CAdr;
     quint8 m_nAdjStatus;
     quint16 m_nChecksum;
