@@ -1,8 +1,8 @@
 #ifndef ADJFLASH_H
 #define ADJFLASH_H
 
-class QDataStream;
-class QString;
+#include <QDataStream>
+#include <QString>
 
 class cAdjFlash
 {
