@@ -3,12 +3,12 @@
 
 #include <scpi.h>
 #include <scpicommand.h>
-#include "atmel.h"
 #include "senserange.h"
 #include "scpiconnection.h"
 #include "sensesettings.h"
 #include "sensechannel.h"
 #include "protonetcommand.h"
+#include "micro-controller-io/atmel.h"
 
 extern cATMEL* pAtmel;
 

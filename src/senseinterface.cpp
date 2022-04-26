@@ -15,9 +15,9 @@
 #include "senseinterface.h"
 #include "sensechannel.h"
 #include "senserange.h"
-#include "atmel.h"
 #include "adjflash.h"
 #include "protonetcommand.h"
+#include "micro-controller-io/atmel.h"
 
 
 extern cATMEL* pAtmel;

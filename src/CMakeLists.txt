@@ -1,4 +1,6 @@
 set(SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003d.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.cpp
@@ -12,11 +14,9 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/statusinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminterface.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/debugsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/senseinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sensesettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmelwatcher.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/samplinginterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/samplingsettings.cpp
@@ -46,6 +46,8 @@ set(SOURCES
     )
 
 set(HEADER
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmel.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/micro-controller-io/atmelwatcher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/zeraglobal.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003d.h
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.h
@@ -61,12 +63,10 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/statusinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.h
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminterface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/xmlsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/debugsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/senseinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/sensesettings.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/atmelwatcher.h
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.h
     ${CMAKE_CURRENT_SOURCE_DIR}/samplinginterface.h

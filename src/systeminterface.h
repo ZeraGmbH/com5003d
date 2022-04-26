@@ -1,11 +1,11 @@
 #ifndef SYSTEMINTERFACE_H
 #define SYSTEMINTERFACE_H
-
-#include <QObject>
-#include <QList>
-#include <scpi.h>
-
+#include "com5003d.h"
 #include "scpiconnection.h"
+#include "systeminfo.h"
+#include "adjustment.h"
+#include <scpi.h>
+#include <QList>
 
 namespace SystemSystem
 {
@@ -30,10 +30,6 @@ enum SystemCommands
     cmdInterfaceRead
 };
 }
-
-class cSystemInfo;
-class cCOM5003dServer;
-class cAdjustment;
 
 class cSystemInterface: public cSCPIConnection
 {
