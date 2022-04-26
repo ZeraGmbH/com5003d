@@ -1,4 +1,11 @@
-#include <QList>
+#include "com5003dglobal.h"
+#include "adjflash.h"
+#include "justdata.h"
+#include "adjxml.h"
+#include "systeminfo.h"
+#include "adjustment.h"
+#include "micro-controller-io/atmel.h"
+#include <F24LC256.h>
 #include <QByteArray>
 #include <QBuffer>
 #include <QDataStream>
@@ -9,15 +16,6 @@
 #include <QFile>
 #include <QDateTime>
 #include <syslog.h>
-#include <F24LC256.h>
-
-#include "atmel.h"
-#include "com5003dglobal.h"
-#include "adjflash.h"
-#include "justdata.h"
-#include "adjxml.h"
-#include "systeminfo.h"
-#include "adjustment.h"
 
 
 cAdjustment::cAdjustment(cSystemInfo* sInfo, QString &devNode, quint8 adr)

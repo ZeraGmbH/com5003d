@@ -34,10 +34,10 @@
 #include "frqinputinterface.h"
 #include "scheadinterface.h"
 #include "hkeyinterface.h"
-#include "atmel.h"
-#include "atmelwatcher.h"
 #include "adjustment.h"
 #include "rmconnection.h"
+#include "micro-controller-io/atmel.h"
+#include "micro-controller-io/atmelwatcher.h"
 
 #ifdef SYSTEMD_NOTIFICATION
 #include <systemd/sd-daemon.h>

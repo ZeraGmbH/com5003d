@@ -7,8 +7,8 @@
 #include "samplerange.h"
 #include "samplingsettings.h"
 #include "samplinginterface.h"
-#include "atmel.h"
 #include "com5003d.h"
+#include "micro-controller-io/atmel.h"
 
 extern cATMEL* pAtmel;
 

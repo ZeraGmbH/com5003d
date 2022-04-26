@@ -2,6 +2,10 @@
 #define ADJUSTMENT_H
 
 #include "adjxml.h"
+#include "adjflash.h"
+#include "systeminfo.h"
+#include <QString>
+#include <QList>
 
 namespace Adjustment
 {
@@ -13,10 +17,6 @@ enum jDataStatus
     wrongSNR = 4
 };
 }
-
-class QString;
-class cAdjFlash;
-class cSystemInfo;
 
 class cAdjustment: public cAdjXML
 {

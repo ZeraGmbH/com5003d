@@ -1,5 +1,5 @@
-#include "atmel.h"
 #include "systeminfo.h"
+#include "micro-controller-io/atmel.h"
 
 extern cATMEL* pAtmel;
 

@@ -6,11 +6,11 @@
 #include <gaussnode.h>
 
 #include "protonetcommand.h"
-#include "atmel.h"
 #include "scpiconnection.h"
 #include "scpidelegate.h"
 #include "justdata.h"
 #include "justnode.h"
+#include "micro-controller-io/atmel.h"
 
 
 extern cATMEL* pAtmel;
