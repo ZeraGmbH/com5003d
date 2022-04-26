@@ -4,20 +4,20 @@
 #include <QDomDocument>
 #include <QDomText>
 #include <QDebug>
-#include "xmlsettings.h"
 #include "scpiconnection.h"
 #include "resource.h"
 
+#include "senseinterface.h"
 #include "com5003d.h"
 #include "justdata.h"
-#include "sensesettings.h"
-#include "ethsettings.h"
-#include "senseinterface.h"
 #include "sensechannel.h"
 #include "senserange.h"
 #include "adjflash.h"
 #include "protonetcommand.h"
 #include "micro-controller-io/atmel.h"
+#include "settings/ethsettings.h"
+#include "settings/sensesettings.h"
+#include "settings/xmlsettings.h"
 
 
 extern cATMEL* pAtmel;

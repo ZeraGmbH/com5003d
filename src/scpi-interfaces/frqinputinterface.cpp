@@ -1,14 +1,14 @@
 #include <QList>
 #include <scpi.h>
 
-#include "xmlsettings.h"
 #include "scpiconnection.h"
 #include "resource.h"
 #include "com5003d.h"
-#include "frqinputsettings.h"
 #include "frqinputinterface.h"
 #include "fpzinchannel.h"
 #include "protonetcommand.h"
+#include "settings/frqinputsettings.h"
+#include "settings/xmlsettings.h"
 
 
 cFRQInputInterface::cFRQInputInterface(cCOM5003dServer *server)

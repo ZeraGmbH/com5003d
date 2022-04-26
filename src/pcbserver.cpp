@@ -18,8 +18,8 @@
 #include "resource.h"
 #include "scpiconnection.h"
 #include "pcbserver.h"
-#include "ethsettings.h"
 #include "com5003dglobal.h"
+#include "settings/ethsettings.h"
 
 cPCBServer::cPCBServer(QObject *parent)
     : cSCPIConnection(parent)

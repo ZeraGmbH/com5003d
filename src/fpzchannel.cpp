@@ -4,9 +4,9 @@
 #include <scpi.h>
 #include <scpicommand.h>
 #include "scpiconnection.h"
-#include "sourcesettings.h"
 #include "fpzchannel.h"
 #include "protonetcommand.h"
+#include "settings/sourcesettings.h"
 
 
 cFPZChannel::cFPZChannel(cSCPI *scpiinterface, QString description, quint8 nr, SourceSystem::cChannelSettings *cSettings)

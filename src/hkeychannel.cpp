@@ -4,9 +4,9 @@
 #include <scpi.h>
 #include <scpicommand.h>
 #include "scpiconnection.h"
-#include "hkeysettings.h"
 #include "hkeychannel.h"
 #include "protonetcommand.h"
+#include "settings/hkeysettings.h"
 
 
 cHKeyChannel::cHKeyChannel(cSCPI *scpiiinterface, QString description, quint8 nr, HKeySystem::cChannelSettings *cSettings)

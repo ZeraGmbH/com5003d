@@ -9,24 +9,29 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/sourceinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/statusinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/systeminterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/ctrlsettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/debugsettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/ethsettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/fpgasettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/frqinputsettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/hkeysettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/i2csettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/samplingsettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/scheadsettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/sensesettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/sourcesettings.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/xmlsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003d.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/i2csettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ethsettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/fpgasettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justnode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpidelegate.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/debugsettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/sensesettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/samplingsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/senserange.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sensechannel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/sourcesettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/adjustment.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.cpp
@@ -35,10 +40,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/notificationstring.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/protonetcommand.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/frqinputsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/scheadsettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/hkeysettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/hkeychannel.cpp
     )
 
@@ -53,30 +55,33 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/sourceinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/statusinterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpi-interfaces/systeminterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/ctrlsettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/debugsettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/ethsettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/fpgasettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/frqinputsettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/hkeysettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/i2csettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/samplingsettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/scheadsettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/sensesettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/sourcesettings.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings/xmlsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/zeraglobal.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003d.h
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003justdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/hkeychannel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/hkeysettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003scpi.h
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/i2csettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003dglobal.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/ethsettings.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/fpgasettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/justnode.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpidelegate.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/xmlsettings.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/debugsettings.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/sensesettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/samplingsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/senserange.h
     ${CMAKE_CURRENT_SOURCE_DIR}/sensechannel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/sourcesettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzchannel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/adjflash.h
     ${CMAKE_CURRENT_SOURCE_DIR}/adjxml.h
@@ -87,9 +92,7 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/notificationdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/protonetcommand.h
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/frqinputsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/scheadsettings.h
     )
 
 set(CONFIG_FILES

@@ -5,10 +5,10 @@
 #include <scpicommand.h>
 #include "senserange.h"
 #include "scpiconnection.h"
-#include "sensesettings.h"
 #include "sensechannel.h"
 #include "protonetcommand.h"
 #include "micro-controller-io/atmel.h"
+#include "settings/sensesettings.h"
 
 extern cATMEL* pAtmel;
 

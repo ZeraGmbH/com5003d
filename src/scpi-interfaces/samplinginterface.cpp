@@ -5,10 +5,10 @@
 #include "protonetcommand.h"
 #include "scpiconnection.h"
 #include "samplerange.h"
-#include "samplingsettings.h"
 #include "samplinginterface.h"
 #include "com5003d.h"
 #include "micro-controller-io/atmel.h"
+#include "settings/samplingsettings.h"
 
 extern cATMEL* pAtmel;
 

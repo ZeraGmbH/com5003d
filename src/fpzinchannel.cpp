@@ -4,10 +4,10 @@
 #include <scpi.h>
 #include <scpicommand.h>
 #include "scpiconnection.h"
-#include "frqinputsettings.h"
 #include "com5003d.h"
 #include "fpzinchannel.h"
 #include "protonetcommand.h"
+#include "settings/frqinputsettings.h"
 
 
 cFPZInChannel::cFPZInChannel(cCOM5003dServer *server, QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings)

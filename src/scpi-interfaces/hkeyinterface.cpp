@@ -1,14 +1,14 @@
 #include <QList>
 #include <scpi.h>
 
-#include "xmlsettings.h"
+#include "hkeyinterface.h"
 #include "scpiconnection.h"
 #include "resource.h"
 #include "com5003d.h"
-#include "hkeysettings.h"
-#include "hkeyinterface.h"
 #include "hkeychannel.h"
 #include "protonetcommand.h"
+#include "settings/hkeysettings.h"
+#include "settings/xmlsettings.h"
 
 
 cHKeyInterface::cHKeyInterface(cCOM5003dServer *server)
