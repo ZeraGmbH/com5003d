@@ -1,6 +1,3 @@
-#include <QList>
-#include <scpi.h>
-
 #include "sourceinterface.h"
 #include "scpiconnection.h"
 #include "resource.h"
@@ -8,7 +5,8 @@
 #include "fpzchannel.h"
 #include "protonetcommand.h"
 #include "settings/sourcesettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
+#include <scpi.h>
 
 
 cSourceInterface::cSourceInterface(cCOM5003dServer *server)

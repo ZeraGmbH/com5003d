@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QString>
 
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace CTRLSettings
 {
@@ -14,16 +14,7 @@ enum configstate
 };
 }
 
-namespace Zera
-{
-namespace XMLConfig
-{
-    class XMLConfigReader;
-}
-}
-
-
-class cCtrlSettings : public cXMLSettings
+class cCtrlSettings : public XMLSettings
 {
     Q_OBJECT
 

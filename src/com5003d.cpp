@@ -182,7 +182,7 @@ void cCOM5003dServer::doConfiguration()
 
             sigStart = 1;
             write(m_nFPGAfd, &sigStart, 4);
-            if (myXMLConfigReader->loadXML(s)) // the first parameter should be the filename
+            if (myXMLConfigReader->loadXMLFile(s)) // the first parameter should be the filename
             {
                 sigStart = 0;
                 write(m_nFPGAfd, &sigStart, 4);

@@ -1,6 +1,3 @@
-#include <QList>
-#include <scpi.h>
-
 #include "hkeyinterface.h"
 #include "scpiconnection.h"
 #include "resource.h"
@@ -8,7 +5,8 @@
 #include "hkeychannel.h"
 #include "protonetcommand.h"
 #include "settings/hkeysettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
+#include <scpi.h>
 
 
 cHKeyInterface::cHKeyInterface(cCOM5003dServer *server)

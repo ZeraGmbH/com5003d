@@ -1,8 +1,7 @@
 #ifndef SAMPLINGSETTINGS_H
 #define SAMPLINGSETTINGS_H
 
-#include <QList>
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace SamplingSystem
 {
@@ -23,7 +22,7 @@ struct cChannelSettings // what we want to get configured
 } // namespace SamplingSystem
 
 
-class cSamplingSettings : public cXMLSettings
+class cSamplingSettings : public XMLSettings
 {
 public:
     cSamplingSettings(Zera::XMLConfig::cReader *xmlread);

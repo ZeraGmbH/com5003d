@@ -1,6 +1,3 @@
-#include <QList>
-#include <scpi.h>
-
 #include "scheadinterface.h"
 #include "scpiconnection.h"
 #include "resource.h"
@@ -8,7 +5,8 @@
 #include "scheadchannel.h"
 #include "protonetcommand.h"
 #include "settings/scheadsettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
+#include <scpi.h>
 
 
 cSCHeadInterface::cSCHeadInterface(cCOM5003dServer *server)

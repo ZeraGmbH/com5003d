@@ -1,11 +1,4 @@
-#include <QList>
-#include <QVariant>
-
-#include <xmlconfigreader.h>
-
-#include "xmlsettings.h"
 #include "sourcesettings.h"
-
 
 cSourceSettings::cSourceSettings(Zera::XMLConfig::cReader *xmlread)
 {

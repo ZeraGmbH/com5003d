@@ -1,11 +1,7 @@
 #ifndef I2CSETTINGS_H
 #define I2CSETTINGS_H
 
-#include <QObject>
-#include <QString>
-
-#include "xmlsettings.h"
-
+#include <xmlsettings.h>
 
 namespace i2cSettings
 {
@@ -25,17 +21,7 @@ enum configstate
 };
 }
 
-
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-
-class cI2CSettings : public cXMLSettings
+class cI2CSettings : public XMLSettings
 {
     Q_OBJECT
 
@@ -51,6 +37,5 @@ private:
     QString m_sDeviceNode;
     quint8 m_nMasterAdr, m_nAtmelAdr, m_nFlashAdr;
 };
-
 
 #endif // I2CSETTINGS_H

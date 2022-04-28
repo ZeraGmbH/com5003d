@@ -17,7 +17,7 @@
 #include "micro-controller-io/atmel.h"
 #include "settings/ethsettings.h"
 #include "settings/sensesettings.h"
-#include "settings/xmlsettings.h"
+#include <xmlsettings.h>
 
 
 extern cATMEL* pAtmel;

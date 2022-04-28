@@ -1,10 +1,7 @@
 #ifndef FRQINPUTSETTINGS_H
 #define FRQINPUTSETTINGS_H
 
-#include <QObject>
-#include <QList>
-
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace FRQInputSystem
 {
@@ -20,7 +17,6 @@ enum configstate
     cfgFin3avail,
 };
 
-
 struct cChannelSettings // what we want to get configured
 {
     QString m_sAlias; // the names channel
@@ -28,19 +24,7 @@ struct cChannelSettings // what we want to get configured
 };
 }
 
-
-class QString;
-
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-
-class cFRQInputSettings : public cXMLSettings
+class cFRQInputSettings : public XMLSettings
 {
     Q_OBJECT
 

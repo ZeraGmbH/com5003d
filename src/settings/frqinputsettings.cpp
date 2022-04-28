@@ -1,12 +1,6 @@
+#include "frqinputsettings.h"
 #include <QList>
 #include <QVariant>
-
-#include <xmlconfigreader.h>
-
-#include "xmlsettings.h"
-#include "frqinputsettings.h"
-
-
 
 cFRQInputSettings::cFRQInputSettings(Zera::XMLConfig::cReader *xmlread)
 {
