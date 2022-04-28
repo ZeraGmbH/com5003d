@@ -1,10 +1,8 @@
 #ifndef ETHSETTINGS_H
 #define ETHSETTINGS_H
 
+#include <xmlsettings.h>
 #include <QObject>
-
-#include "xmlsettings.h"
-
 
 enum ethmember
 {
@@ -24,15 +22,7 @@ enum ethconfigstate
 };
 
 
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-class cETHSettings : public cXMLSettings
+class cETHSettings : public XMLSettings
 {
     Q_OBJECT
 

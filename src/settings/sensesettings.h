@@ -1,10 +1,7 @@
 #ifndef SENSESETTINGS_H
 #define SENSESETTINGS_H
 
-#include <QObject>
-#include <QList>
-
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace SenseSystem
 {
@@ -65,17 +62,7 @@ struct cChannelSettings // what we want to get configured
 };
 }
 
-
-class QString;
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-class cSenseSettings : public cXMLSettings
+class cSenseSettings : public XMLSettings
 {
     Q_OBJECT
 public:

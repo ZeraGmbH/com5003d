@@ -1,10 +1,7 @@
 #ifndef HKEYSETTINGS_H
 #define HKEYSETTINGS_H
 
-#include <QObject>
-#include <QList>
-
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace HKeySystem
 {
@@ -14,7 +11,6 @@ enum configstate
     cfgHK0avail,
 };
 
-
 struct cChannelSettings // what we want to get configured
 {
     QString m_sAlias; // the names channel
@@ -22,19 +18,7 @@ struct cChannelSettings // what we want to get configured
 };
 }
 
-
-class QString;
-
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-
-class cHKeySettings : public cXMLSettings
+class cHKeySettings : public XMLSettings
 {
     Q_OBJECT
 

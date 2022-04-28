@@ -1,11 +1,4 @@
-#include <QList>
-#include <QVariant>
-
-#include <xmlconfigreader.h>
-
-#include "xmlsettings.h"
 #include "hkeysettings.h"
-
 
 
 cHKeySettings::cHKeySettings(Zera::XMLConfig::cReader *xmlread)

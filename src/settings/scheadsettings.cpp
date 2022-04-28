@@ -1,12 +1,4 @@
-#include <QList>
-#include <QVariant>
-
-#include <xmlconfigreader.h>
-
-#include "xmlsettings.h"
 #include "scheadsettings.h"
-
-
 
 cSCHeadSettings::cSCHeadSettings(Zera::XMLConfig::cReader *xmlread)
 {

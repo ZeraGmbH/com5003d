@@ -1,10 +1,5 @@
-#include <QList>
-#include <QVariant>
-#include <xmlconfigreader.h>
-#include <QDebug>
-#include "xmlsettings.h"
 #include "sensesettings.h"
-
+#include <xmlsettings.h>
 
 cSenseSettings::cSenseSettings(Zera::XMLConfig::cReader *xmlread)
 {

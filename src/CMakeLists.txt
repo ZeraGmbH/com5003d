@@ -20,7 +20,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/scheadsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sensesettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sourcesettings.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/settings/xmlsettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003d.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.cpp
@@ -66,7 +65,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/scheadsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sensesettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/settings/sourcesettings.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/settings/xmlsettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/zeraglobal.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003d.h
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.h

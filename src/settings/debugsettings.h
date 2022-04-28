@@ -1,8 +1,8 @@
 #ifndef DEBUGSETTINGS_H
 #define DEBUGSETTINGS_H
 
+#include <xmlsettings.h>
 #include <QObject>
-#include "xmlsettings.h"
 
 namespace DebugSettings
 {
@@ -12,16 +12,7 @@ enum debugconfigstate
 };
 }
 
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-
-class cDebugSettings: public cXMLSettings
+class cDebugSettings: public XMLSettings
 {
     Q_OBJECT
 public:

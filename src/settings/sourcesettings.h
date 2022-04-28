@@ -1,10 +1,7 @@
 #ifndef SOURCESETTINGS_H
 #define SOURCESETTINGS_H
 
-#include <QObject>
-#include <QList>
-
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace SourceSystem
 {
@@ -28,7 +25,6 @@ enum configstate
     cfg3avail
 };
 
-
 struct cChannelSettings // what we want to get configured
 {
     QString m_sAlias; // the names channel
@@ -38,19 +34,7 @@ struct cChannelSettings // what we want to get configured
 };
 }
 
-
-class QString;
-
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-
-class cSourceSettings : public cXMLSettings
+class cSourceSettings : public XMLSettings
 {
     Q_OBJECT
 
@@ -65,8 +49,5 @@ public slots:
 private:
     QList<SourceSystem::cChannelSettings*> m_ChannelSettingsList;
 };
-
-
-
 
 #endif // SOURCESETTINGS_H

@@ -1,11 +1,7 @@
 #ifndef SCHEADSETTINGS_H
 #define SCHEADSETTINGS_H
 
-
-#include <QObject>
-#include <QList>
-
-#include "xmlsettings.h"
+#include <xmlsettings.h>
 
 namespace SCHeadSystem
 {
@@ -15,7 +11,6 @@ enum configstate
     cfgSH0avail,
 };
 
-
 struct cChannelSettings // what we want to get configured
 {
     QString m_sAlias; // the names channel
@@ -23,19 +18,7 @@ struct cChannelSettings // what we want to get configured
 };
 }
 
-
-class QString;
-
-namespace Zera
-{
-namespace XMLConfig
-{
-    class cReader;
-}
-}
-
-
-class cSCHeadSettings : public cXMLSettings
+class cSCHeadSettings : public XMLSettings
 {
     Q_OBJECT
 
