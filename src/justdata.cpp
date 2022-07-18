@@ -7,7 +7,7 @@
 
 #include <protonetcommand.h>
 #include "scpiconnection.h"
-#include "scpidelegate.h"
+#include <scpidelegate.h>
 #include "justdata.h"
 #include <justnode.h>
 #include "micro-controller-io/atmel.h"

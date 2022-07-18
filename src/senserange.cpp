@@ -1,7 +1,7 @@
 #include <scpicommand.h>
 
 #include "senserange.h"
-#include "scpidelegate.h"
+#include <scpidelegate.h>
 #include <protonetcommand.h>
 
 
