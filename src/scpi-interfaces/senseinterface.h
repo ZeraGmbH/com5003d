@@ -12,7 +12,7 @@
 #include "resource.h"
 #include "scpiconnection.h"
 #include "sensechannel.h"
-#include "notificationstring.h"
+#include <notificationstring.h>
 
 namespace SenseSystem
 {
