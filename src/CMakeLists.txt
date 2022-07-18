@@ -25,7 +25,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/justnode.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpidelegate.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.cpp
@@ -73,7 +72,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003scpi.h
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003dglobal.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/justnode.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpidelegate.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.h
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
@@ -133,6 +131,7 @@ target_link_libraries(com5003d
     ZeraClasses::zeraxmlconfig
     ZeraClasses::zeramath
     ZeraClasses::zeradev
+    ZeraClasses::zerameaschannels
     VeinMeta::VfProtobuf
     VeinMeta::zeraprotobuf
     )	
