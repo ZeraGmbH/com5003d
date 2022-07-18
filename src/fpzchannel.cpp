@@ -203,7 +203,7 @@ QString cFPZChannel::m_ReadWriteConstant(QString &sInput)
     if (cmd.isQuery())
 
     {
-        emit notifier(&notifierConstant);
+        emit strNotifier(&notifierConstant);
         return notifierConstant.getString();
     }
     else
@@ -225,7 +225,7 @@ QString cFPZChannel::m_ReadWritePowerType(QString &sInput)
     if (cmd.isQuery())
 
     {
-        emit notifier(&notifierPowerType);
+        emit strNotifier(&notifierPowerType);
         return notifierPowerType.getString();
     }
     else
