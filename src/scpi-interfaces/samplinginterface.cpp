@@ -2,7 +2,7 @@
 #include <QList>
 #include <scpi.h>
 
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "scpiconnection.h"
 #include "samplerange.h"
 #include "samplinginterface.h"

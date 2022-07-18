@@ -5,7 +5,7 @@
 #include <gaussmatrix.h>
 #include <gaussnode.h>
 
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "scpiconnection.h"
 #include "scpidelegate.h"
 #include "justdata.h"

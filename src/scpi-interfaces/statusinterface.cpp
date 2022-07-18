@@ -1,6 +1,6 @@
 #include "adjustment.h"
 #include "statusinterface.h"
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "micro-controller-io/atmel.h"
 
 extern cATMEL* pAtmel;
