@@ -1,7 +1,7 @@
 #ifndef JUSTDATA_H
 #define JUSTDATA_H
 
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 
 class QDataStream; // forward
 class QString;

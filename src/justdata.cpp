@@ -6,7 +6,7 @@
 #include <gaussnode.h>
 
 #include <protonetcommand.h>
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include <scpidelegate.h>
 #include "justdata.h"
 #include <justnode.h>

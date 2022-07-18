@@ -1,5 +1,5 @@
 #include "frqinputinterface.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "resource.h"
 #include "com5003d.h"
 #include "fpzinchannel.h"
