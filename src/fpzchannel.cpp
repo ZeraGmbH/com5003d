@@ -5,7 +5,7 @@
 #include <scpicommand.h>
 #include "scpiconnection.h"
 #include "fpzchannel.h"
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "settings/sourcesettings.h"
 
 

@@ -35,7 +35,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/protonetcommand.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/hkeychannel.cpp
@@ -84,7 +83,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.h
     ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.h
     ${CMAKE_CURRENT_SOURCE_DIR}/notificationdata.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/protonetcommand.h
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.h
     )
@@ -122,6 +120,7 @@ target_link_libraries(com5003d
     Qt5::Xml
     Qt5::Network
     Zera::SCPI
+    Zera::scpi-tcp
     VeinMeta::xiqnet
     ZeraClasses::zerai2c
     ZeraClasses::zeraproxy 

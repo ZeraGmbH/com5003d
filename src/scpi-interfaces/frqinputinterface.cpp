@@ -3,7 +3,7 @@
 #include "resource.h"
 #include "com5003d.h"
 #include "fpzinchannel.h"
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "settings/frqinputsettings.h"
 #include <xmlsettings.h>
 #include <scpi.h>

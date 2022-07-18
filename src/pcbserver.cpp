@@ -14,7 +14,7 @@
 #include <netmessages.pb.h>
 #include <QtDebug>
 
-#include "protonetcommand.h"
+#include <protonetcommand.h>
 #include "resource.h"
 #include "scpiconnection.h"
 #include "pcbserver.h"
