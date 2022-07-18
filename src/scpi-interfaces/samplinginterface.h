@@ -7,7 +7,7 @@
 
 #include "samplerange.h"
 #include "resource.h"
-#include "notificationstring.h"
+#include <notificationstring.h>
 
 namespace SamplingSystem
 {
