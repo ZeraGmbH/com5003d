@@ -229,7 +229,7 @@ QString cSamplingInterface::m_ReadWriteSamplingRange(QString &sInput)
 
     if (cmd.isQuery())
     {
-        emit notifier(&notifierSampleChannelRange); // we need this in case that the client wants notification
+        emit strNotifier(&notifierSampleChannelRange); // we need this in case that the client wants notification
         return notifierSampleChannelRange.getString();
     }
     else

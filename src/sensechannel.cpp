@@ -342,7 +342,7 @@ QString cSenseChannel::m_ReadWriteRange(QString &sInput)
     {
         if (cmd.isQuery())
         {
-            emit notifier(&notifierSenseChannelRange); // we only return the already known range name
+            emit strNotifier(&notifierSenseChannelRange); // we only return the already known range name
             return notifierSenseChannelRange.getString();
         }
 
@@ -423,7 +423,7 @@ QString cSenseChannel::m_ReadRangeCatalog(QString &sInput)
     if (cmd.isQuery())
     {
 
-        emit notifier(&notifierSenseChannelRangeCat);
+        emit strNotifier(&notifierSenseChannelRangeCat);
         return notifierSenseChannelRangeCat.getString();
     }
     else

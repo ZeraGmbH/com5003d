@@ -53,7 +53,7 @@ void cHKeyInterface::initSCPIConnection(QString leadingNodes)
 
     for (int i = 0; i < m_ChannelList.count(); i++)
     {
-        connect(m_ChannelList.at(i), SIGNAL(notifier(cNotificationString*)), this, SIGNAL(notifier(cNotificationString*)));
+        connect(m_ChannelList.at(i), &cSCPIConnection::strNotifier, this, &cSCPIConnection::strNotifier);
         connect(m_ChannelList.at(i), SIGNAL(cmdExecutionDone(cProtonetCommand*)), this, SIGNAL(cmdExecutionDone(cProtonetCommand*)));
         m_ChannelList.at(i)->initSCPIConnection(QString("%1HKEY").arg(leadingNodes));
     }
