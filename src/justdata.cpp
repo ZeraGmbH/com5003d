@@ -9,7 +9,7 @@
 #include "scpiconnection.h"
 #include "scpidelegate.h"
 #include "justdata.h"
-#include "justnode.h"
+#include <justnode.h>
 #include "micro-controller-io/atmel.h"
 
 
@@ -196,7 +196,7 @@ QString cJustData::m_ReadWriteJustNode(QString &sInput, quint8 index)
 
     if (cmd.isQuery())
     {
-        return QString("%1").arg(getNode(index)->Serialize());
+        return QString("%1").arg(getNode(index)->Serialize(8));
     }
     else
     {
@@ -277,7 +277,7 @@ QString cJustData::SerializeNodes()
     int i;
     QString s = "";
     for (i = 0; i < m_nOrder+1; i++)
-        s += m_pJustNode[i].Serialize();
+        s += m_pJustNode[i].Serialize(8);
     return s;
 }
 
