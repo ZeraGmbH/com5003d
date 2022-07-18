@@ -6,7 +6,7 @@
 #include <scpi.h>
 
 #include "com5003d.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include <scpidelegate.h>
 
 namespace StatusSystem

@@ -4,7 +4,7 @@
 #include <QDomDocument>
 #include <QDomText>
 #include <QDebug>
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "resource.h"
 
 #include "senseinterface.h"

@@ -25,7 +25,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003justdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/senserange.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/sensechannel.cpp
@@ -69,7 +68,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003scpi.h
     ${CMAKE_CURRENT_SOURCE_DIR}/pcbserver.h
     ${CMAKE_CURRENT_SOURCE_DIR}/com5003dglobal.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/scpiconnection.h
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/samplerange.h
     ${CMAKE_CURRENT_SOURCE_DIR}/senserange.h

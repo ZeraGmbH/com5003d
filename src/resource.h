@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QList>
 
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 
 class cRMConnection;
 class QString;

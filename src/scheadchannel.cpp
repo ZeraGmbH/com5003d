@@ -3,7 +3,7 @@
 
 #include <scpi.h>
 #include <scpicommand.h>
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "scheadchannel.h"
 #include <protonetcommand.h>
 #include "settings/scheadsettings.h"

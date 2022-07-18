@@ -1,7 +1,7 @@
 #ifndef SYSTEMINTERFACE_H
 #define SYSTEMINTERFACE_H
 #include "com5003d.h"
-#include "scpiconnection.h"
+#include <scpiconnection.h>
 #include "systeminfo.h"
 #include "adjustment.h"
 #include <scpi.h>
