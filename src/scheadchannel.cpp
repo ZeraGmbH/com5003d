@@ -9,11 +9,10 @@
 #include "settings/scheadsettings.h"
 
 
-cSCHeadChannel::cSCHeadChannel(cSCPI *scpiiinterface, QString description, quint8 nr, SCHeadSystem::cChannelSettings *cSettings)
-    :m_sDescription(description)
+cSCHeadChannel::cSCHeadChannel(cSCPI *scpiinterface, QString description, quint8 nr, SCHeadSystem::cChannelSettings *cSettings) :
+    cSCPIConnection(scpiinterface),
+    m_sDescription(description)
 {
-    m_pSCPIInterface = scpiiinterface;
-
     m_sName = QString("sh%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_bAvail = cSettings->avail;

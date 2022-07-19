@@ -91,7 +91,7 @@ public:
       @b Initialise the const variables and connections for new clients and their commands
       @param the servers name
       */
-    explicit cPCBServer(QObject* parent=0);
+    explicit cPCBServer();
     virtual void initSCPIConnection(QString leadingNodes);
     cSCPI* getSCPIInterface();
     quint32 getMsgNr();

@@ -9,11 +9,10 @@
 #include <scpi.h>
 
 
-cHKeyInterface::cHKeyInterface(cCOM5003dServer *server)
-    :m_pMyServer(server)
+cHKeyInterface::cHKeyInterface(cCOM5003dServer *server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     QList<HKeySystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pHKeySettings->getChannelSettings();
 

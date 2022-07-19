@@ -29,7 +29,7 @@ class cCOM5003dServer: public cPCBServer
     Q_OBJECT
 
 public:
-    explicit cCOM5003dServer(QObject* parent=0);
+    explicit cCOM5003dServer();
     ~cCOM5003dServer();
 
     cStatusInterface* m_pStatusInterface;

@@ -10,11 +10,6 @@ enum SampleRangeCommands
     SampleRangeSamples
 };
 
-class QString;
-class cSCPI;
-class cSCPIConnection;
-
-
 class cSampleRange: public cSCPIConnection
 {
     Q_OBJECT

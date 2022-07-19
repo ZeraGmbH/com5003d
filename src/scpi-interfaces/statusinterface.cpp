@@ -6,10 +6,10 @@
 extern cATMEL* pAtmel;
 
 
-cStatusInterface::cStatusInterface(cCOM5003dServer* server)
-    :m_pMyServer(server)
+cStatusInterface::cStatusInterface(cCOM5003dServer* server) :
+    cSCPIConnection(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 }
 
 

@@ -9,11 +9,10 @@
 #include <scpi.h>
 
 
-cSourceInterface::cSourceInterface(cCOM5003dServer *server)
-    :m_pMyServer(server)
+cSourceInterface::cSourceInterface(cCOM5003dServer *server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     QList<SourceSystem::cChannelSettings*> channelSettings;
     channelSettings = m_pMyServer->m_pSourceSettings->getChannelSettings();
 
