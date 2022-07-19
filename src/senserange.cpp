@@ -5,10 +5,18 @@
 #include <protonetcommand.h>
 
 
-cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, double adcrejection, quint8 rselcode, quint8 rspec)
-    :m_sName(name), m_sAlias(alias), m_bAvail(avail), m_fRValue(rValue), m_fRejection(rejection), m_fOVRejection(ovrejection), m_fADCRejection(adcrejection), m_nSelCode(rselcode), m_nRSpec(rspec)
+cSenseRange::cSenseRange(cSCPI *scpiinterface, QString name, QString alias, bool avail, double rValue, double rejection, double ovrejection, double adcrejection, quint8 rselcode, quint8 rspec) :
+    cSCPIConnection(scpiinterface),
+    m_sName(name),
+    m_sAlias(alias),
+    m_bAvail(avail),
+    m_fRValue(rValue),
+    m_fRejection(rejection),
+    m_fOVRejection(ovrejection),
+    m_fADCRejection(adcrejection),
+    m_nSelCode(rselcode),
+    m_nRSpec(rspec)
 {
-    m_pSCPIInterface = scpiinterface;
     m_pJustdata = new cCOM5003JustData(m_pSCPIInterface);
 }
 

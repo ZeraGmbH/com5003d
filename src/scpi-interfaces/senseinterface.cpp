@@ -22,7 +22,8 @@
 
 extern cATMEL* pAtmel;
 
-cSenseInterface::cSenseInterface(cCOM5003dServer *server)
+cSenseInterface::cSenseInterface(cCOM5003dServer *server) :
+    cResource(server->getSCPIInterface())
 {
     int i;
 
@@ -30,8 +31,6 @@ cSenseInterface::cSenseInterface(cCOM5003dServer *server)
     m_nMMode = SenseSystem::modeAC; // default ac measurement
     pAtmel->setMeasMode(m_nMMode); // set the atmels mode too
     setNotifierSenseMMode();
-
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
 
     QList<SenseSystem::cChannelSettings*> channelSettings;
     channelSettings = server->m_pSenseSettings->getChannelSettings();

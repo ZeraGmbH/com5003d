@@ -10,10 +10,11 @@
 #include "settings/frqinputsettings.h"
 
 
-cFPZInChannel::cFPZInChannel(cCOM5003dServer *server, QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings)
-    :m_pMyServer(server), m_sDescription(description)
+cFPZInChannel::cFPZInChannel(cCOM5003dServer *server, QString description, quint8 nr, FRQInputSystem::cChannelSettings *cSettings) :
+    cSCPIConnection(server->getSCPIInterface()),
+    m_pMyServer(server),
+    m_sDescription(description)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
     m_sName = QString("fi%1").arg(nr);
     m_sAlias = cSettings->m_sAlias;
     m_bAvail = cSettings->avail;

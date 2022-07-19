@@ -12,11 +12,10 @@
 
 extern cATMEL* pAtmel;
 
-cSamplingInterface::cSamplingInterface(cCOM5003dServer *server)
-    :m_pMyServer(server)
+cSamplingInterface::cSamplingInterface(cCOM5003dServer *server) :
+    cResource(server->getSCPIInterface()),
+    m_pMyServer(server)
 {
-    m_pSCPIInterface = m_pMyServer->getSCPIInterface();
-
     m_pllChannelList.append("0");
     m_pllChannelList.append("m0");
     m_pllChannelList.append("m1");

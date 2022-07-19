@@ -45,8 +45,7 @@
 
 cATMEL* pAtmel; // we take a static object for atmel connection
 
-cCOM5003dServer::cCOM5003dServer(QObject *parent)
-    :cPCBServer(parent)
+cCOM5003dServer::cCOM5003dServer()
 {
     // TODO: Move to cPCBServer::cPCBServer?
     m_pDebugSettings = nullptr;

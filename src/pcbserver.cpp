@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include <netmessages.pb.h>
 #include <QtDebug>
-
+#include <scpisingletonfactory.h>
 #include <protonetcommand.h>
 #include "resource.h"
 #include <scpiconnection.h>
@@ -21,8 +21,8 @@
 #include "com5003dglobal.h"
 #include "settings/ethsettings.h"
 
-cPCBServer::cPCBServer(QObject *parent)
-    : cSCPIConnection(parent)
+cPCBServer::cPCBServer()
+    : cSCPIConnection(ScpiSingletonFactory::getScpiObj(ServerName))
 {
     m_nMsgNr = 0;
     m_sServerName = ServerName;
@@ -77,7 +77,6 @@ cSCPI *cPCBServer::getSCPIInterface()
 
 void cPCBServer::setupServer()
 {
-    m_pSCPIInterface = new cSCPI(m_sServerName); // our scpi interface
     myServer = new XiQNetServer(this); // our working (talking) horse
     myServer->setDefaultWrapper(&m_ProtobufWrapper);
     connect(myServer,SIGNAL(sigClientConnected(XiQNetPeer*)),this,SLOT(establishNewConnection(XiQNetPeer*)));
