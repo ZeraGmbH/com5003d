@@ -32,7 +32,6 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/adjustment.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/resource.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/hkeychannel.cpp
@@ -77,7 +76,6 @@ set(HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/adjxml.h
     ${CMAKE_CURRENT_SOURCE_DIR}/adjustment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/rmconnection.h
     ${CMAKE_CURRENT_SOURCE_DIR}/notificationdata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/fpzinchannel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/scheadchannel.h
@@ -127,13 +125,9 @@ target_link_libraries(com5003d
     ZeraClasses::zeraservercommon
     VeinMeta::VfProtobuf
     VeinMeta::zeraprotobuf
-    )	
+    )
 
-# announce headers
 target_include_directories(com5003d
-    PUBLIC
-    $<BUILD_INTERFACE:${MY_LIBRARY_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/com5003d>
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     )
