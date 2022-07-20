@@ -124,7 +124,7 @@ target_link_libraries(com5003d
     ZeraClasses::zeraxmlconfig
     ZeraClasses::zeramath
     ZeraClasses::zeradev
-    ZeraClasses::zerameaschannels
+    ZeraClasses::zeraservercommon
     VeinMeta::VfProtobuf
     VeinMeta::zeraprotobuf
     )	
